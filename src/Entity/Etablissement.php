@@ -51,15 +51,9 @@ class Etablissement implements UserInterface, \Serializable
      */
     private $admin;
 
-    /**
-     * @var array
-     */
-    private $roles = [];
-
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
-        $this->roles = ['ROLE_USER'];
         $this->admin = false;
     }
 
@@ -163,10 +157,11 @@ class Etablissement implements UserInterface, \Serializable
      */
     public function getRoles()
     {
-        if ($this->isAdmin() && !in_array('ROLE_ADMIN', $this->roles)) {
-            $this->roles[] = 'ROLE_ADMIN';
+        $roles = ['ROLE_USER'];
+        if ($this->isAdmin()) {
+            $roles[] = 'ROLE_ADMIN';
         }
-        return $this->roles;
+        return $roles;
     }
 
     /**
