@@ -8,7 +8,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20180722170700 extends AbstractMigration
+final class Version20180727143115 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
@@ -17,7 +17,7 @@ final class Version20180722170700 extends AbstractMigration
 
         $this->addSql('CREATE TABLE activite (id INT AUTO_INCREMENT NOT NULL, kermesse_id_id INT DEFAULT NULL, nom VARCHAR(255) NOT NULL, INDEX IDX_B875551513BC7667 (kermesse_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE depense (id INT AUTO_INCREMENT NOT NULL, ticket_id_id INT NOT NULL, activite_id_id INT NOT NULL, montant INT NOT NULL, INDEX IDX_340597575774FDDC (ticket_id_id), INDEX IDX_34059757C1385E5E (activite_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE etablissement (id INT AUTO_INCREMENT NOT NULL, code VARCHAR(32) NOT NULL, nom VARCHAR(255) NOT NULL, motdepasse VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE etablissement (id INT AUTO_INCREMENT NOT NULL, username VARCHAR(32) NOT NULL, nom VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, admin TINYINT(1) NOT NULL, UNIQUE INDEX UNIQ_20FD592CF85E0677 (username), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE kermesse (id INT AUTO_INCREMENT NOT NULL, etablissement_id_id INT NOT NULL, annee INT NOT NULL, theme VARCHAR(255) DEFAULT NULL, INDEX IDX_75E0712AFC5092A6 (etablissement_id_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE membre (id INT AUTO_INCREMENT NOT NULL, email VARCHAR(255) NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
         $this->addSql('CREATE TABLE membre_kermesse (membre_id INT NOT NULL, kermesse_id INT NOT NULL, INDEX IDX_C08299196A99F74A (membre_id), INDEX IDX_C0829919C5B5ACBC (kermesse_id), PRIMARY KEY(membre_id, kermesse_id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');

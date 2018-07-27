@@ -5,12 +5,17 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\EtablissementRepository")
+ * @UniqueEntity(fields="username", message="Code déjà pris")
  */
-class Etablissement
+class Etablissement implements UserInterface, \Serializable
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -19,28 +24,43 @@ class Etablissement
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, unique=true)
+     * @Assert\NotBlank()
      */
-    private $code;
+    private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $nom;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string")
      */
-    private $motdepasse;
+    private $password;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Kermesse", mappedBy="etablissement_id", orphanRemoval=true)
      */
     private $kermesses;
 
+    /**
+     * @var boolean
+     * @ORM\Column(type="boolean")
+     */
+    private $admin;
+
+    /**
+     * @var array
+     */
+    private $roles = [];
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
+        $this->admin = false;
     }
 
     public function getId()
@@ -48,14 +68,14 @@ class Etablissement
         return $this->id;
     }
 
-    public function getCode(): ?string
+    public function getUsername(): ?string
     {
-        return $this->code;
+        return $this->username;
     }
 
-    public function setCode(string $code): self
+    public function setUsername(string $username): self
     {
-        $this->code = $code;
+        $this->username = $username;
 
         return $this;
     }
@@ -72,15 +92,33 @@ class Etablissement
         return $this;
     }
 
-    public function getMotdepasse(): ?string
+    public function getPassword(): ?string
     {
-        return $this->motdepasse;
+        return $this->password;
     }
 
-    public function setMotdepasse(string $motdepasse): self
+    public function setPassword(string $password): self
     {
-        $this->motdepasse = $motdepasse;
+        $this->password = $password;
 
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param bool $admin
+     * @return Etablissement
+     */
+    public function setAdmin(bool $admin)
+    {
+        $this->admin = $admin;
         return $this;
     }
 
@@ -113,5 +151,69 @@ class Etablissement
         }
 
         return $this;
+    }
+
+    /**
+     * Returns the roles granted to the user.
+     * Alternatively, the roles might be stored on a ``roles`` property,
+     * and populated in any number of different ways when the user object
+     * is created.
+     *
+     * @return array The user roles
+     */
+    public function getRoles()
+    {
+        if ($this->isAdmin() && !in_array('ROLE_ADMIN', $this->roles)) {
+            $this->roles[] = 'ROLE_ADMIN';
+        }
+        return $this->roles;
+    }
+
+    /**
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+        return;
+    }
+
+    /**
+     * String representation of object
+     * @link http://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+        return serialize([$this->id, $this->username, $this->password]);
+    }
+
+    /**
+     * Constructs the object
+     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        [$this->id, $this->username, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
     }
 }
