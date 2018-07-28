@@ -3,11 +3,22 @@
 {% block title %}Enregistrement{% endblock %}
 
 {% block body %}
-    {{ form_start(form) }}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.username) }}
-    {{ form_row(form.password.first) }}
-    {{ form_row(form.password.second) }}
-    <button type="submit">S'inscrire !</button>
-    {{ form_end(form) }}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="well">
+                    <fieldset>
+                        <legend><i class="fa fa-lock" aria-hidden="true"></i> Enregistrement</legend>
+                        {{ form_start(form) }}
+                        {{ form_row(form.nom) }}
+                        {{ form_row(form.username) }}
+                        {{ form_row(form.password.first) }}
+                        {{ form_row(form.password.second) }}
+                        <button class="btn btn-primary" type="submit">S'inscrire !</button>
+                        {{ form_end(form) }}
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

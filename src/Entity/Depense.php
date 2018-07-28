@@ -23,15 +23,15 @@ class Depense
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Ticket", inversedBy="depenses")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", nullable=false)
      */
-    private $ticket_id;
+    private $ticket;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activite", inversedBy="depenses")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="activite_id", referencedColumnName="id", nullable=false)
      */
-    private $activite_id;
+    private $activite;
 
     public function getId()
     {
@@ -46,31 +46,28 @@ class Depense
     public function setMontant(int $montant): self
     {
         $this->montant = $montant;
-
         return $this;
     }
 
-    public function getTicketId(): ?Ticket
+    public function getTicket(): ?Ticket
     {
-        return $this->ticket_id;
+        return $this->ticket;
     }
 
-    public function setTicketId(?Ticket $ticket_id): self
+    public function setTicket(?Ticket $ticket): self
     {
-        $this->ticket_id = $ticket_id;
-
+        $this->ticket = $ticket;
         return $this;
     }
 
-    public function getActiviteId(): ?Activite
+    public function getActivite(): ?Activite
     {
-        return $this->activite_id;
+        return $this->activite;
     }
 
-    public function setActiviteId(?Activite $activite_id): self
+    public function setActivite(?Activite $activite): self
     {
-        $this->activite_id = $activite_id;
-
+        $this->activite = $activite;
         return $this;
     }
 }

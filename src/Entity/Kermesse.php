@@ -25,9 +25,9 @@ class Kermesse
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement", inversedBy="kermesses")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="etablissement_id", referencedColumnName="id", nullable=false)
      */
-    private $etablissement_id;
+    private $etablissement;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
@@ -35,7 +35,7 @@ class Kermesse
     private $theme;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Activite", mappedBy="kermesse_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Activite", mappedBy="kermesse")
      */
     private $activites;
 
@@ -45,7 +45,7 @@ class Kermesse
     private $membres;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="kermesse_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="kermesse", orphanRemoval=true)
      */
     private $tickets;
 
@@ -69,19 +69,17 @@ class Kermesse
     public function setAnnee(int $annee): self
     {
         $this->annee = $annee;
-
         return $this;
     }
 
-    public function getEtablissementId(): ?Etablissement
+    public function getEtablissement(): ?Etablissement
     {
-        return $this->etablissement_id;
+        return $this->etablissement;
     }
 
-    public function setEtablissementId(?Etablissement $etablissement_id): self
+    public function setEtablissement(?Etablissement $etablissement): self
     {
-        $this->etablissement_id = $etablissement_id;
-
+        $this->etablissement = $etablissement;
         return $this;
     }
 
@@ -93,7 +91,6 @@ class Kermesse
     public function setTheme(?string $theme): self
     {
         $this->theme = $theme;
-
         return $this;
     }
 
@@ -109,9 +106,8 @@ class Kermesse
     {
         if (!$this->activites->contains($activite)) {
             $this->activites[] = $activite;
-            $activite->setKermesseId($this);
+            $activite->setKermesse($this);
         }
-
         return $this;
     }
 
@@ -120,11 +116,10 @@ class Kermesse
         if ($this->activites->contains($activite)) {
             $this->activites->removeElement($activite);
             // set the owning side to null (unless already changed)
-            if ($activite->getKermesseId() === $this) {
-                $activite->setKermesseId(null);
+            if ($activite->getKermesse() === $this) {
+                $activite->setKermesse(null);
             }
         }
-
         return $this;
     }
 
@@ -142,7 +137,6 @@ class Kermesse
             $this->membres[] = $membre;
             $membre->addKremesseId($this);
         }
-
         return $this;
     }
 
@@ -152,7 +146,6 @@ class Kermesse
             $this->membres->removeElement($membre);
             $membre->removeKremesseId($this);
         }
-
         return $this;
     }
 
@@ -168,7 +161,7 @@ class Kermesse
     {
         if (!$this->tickets->contains($ticket)) {
             $this->tickets[] = $ticket;
-            $ticket->setKermesseId($this);
+            $ticket->setKermesse($this);
         }
 
         return $this;
@@ -179,11 +172,10 @@ class Kermesse
         if ($this->tickets->contains($ticket)) {
             $this->tickets->removeElement($ticket);
             // set the owning side to null (unless already changed)
-            if ($ticket->getKermesseId() === $this) {
-                $ticket->setKermesseId(null);
+            if ($ticket->getKermesse() === $this) {
+                $ticket->setKermesse(null);
             }
         }
-
         return $this;
     }
 }

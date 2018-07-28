@@ -25,16 +25,17 @@ class Activite
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Kermesse", inversedBy="activites")
+     * @ORM\JoinColumn(name="kermesse_id", referencedColumnName="id", nullable=true)
      */
-    private $kermesse_id;
+    private $kermesse;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="activite_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="activite", orphanRemoval=true)
      */
     private $depenses;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Recette", mappedBy="activite_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Recette", mappedBy="activite", orphanRemoval=true)
      */
     private $recettes;
 
@@ -57,19 +58,17 @@ class Activite
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
         return $this;
     }
 
-    public function getKermesseId(): ?Kermesse
+    public function getKermesse(): ?Kermesse
     {
-        return $this->kermesse_id;
+        return $this->kermesse;
     }
 
-    public function setKermesseId(?Kermesse $kermesse_id): self
+    public function setKermesse(?Kermesse $kermesse): self
     {
-        $this->kermesse_id = $kermesse_id;
-
+        $this->kermesse = $kermesse;
         return $this;
     }
 
@@ -87,7 +86,6 @@ class Activite
             $this->depenses[] = $depense;
             $depense->setActiviteId($this);
         }
-
         return $this;
     }
 
@@ -100,7 +98,6 @@ class Activite
                 $depense->setActiviteId(null);
             }
         }
-
         return $this;
     }
 
@@ -116,9 +113,8 @@ class Activite
     {
         if (!$this->recettes->contains($recette)) {
             $this->recettes[] = $recette;
-            $recette->setActiviteId($this);
+            $recette->setActivite($this);
         }
-
         return $this;
     }
 
@@ -127,11 +123,10 @@ class Activite
         if ($this->recettes->contains($recette)) {
             $this->recettes->removeElement($recette);
             // set the owning side to null (unless already changed)
-            if ($recette->getActiviteId() === $this) {
-                $recette->setActiviteId(null);
+            if ($recette->getActivite() === $this) {
+                $recette->setActivite(null);
             }
         }
-
         return $this;
     }
 }

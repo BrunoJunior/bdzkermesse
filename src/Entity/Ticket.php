@@ -40,22 +40,24 @@ class Ticket
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Kermesse", inversedBy="tickets")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="kermesse_id", referencedColumnName="id", nullable=false)
      */
-    private $kermesse_id;
+    private $kermesse;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Membre", inversedBy="tickets")
+     * @ORM\JoinColumn(name="membre_id", referencedColumnName="id", nullable=true)
      */
-    private $membre_id;
+    private $membre;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Remboursement", inversedBy="tickets")
+     * @ORM\JoinColumn(name="remboursement_id", referencedColumnName="id", nullable=true)
      */
-    private $remboursement_id;
+    private $remboursement;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="ticket_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="ticket", orphanRemoval=true)
      */
     private $depenses;
 
@@ -117,38 +119,38 @@ class Ticket
         return $this;
     }
 
-    public function getKermesseId(): ?Kermesse
+    public function getKermesse(): ?Kermesse
     {
-        return $this->kermesse_id;
+        return $this->kermesse;
     }
 
-    public function setKermesseId(?Kermesse $kermesse_id): self
+    public function setKermesse(?Kermesse $kermesse): self
     {
-        $this->kermesse_id = $kermesse_id;
+        $this->kermesse = $kermesse;
 
         return $this;
     }
 
-    public function getMembreId(): ?Membre
+    public function getMembre(): ?Membre
     {
-        return $this->membre_id;
+        return $this->membre;
     }
 
-    public function setMembreId(?Membre $membre_id): self
+    public function setMembre(?Membre $membre): self
     {
-        $this->membre_id = $membre_id;
+        $this->membre = $membre;
 
         return $this;
     }
 
-    public function getRemboursementId(): ?Remboursement
+    public function getRemboursement(): ?Remboursement
     {
-        return $this->remboursement_id;
+        return $this->remboursement;
     }
 
-    public function setRemboursementId(?Remboursement $remboursement_id): self
+    public function setRemboursement(?Remboursement $remboursement): self
     {
-        $this->remboursement_id = $remboursement_id;
+        $this->remboursement = $remboursement;
 
         return $this;
     }
@@ -165,7 +167,7 @@ class Ticket
     {
         if (!$this->depenses->contains($depense)) {
             $this->depenses[] = $depense;
-            $depense->setTicketId($this);
+            $depense->setTicket($this);
         }
 
         return $this;
@@ -176,8 +178,8 @@ class Ticket
         if ($this->depenses->contains($depense)) {
             $this->depenses->removeElement($depense);
             // set the owning side to null (unless already changed)
-            if ($depense->getTicketId() === $this) {
-                $depense->setTicketId(null);
+            if ($depense->getTicket() === $this) {
+                $depense->setTicket(null);
             }
         }
 

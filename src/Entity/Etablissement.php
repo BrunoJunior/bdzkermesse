@@ -41,7 +41,7 @@ class Etablissement implements UserInterface, \Serializable
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Kermesse", mappedBy="etablissement_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Kermesse", mappedBy="etablissement", orphanRemoval=true)
      */
     private $kermesses;
 
@@ -128,7 +128,7 @@ class Etablissement implements UserInterface, \Serializable
     {
         if (!$this->kermesses->contains($kermess)) {
             $this->kermesses[] = $kermess;
-            $kermess->setEtablissementId($this);
+            $kermess->setEtablissement($this);
         }
 
         return $this;
@@ -139,8 +139,8 @@ class Etablissement implements UserInterface, \Serializable
         if ($this->kermesses->contains($kermess)) {
             $this->kermesses->removeElement($kermess);
             // set the owning side to null (unless already changed)
-            if ($kermess->getEtablissementId() === $this) {
-                $kermess->setEtablissementId(null);
+            if ($kermess->getEtablissement() === $this) {
+                $kermess->setEtablissement(null);
             }
         }
 

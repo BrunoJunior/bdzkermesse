@@ -33,9 +33,9 @@ class Recette
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activite", inversedBy="recettes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="activite_id", referencedColumnName="id", nullable=false)
      */
-    private $activite_id;
+    private $activite;
 
     public function getId()
     {
@@ -50,7 +50,6 @@ class Recette
     public function setMontant(int $montant): self
     {
         $this->montant = $montant;
-
         return $this;
     }
 
@@ -62,7 +61,6 @@ class Recette
     public function setNombreTicket(?int $nombre_ticket): self
     {
         $this->nombre_ticket = $nombre_ticket;
-
         return $this;
     }
 
@@ -74,19 +72,17 @@ class Recette
     public function setMontantTicket(?int $montant_ticket): self
     {
         $this->montant_ticket = $montant_ticket;
-
         return $this;
     }
 
-    public function getActiviteId(): ?Activite
+    public function getActivite(): ?Activite
     {
-        return $this->activite_id;
+        return $this->activite;
     }
 
-    public function setActiviteId(?Activite $activite_id): self
+    public function setActivite(?Activite $activite): self
     {
-        $this->activite_id = $activite_id;
-
+        $this->activite = $activite;
         return $this;
     }
 }

@@ -39,12 +39,12 @@ class Membre
     private $kermesses;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Remboursement", mappedBy="membre_id", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Remboursement", mappedBy="membre", orphanRemoval=true)
      */
     private $remboursements;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="membre_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="membre")
      */
     private $tickets;
 
@@ -134,7 +134,7 @@ class Membre
     {
         if (!$this->remboursements->contains($remboursement)) {
             $this->remboursements[] = $remboursement;
-            $remboursement->setMembreId($this);
+            $remboursement->setMembre($this);
         }
 
         return $this;
@@ -145,8 +145,8 @@ class Membre
         if ($this->remboursements->contains($remboursement)) {
             $this->remboursements->removeElement($remboursement);
             // set the owning side to null (unless already changed)
-            if ($remboursement->getMembreId() === $this) {
-                $remboursement->setMembreId(null);
+            if ($remboursement->getMembre() === $this) {
+                $remboursement->setMembre(null);
             }
         }
 
@@ -165,7 +165,7 @@ class Membre
     {
         if (!$this->tickets->contains($ticket)) {
             $this->tickets[] = $ticket;
-            $ticket->setMembreId($this);
+            $ticket->setMembre($this);
         }
 
         return $this;
@@ -176,8 +176,8 @@ class Membre
         if ($this->tickets->contains($ticket)) {
             $this->tickets->removeElement($ticket);
             // set the owning side to null (unless already changed)
-            if ($ticket->getMembreId() === $this) {
-                $ticket->setMembreId(null);
+            if ($ticket->getMembre() === $this) {
+                $ticket->setMembre(null);
             }
         }
 

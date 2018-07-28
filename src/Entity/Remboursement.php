@@ -40,12 +40,12 @@ class Remboursement
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Membre", inversedBy="remboursements")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="membre_id", referencedColumnName="id", nullable=false)
      */
-    private $membre_id;
+    private $membre;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="remboursement_id")
+     * @ORM\OneToMany(targetEntity="App\Entity\Ticket", mappedBy="remboursement")
      */
     private $tickets;
 
@@ -67,7 +67,6 @@ class Remboursement
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
         return $this;
     }
 
@@ -79,7 +78,6 @@ class Remboursement
     public function setMontant(int $montant): self
     {
         $this->montant = $montant;
-
         return $this;
     }
 
@@ -103,19 +101,17 @@ class Remboursement
     public function setNumeroSuivi(string $numero_suivi): self
     {
         $this->numero_suivi = $numero_suivi;
-
         return $this;
     }
 
-    public function getMembreId(): ?Membre
+    public function getMembre(): ?Membre
     {
-        return $this->membre_id;
+        return $this->membre;
     }
 
-    public function setMembreId(?Membre $membre_id): self
+    public function setMembre(?Membre $membre): self
     {
-        $this->membre_id = $membre_id;
-
+        $this->membre = $membre;
         return $this;
     }
 
@@ -131,9 +127,8 @@ class Remboursement
     {
         if (!$this->tickets->contains($ticket)) {
             $this->tickets[] = $ticket;
-            $ticket->setRemboursementId($this);
+            $ticket->setRemboursement($this);
         }
-
         return $this;
     }
 
@@ -142,11 +137,10 @@ class Remboursement
         if ($this->tickets->contains($ticket)) {
             $this->tickets->removeElement($ticket);
             // set the owning side to null (unless already changed)
-            if ($ticket->getRemboursementId() === $this) {
-                $ticket->setRemboursementId(null);
+            if ($ticket->getRemboursement() === $this) {
+                $ticket->setRemboursement(null);
             }
         }
-
         return $this;
     }
 }
