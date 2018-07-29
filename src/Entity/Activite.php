@@ -129,4 +129,56 @@ class Activite
         }
         return $this;
     }
+
+    /**
+     * La recette en monaie de l'activité
+     * @return int
+     */
+    public function getMontantRecette(): int
+    {
+        $total = 0;
+        foreach ($this->getRecettes() as $recette) {
+            $total += $recette->getMontant();
+        }
+        return $total;
+    }
+
+    /**
+     * Le montant des dépenses de l'activité
+     * @return int
+     */
+    public function getMontantDepense(): int
+    {
+        $total = 0;
+        foreach ($this->getDepenses() as $depense) {
+            $total += $depense->getMontant();
+        }
+        return $total;
+    }
+
+    /**
+     * La recette totale de l'activité
+     * @return int
+     */
+    public function getRecetteTotale(): int
+    {
+        $total = -1 * $this->getMontantDepense();
+        foreach ($this->getRecettes() as $recette) {
+            $total += $recette->getMontantGlobal();
+        }
+        return $total;
+    }
+
+    /**
+     * Le nombre total de ticket de l'activité
+     * @return int
+     */
+    public function getNombreTotalTickets(): int
+    {
+        $total = 0;
+        foreach ($this->getRecettes() as $recette) {
+            $total += $recette->getNombreTicket();
+        }
+        return $total;
+    }
 }

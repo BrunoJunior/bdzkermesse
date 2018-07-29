@@ -27,11 +27,6 @@ class Recette
     private $nombre_ticket;
 
     /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $montant_ticket;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Activite", inversedBy="recettes")
      * @ORM\JoinColumn(name="activite_id", referencedColumnName="id", nullable=false)
      */
@@ -42,9 +37,9 @@ class Recette
         return $this->id;
     }
 
-    public function getMontant(): ?int
+    public function getMontant(): int
     {
-        return $this->montant;
+        return $this->montant ? $this->montant : 0;
     }
 
     public function setMontant(int $montant): self
@@ -53,25 +48,14 @@ class Recette
         return $this;
     }
 
-    public function getNombreTicket(): ?int
+    public function getNombreTicket(): int
     {
-        return $this->nombre_ticket;
+        return $this->nombre_ticket ? $this->nombre_ticket : 0;
     }
 
-    public function setNombreTicket(?int $nombre_ticket): self
+    public function setNombreTicket(int $nombre_ticket): self
     {
         $this->nombre_ticket = $nombre_ticket;
-        return $this;
-    }
-
-    public function getMontantTicket(): ?int
-    {
-        return $this->montant_ticket;
-    }
-
-    public function setMontantTicket(?int $montant_ticket): self
-    {
-        $this->montant_ticket = $montant_ticket;
         return $this;
     }
 
@@ -80,9 +64,24 @@ class Recette
         return $this->activite;
     }
 
-    public function setActivite(?Activite $activite): self
+    public function setActivite(Activite $activite): self
     {
         $this->activite = $activite;
         return $this;
+    }
+
+    /**
+     * Montant global d'une recette
+     * Montant en centimes + nombre de tickets * le montant d'un ticket
+     * @return int
+     */
+    public function getMontantGlobal(): int
+    {
+        $montant = $this->getMontant();
+        if ($this->getActivite() !== null && $this->getActivite()->getKermesse() !== null) {
+            $montantTicket = $this->getActivite()->getKermesse()->getMontantTicket();
+            $montant += ($this->getNombreTicket() * $montantTicket);
+        }
+        return $montant;
     }
 }

@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container">
+    <div class="container-fluid">
         <fieldset>
             <legend>Nos kermesses</legend>
             <div class="row">
@@ -21,9 +21,17 @@
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h5 class="card-title">{{ kermesse.annee }}</h5>
-                                <p class="card-text">{{ kermesse.theme }}</p>
-                                <a href="{{ path('kermesse', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                                <h5 class="card-title"><i class="fas fa-calendar"></i> {{ kermesse.annee }} - {{ kermesse.theme }}</h5>
+                                {% if kermesse.MontantTicket > 0 %}
+                                    <p class="card-text"><i class="fas fa-ticket-alt"></i> {{ montants[kermesse.id]['ticket'] }}</p>
+                                {% endif %}
+                                <p class="card-text"><i class="fas fa-plus"></i> {{ montants[kermesse.id]['recette'] }}</p>
+                                <p class="card-text"><i class="fas fa-minus"></i> {{ montants[kermesse.id]['depense'] }}</p>
+                                <hr />
+                                <p class="card-text"><i class="fas fa-balance-scale"></i> {{ montants[kermesse.id]['balance'] }}</p>
+                            </div>
+                            <div class="card-footer">
+                                <a href="{{ path('kermesse', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-eye"></i></a> <a href="{{ path('editer_kermesse', {'id': kermesse.id}) }}" class="btn btn-secondary"><i class="fas fa-edit"></i></a>
                             </div>
                         </div>
                     </div>
@@ -45,8 +53,8 @@
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                         <div class="card text-center">
                             <div class="card-body">
-                                <h5 class="card-title">{{ membre.prenom }} {{ membre.nom }}</h5>
-                                <p class="card-text">{{ membre.email }}</p>
+                                <h5 class="card-title"><i class="fas fa-user"></i> {{ membre.prenom }} {{ membre.nom }}</h5>
+                                <p class="card-text"><i class="fas fa-at"></i> {{ membre.email }}</p>
                                 <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
                             </div>
                         </div>

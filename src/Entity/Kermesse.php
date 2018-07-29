@@ -49,6 +49,12 @@ class Kermesse
      */
     private $tickets;
 
+    /**
+     * @var int Montant en centimes
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $montant_ticket;
+
     public function __construct()
     {
         $this->activites = new ArrayCollection();
@@ -177,5 +183,59 @@ class Kermesse
             }
         }
         return $this;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getMontantTicket(): int
+    {
+        return $this->montant_ticket ? $this->montant_ticket : 0;
+    }
+
+    /**
+     * @param int $montant_ticket
+     * @return Kermesse
+     */
+    public function setMontantTicket(int $montant_ticket)
+    {
+        $this->montant_ticket = $montant_ticket;
+        return $this;
+    }
+
+    /**
+     * Recette totale de la kermesse
+     * @return int
+     */
+    public function getRecetteTotale(): int
+    {
+        $recette = 0;
+        foreach ($this->getActivites() as $activite) {
+            $recette += $activite->getRecetteTotale();
+        }
+        return $recette;
+    }
+
+    /**
+     * Dépense totale de la kermesse
+     * @return int
+     */
+    public function getDepenseTotale(): int
+    {
+        $depense = 0;
+        foreach ($this->getTickets() as $ticket)
+        {
+            $depense += $ticket->getMontant();
+        }
+        return $depense;
+    }
+
+    /**
+     * Recette - Dépense
+     * @return int
+     */
+    public function getBalance(): int
+    {
+        return $this->getRecetteTotale() - $this->getDepenseTotale();
     }
 }
