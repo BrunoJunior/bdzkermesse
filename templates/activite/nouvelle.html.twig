@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Activite{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="well">
+                    <fieldset>
+                        <legend><i class="fas fa-plus-circle"></i> Activité</legend>
+                        {{ form_start(form) }}
+                        {{ form_row(form.nom) }}
+                        <button class="btn btn-primary" type="submit">Enregistrer !</button>
+                        {{ form_end(form) }}
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

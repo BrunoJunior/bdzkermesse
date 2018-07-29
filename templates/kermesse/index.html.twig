@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kermesse{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <fieldset>
+            <legend>Activités</legend>
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Nouvelle activité</h5>
+                            <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% for activite in kermesse.activites %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ activite.nom }}</h5>
+                                <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}

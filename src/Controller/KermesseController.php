@@ -31,4 +31,16 @@ class KermesseController extends Controller
             array('form' => $form->createView())
         );
     }
+
+    /**
+     * @Route("/kermesse/{id}", name="kermesse")
+     */
+    public function index(Kermesse $kermesse) {
+        return $this->render(
+            'kermesse/index.html.twig',
+            [
+                'kermesse' => $kermesse
+            ]
+        );
+    }
 }
