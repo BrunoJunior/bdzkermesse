@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -19,22 +20,20 @@ class KermesseRepository extends ServiceEntityRepository
         parent::__construct($registry, Kermesse::class);
     }
 
-//    /**
-//     * @return Kermesse[] Returns an array of Kermesse objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Kermesse[] Returns an array of Kermesse objects
+     */
+    public function findByEtablissementOrderByAnnee(Etablissement $etablissement)
     {
         return $this->createQueryBuilder('k')
-            ->andWhere('k.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('k.id', 'ASC')
+            ->andWhere('k.etablissement = :etablissement')
+            ->setParameter('etablissement', $etablissement)
+            ->orderBy('k.annee', 'DESC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Kermesse

@@ -46,6 +46,11 @@ class Etablissement implements UserInterface, \Serializable
     private $kermesses;
 
     /**
+     * @ORM\OneToMany(targetEntity="App\Entity\Membre", mappedBy="etablissement", orphanRemoval=true)
+     */
+    private $membres;
+
+    /**
      * @var boolean
      * @ORM\Column(type="boolean")
      */
@@ -210,5 +215,36 @@ class Etablissement implements UserInterface, \Serializable
     public function unserialize($serialized)
     {
         [$this->id, $this->username, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
+    }
+
+    /**
+     * @return Collection|Membre[]
+     */
+    public function getMembres(): Collection
+    {
+        return $this->membres;
+    }
+
+    public function addMembre(Membre $membre): self
+    {
+        if (!$this->membres->contains($membre)) {
+            $this->membres[] = $membre;
+            $membre->setEtablissement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMembre(Membre $membre): self
+    {
+        if ($this->membres->contains($membre)) {
+            $this->membres->removeElement($membre);
+            // set the owning side to null (unless already changed)
+            if ($membre->getEtablissement() === $this) {
+                $membre->setEtablissement(null);
+            }
+        }
+
+        return $this;
     }
 }

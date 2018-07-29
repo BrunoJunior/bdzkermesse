@@ -29,7 +29,7 @@ class RegistrationController extends Controller
             return $this->redirectToRoute('security_login');
         }
         return $this->render(
-            'registration/index.html.twig',
+            'registration/nouveau.html.twig',
             array('form' => $form->createView())
         );
     }

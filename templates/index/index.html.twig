@@ -1,6 +1,59 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}
+    Kermesses
+{% endblock %}
+
 {% block body %}
-    Bienvenue {{ app.user.username }} !
+    <div class="container">
+        <fieldset>
+            <legend>Nos kermesses</legend>
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Nouvelle kermesse</h5>
+                            <a href="{{ path('nouvelle_kermesse') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% for kermesse in kermesses %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ kermesse.annee }}</h5>
+                                <p class="card-text">{{ kermesse.theme }}</p>
+                                <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Nos membres</legend>
+            <div class="row">
+                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Nouveau membre</h5>
+                            <a href="{{ path('nouveau_membre') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
+                        </div>
+                    </div>
+                </div>
+                {% for membre in membres %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ membre.prenom }} {{ membre.nom }}</h5>
+                                <p class="card-text">{{ membre.email }}</p>
+                                <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+    </div>
 
 {% endblock %}

@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\Response;
+use App\Entity\Kermesse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -11,8 +11,12 @@ class IndexController extends Controller
     /**
      * @Route("/", name="index")
      */
-    public function index()
+    public function kermessesListe()
     {
-        return $this->render('index/index.html.twig');
+        $kermesseRepo = $this->getDoctrine()->getRepository(Kermesse::class);
+        return $this->render('index/index.html.twig', [
+            'kermesses' => $kermesseRepo->findByEtablissementOrderByAnnee($this->getUser()),
+            'membres' => $this->getUser()->getMembres()
+        ]);
     }
 }

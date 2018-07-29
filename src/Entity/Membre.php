@@ -34,6 +34,13 @@ class Membre
     private $prenom;
 
     /**
+     * @var Etablissement
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement", inversedBy="membres")
+     * @ORM\JoinColumn(name="etablissement_id", referencedColumnName="id", nullable=true)
+     */
+    private $etablissement;
+
+    /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Kermesse", inversedBy="membres")
      */
     private $kermesses;
@@ -181,6 +188,24 @@ class Membre
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * @return Etablissement
+     */
+    public function getEtablissement(): Etablissement
+    {
+        return $this->etablissement;
+    }
+
+    /**
+     * @param Etablissement $etablissement
+     * @return Membre
+     */
+    public function setEtablissement(Etablissement $etablissement): Membre
+    {
+        $this->etablissement = $etablissement;
         return $this;
     }
 }
