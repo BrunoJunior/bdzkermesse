@@ -3,31 +3,30 @@
 namespace App\Controller;
 
 use App\Entity\Kermesse;
-use App\Entity\Ticket;
-use App\Form\TicketType;
+use App\Entity\Recette;
+use App\Form\RecetteType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class TicketController extends Controller
+class RecetteController extends Controller
 {
     /**
-     * @Route("/kermesse/{id}/ticket/new", name="nouveau_ticket")
+     * @Route("/kermesse/{id}/recette/new", name="nouvelle_recette")
      */
-    public function nouveauTicket(Request $request, Kermesse $kermesse)
+    public function nouvelleRecette(Kermesse $kermesse, Request $request)
     {
-        $ticket = new Ticket();
-        $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
+        $recette = new Recette();
+        $form = $this->createForm(RecetteType::class, $recette, ['kermesse' => $kermesse]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $ticket->setKermesse($kermesse);
             $em = $this->getDoctrine()->getManager();
-            $em->persist($ticket);
+            $em->persist($recette);
             $em->flush();
             return $this->redirectToRoute('index');
         }
         return $this->render(
-            'ticket/nouveau.html.twig',
+            'recette/nouvelle.html.twig',
             array('form' => $form->createView())
         );
     }

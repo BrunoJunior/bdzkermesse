@@ -166,7 +166,7 @@ class Activite
      */
     public function getBalance(): int
     {
-        return $this->getMontantRecette() - $this->getMontantDepense();
+        return $this->getMontantRecette() - $this->getMontantDepense() + ($this->getKermesse()->getMontantTicket() * $this->getNombreTotalTickets());
     }
 
     /**
