@@ -211,7 +211,7 @@ class Kermesse
     {
         $recette = 0;
         foreach ($this->getActivites() as $activite) {
-            $recette += $activite->getRecetteTotale();
+            $recette += $activite->getMontantRecette();
         }
         return $recette;
     }

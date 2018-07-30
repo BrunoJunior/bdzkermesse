@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Activite;
+use App\Entity\Kermesse;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -36,15 +37,19 @@ class ActiviteRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Activite
+    /**
+     * @return Activite|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findCaisseCentrale(Kermesse $kermesse): ?Activite
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('a.nom = :nom')
+            ->andWhere('a.kermesse = :kermesse')
+            ->setParameter('nom', Activite::NOM_CAISSE_CENT)
+            ->setParameter('kermesse', $kermesse)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
 }

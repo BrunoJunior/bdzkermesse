@@ -64,6 +64,7 @@ class Ticket
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
+        $this->date = new \DateTime();
     }
 
     public function getId()

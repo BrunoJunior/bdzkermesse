@@ -11,6 +11,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Activite
 {
+    const NOM_CAISSE_CENT = 'Caisse centrale';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -157,16 +159,14 @@ class Activite
     }
 
     /**
-     * La recette totale de l'activité
+     * La balance de l'activité en prenant en compte les tickets
+     * Cette balance est une approximation, car la vraie recette ne tient pas compte des tickets car ces derniers
+     * ont dus être achetés et donc la somme est comptabilisée dans la balance globale
      * @return int
      */
-    public function getRecetteTotale(): int
+    public function getBalance(): int
     {
-        $total = -1 * $this->getMontantDepense();
-        foreach ($this->getRecettes() as $recette) {
-            $total += $recette->getMontantGlobal();
-        }
-        return $total;
+        return $this->getMontantRecette() - $this->getMontantDepense();
     }
 
     /**

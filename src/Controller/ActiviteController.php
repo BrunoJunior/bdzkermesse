@@ -31,4 +31,16 @@ class ActiviteController extends Controller
             array('form' => $form->createView())
         );
     }
+
+    /**
+     * @Route("/activite/{id}/supprimer", name="supprimer_activite")
+     */
+    public function supprimerActivite(Activite $activite)
+    {
+        $kermesse = $activite->getKermesse();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($activite);
+        $em->flush();
+        return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
+    }
 }
