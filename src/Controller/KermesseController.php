@@ -3,10 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Kermesse;
+use App\Entity\Membre;
 use App\Form\KermesseType;
+use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
 use App\Service\KermesseService;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -34,6 +37,7 @@ class KermesseController extends Controller
             array('form' => $form->createView())
         );
     }
+
     /**
      * @Route("/kermesse/{id}/edit", name="editer_kermesse")
      */
@@ -75,6 +79,25 @@ class KermesseController extends Controller
                 'recettes' => $recettesActivites,
                 'montantTicket' => number_format($kermesse->getMontantTicket() / 100.0, 2, ',', '.') . ' €'
             ]
+        );
+    }
+    /**
+     * @Route("/kermesse/{id}/membres_actifs", name="membres_actifs")
+     */
+    public function definirMembresActifs(Kermesse $kermesse, Request $request)
+    {
+        $form = $this->createForm(MembresKermesseType::class, $kermesse);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            // On enregistre l'utilisateur dans la base
+            $em->persist($kermesse);
+            $em->flush();
+            return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
+        }
+        return $this->render(
+            'kermesse/membres.html.twig',
+            array('form' => $form->createView())
         );
     }
 }

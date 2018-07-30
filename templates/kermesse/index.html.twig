@@ -5,16 +5,15 @@
 {% block body %}
     <div class="container-fluid">
         <fieldset>
-            <legend>Activités</legend>
+            <legend>Activités <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
             <div class="row">
+                {% if kermesse.activites is empty %}
                 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Nouvelle activité</h5>
-                            <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a>
-                        </div>
+                        <h5 class="card-title">Aucune activité</h5>
                     </div>
                 </div>
+                {% endif %}
                 {% for activite in kermesse.activites %}
                     <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                         <div class="card text-center">
@@ -31,6 +30,32 @@
                             <div class="card-footer">
                                 <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
                                 <a href="{{ path('supprimer_activite', {'id': activite.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>Membres actifs <a href="{{ path('membres_actifs', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-user-plus"></i></a></legend>
+            <div class="row">
+                {% if kermesse.membres is empty %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Aucun membre actif</h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                {% for membre in kermesse.membres %}
+                    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ membre.prenom }} {{ membre.nom }}</h5>
+                            </div>
+                            <div class="card-footer">
+                                <a href="#" class="btn btn-danger"><i class="fas fa-user-minus"></i></a>
                             </div>
                         </div>
                     </div>

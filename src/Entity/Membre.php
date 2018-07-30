@@ -41,7 +41,7 @@ class Membre
     private $etablissement;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Kermesse", inversedBy="membres")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Kermesse", mappedBy="membres")
      */
     private $kermesses;
 
@@ -111,19 +111,19 @@ class Membre
         return $this->kermesses;
     }
 
-    public function addKremesse(Kermesse $kremesse): self
+    public function addKermesse(Kermesse $kermesse): self
     {
-        if (!$this->kermesses->contains($kremesse)) {
-            $this->kermesses[] = $kremesse;
+        if (!$this->kermesses->contains($kermesse)) {
+            $this->kermesses[] = $kermesse;
         }
 
         return $this;
     }
 
-    public function removeKremesse(Kermesse $kremesse): self
+    public function removeKermesse(Kermesse $kermesse): self
     {
-        if ($this->kermesses->contains($kremesse)) {
-            $this->kermesses->removeElement($kremesse);
+        if ($this->kermesses->contains($kermesse)) {
+            $this->kermesses->removeElement($kermesse);
         }
 
         return $this;

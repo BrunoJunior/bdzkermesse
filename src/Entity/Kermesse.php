@@ -40,7 +40,7 @@ class Kermesse
     private $activites;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Membre", mappedBy="kermesses")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Membre", inversedBy="kermesses")
      */
     private $membres;
 
@@ -141,7 +141,7 @@ class Kermesse
     {
         if (!$this->membres->contains($membre)) {
             $this->membres[] = $membre;
-            $membre->addKremesseId($this);
+            $membre->addKermesse($this);
         }
         return $this;
     }
@@ -150,7 +150,7 @@ class Kermesse
     {
         if ($this->membres->contains($membre)) {
             $this->membres->removeElement($membre);
-            $membre->removeKremesseId($this);
+            $membre->removeKermesse($this);
         }
         return $this;
     }
