@@ -1,0 +1,18 @@
+<div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-3">
+    <div class="card text-center">
+        <div class="card-body">
+            <h5 class="card-title">{{ activite.nom }}</h5>
+            <p class="card-text"><i class="fas fa-receipt"></i> {{ recettes[activite.id]['depense'] }}</p>
+            <p class="card-text"><i class="fas fa-money-bill-wave-alt"></i> {{ recettes[activite.id]['montant'] }}</p>
+            {% if activite.kermesse.montantTicket > 0 %}
+                <p class="card-text"><i class="fas fa-ticket-alt"></i> {{ activite.nombreTotalTickets }} (x{{ montantTicket }})</p>
+            {% endif %}
+            <hr />
+            <p class="card-text">Total : {{ recettes[activite.id]['total'] }}</p>
+        </div>
+        <div class="card-footer">
+            <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+            <a href="{{ path('supprimer_activite', {'id': activite.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
+        </div>
+    </div>
+</div>

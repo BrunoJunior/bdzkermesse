@@ -1,0 +1,26 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-calendar"></i> Date</th>
+        <th scope="col"><i class="fas fa-user"></i> Acheteur</th>
+        <th scope="col"><i class="fas fa-barcode"></i> N°</th>
+        <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
+        <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for ticket in tickets %}
+        <tr>
+            <th scope="row">{{ ticket.id }}</th>
+            <td>{{ ticket.date|date('d/m/Y') }}</td>
+            <td>{{ ticket.membre.prenom }} {{ ticket.membre.nom }}</td>
+            <td>{{ ticket.numero }}</td>
+            <td>{{ ticket.fournisseur }}</td>
+            <td>{{ ticket.montantEuro }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="6">Aucun ticket</td></tr>
+    {% endfor %}
+    </tbody>
+</table>

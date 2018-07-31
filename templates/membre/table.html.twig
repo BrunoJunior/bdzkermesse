@@ -1,0 +1,20 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-user"></i> Nom</th>
+        <th scope="col"><i class="fas fa-at"></i> Adresse e-mail</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for membre in membres %}
+        <tr>
+            <th scope="row">{{ membre.id }}</th>
+            <td>{{ membre.prenom }} {{ membre.nom }}</td>
+            <td>{{ membre.email }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="3">Aucun membre</td></tr>
+    {% endfor %}
+    </tbody>
+</table>

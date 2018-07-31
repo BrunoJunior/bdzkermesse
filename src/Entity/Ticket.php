@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Helper\HFloat;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -185,5 +186,15 @@ class Ticket
         }
 
         return $this;
+    }
+
+    /**
+     * Le montant en euro au format français
+     * @return string
+     */
+    public function getMontantEuro(): string
+    {
+        $montant = $this->montant ? $this->montant / 100 : 0.0;
+        return HFloat::getInstance($montant)->getMontantFormatFrancais();
     }
 }
