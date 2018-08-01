@@ -3,18 +3,31 @@
 namespace App\Controller;
 
 use App\Entity\Kermesse;
-use App\Entity\Membre;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
+use App\Helper\Breadcrumb;
 use App\Helper\HFloat;
+use App\Helper\MenuLink;
 use App\Service\KermesseService;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class KermesseController extends Controller
+class KermesseController extends MyController
 {
+
+    /**
+     * @param Kermesse $kermesse
+     * @return Breadcrumb
+     */
+    private function getMenu(Kermesse $kermesse, string $activeLink = '') {
+        $activeKermesse = empty($activeLink) ? $kermesse : null;
+        return Breadcrumb::getInstance(false)
+            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
+            ->addLink($this->getKermessesMenuLink($activeKermesse))
+            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')))
+            ->addLink($this->getKermesseMenu($kermesse, $activeLink));
+    }
+
     /**
      * @Route("/kermesse/new", name="nouvelle_kermesse")
      */
@@ -32,9 +45,14 @@ class KermesseController extends Controller
             $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
             return $this->redirectToRoute('index');
         }
+        $menu = Breadcrumb::getInstance(false)
+            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index'))->setActive())
+            ->addLink($this->getKermessesMenuLink())
+            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
         return $this->render(
             'kermesse/nouvelle.html.twig',
-            array('form' => $form->createView())
+            array('form' => $form->createView(),
+                'menu' => $menu)
         );
     }
 
@@ -56,7 +74,8 @@ class KermesseController extends Controller
         }
         return $this->render(
             'kermesse/edition.html.twig',
-            array('form' => $form->createView())
+            array('form' => $form->createView(),
+                'menu' => $this->getMenu($kermesse))
         );
     }
 
@@ -71,16 +90,17 @@ class KermesseController extends Controller
             $recettesActivites[$activite->getId()]['montant'] = HFloat::getInstance($activite->getMontantRecette() / 100.0)->getMontantFormatFrancais();
             $recettesActivites[$activite->getId()]['depense'] = HFloat::getInstance($activite->getMontantDepense() / 100.0)->getMontantFormatFrancais();
         }
-
         return $this->render(
             'kermesse/index.html.twig',
             [
                 'kermesse' => $kermesse,
                 'recettes' => $recettesActivites,
-                'montantTicket' => number_format($kermesse->getMontantTicket() / 100.0, 2, ',', '.') . ' €'
+                'montantTicket' => number_format($kermesse->getMontantTicket() / 100.0, 2, ',', '.') . ' €',
+                'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
             ]
         );
     }
+
     /**
      * @Route("/kermesse/{id}/membres_actifs", name="membres_actifs")
      */
@@ -97,7 +117,40 @@ class KermesseController extends Controller
         }
         return $this->render(
             'kermesse/membres.html.twig',
-            array('form' => $form->createView())
+            [
+                'form' => $form->createView(),
+                'kermesse' => $kermesse,
+                'menu' => $this->getMenu($kermesse, static::MENU_MEMBRES_ACTIFS)
+            ]
+        );
+    }
+
+    /**
+     * @Route("/kermesse/{id}/tickets", name="liste_tickets")
+     */
+    public function listeTickets(Kermesse $kermesse)
+    {
+        return $this->render(
+            'kermesse/tickets.html.twig',
+            [
+                'kermesse' => $kermesse,
+                'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
+            ]
+        );
+    }
+
+    /**
+     * @Route("/kermesse/{id}/recettes", name="liste_recettes")
+     */
+    public function listeRecettes(Kermesse $kermesse)
+    {
+        return $this->render(
+            'kermesse/recettes.html.twig',
+            [
+                'kermesse' => $kermesse,
+                'total' => HFloat::getInstance($kermesse->getRecetteTotale() / 100.0)->getMontantFormatFrancais(),
+                'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
+            ]
         );
     }
 }

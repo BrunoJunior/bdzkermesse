@@ -1,0 +1,30 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-cubes"></i> Activité</th>
+        <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
+        <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for recette in recettes %}
+        <tr>
+            <th scope="row">{{ recette.id }}</th>
+            <td>{{ recette.activite.nom }}</td>
+            <td>{{ recette.nombreTicket }}</td>
+            <td>{{ recette.montantEuro }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="4">Aucune recette</td></tr>
+    {% endfor %}
+    </tbody>
+    {% if recettes is not empty %}
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="3">Total</th>
+                <td>{{ total }}</td>
+            </tr>
+        </tfoot>
+    {% endif %}
+</table>

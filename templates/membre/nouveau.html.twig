@@ -3,20 +3,18 @@
 {% block title %}Membre{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-5">
-                <div class="well">
-                    <fieldset>
-                        <legend><i class="fas fa-plus-circle"></i> Membre</legend>
-                        {{ form_start(form) }}
-                        {{ form_row(form.prenom) }}
-                        {{ form_row(form.nom) }}
-                        {{ form_row(form.email) }}
-                        <button class="btn btn-primary" type="submit">Enregistrer !</button>
-                        {{ form_end(form) }}
-                    </fieldset>
-                </div>
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="well">
+                <fieldset>
+                    <legend><i class="fas fa-plus-circle"></i> Membre</legend>
+                    {{ form_start(form) }}
+                    {{ form_row(form.prenom) }}
+                    {{ form_row(form.nom) }}
+                    {{ form_row(form.email) }}
+                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
+                    {{ form_end(form) }}
+                </fieldset>
             </div>
         </div>
     </div>

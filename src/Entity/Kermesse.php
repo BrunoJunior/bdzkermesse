@@ -217,6 +217,21 @@ class Kermesse
     }
 
     /**
+     * Les recettes du ticket
+     * @return Collection|Recette[]
+     */
+    public function getRecettes(): Collection
+    {
+        $recettes = new ArrayCollection();
+        foreach ($this->getActivites() as $activite) {
+            foreach ($activite->getRecettes() as $recette) {
+                $recettes->add($recette);
+            }
+        }
+        return $recettes;
+    }
+
+    /**
      * Dépense totale de la kermesse
      * @return int
      */

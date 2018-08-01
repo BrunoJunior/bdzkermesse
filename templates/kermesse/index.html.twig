@@ -3,33 +3,19 @@
 {% block title %}Kermesse{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <fieldset>
-            <legend>Activités <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
-            <div class="row">
-                {% if kermesse.activites is empty %}
-                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                    <div class="card text-center">
-                        <h5 class="card-title">Aucune activité</h5>
-                    </div>
+    <fieldset>
+        <legend>Activités <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
+        <div class="row">
+            {% if kermesse.activites is empty %}
+            <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                <div class="card text-center">
+                    <h5 class="card-title">Aucune activité</h5>
                 </div>
-                {% endif %}
-                {% for activite in kermesse.activites %}
-                    {% include "activite/card.html.twig" with {'activite': activite, 'recettes': recettes, 'montantTicket': montantTicket} only %}
-                {% endfor %}
             </div>
-        </fieldset>
-        <fieldset>
-            <legend>Tickets <a href="{{ path('nouveau_ticket', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
-            <div class="row">
-                {% include "ticket/table.html.twig" with {'tickets': kermesse.tickets} only %}
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Membres actifs <a href="{{ path('membres_actifs', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-user-plus"></i></a></legend>
-            <div class="row">
-                {% include "membre/table_actifs.html.twig" with {'membres': kermesse.membres} only %}
-            </div>
-        </fieldset>
-    </div>
+            {% endif %}
+            {% for activite in kermesse.activites %}
+                {% include "activite/card.html.twig" with {'activite': activite, 'recettes': recettes, 'montantTicket': montantTicket} only %}
+            {% endfor %}
+        </div>
+    </fieldset>
 {% endblock %}

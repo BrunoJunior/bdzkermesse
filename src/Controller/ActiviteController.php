@@ -5,12 +5,25 @@ namespace App\Controller;
 use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
+use App\Helper\Breadcrumb;
+use App\Helper\MenuLink;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class ActiviteController extends Controller
+class ActiviteController extends MyController
 {
+
+    /**
+     * @param Kermesse $kermesse
+     * @return Breadcrumb
+     */
+    private function getMenu(Kermesse $kermesse) {
+        return Breadcrumb::getInstance(false)
+            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
+            ->addLink($this->getKermessesMenuLink($kermesse))
+            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
+    }
+
     /**
      * @Route("/kermesse/{id}/activite/new", name="nouvelle_activite")
      */
@@ -26,9 +39,14 @@ class ActiviteController extends Controller
             $em->flush();
             return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
         }
+        $breadcrumb = new Breadcrumb();
         return $this->render(
             'activite/nouvelle.html.twig',
-            array('form' => $form->createView())
+            [
+                'form' => $form->createView(),
+                'kermesse' => $kermesse,
+                'menu' => $this->getMenu($kermesse)
+            ]
         );
     }
 

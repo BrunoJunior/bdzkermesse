@@ -5,14 +5,51 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.css">
+        <link rel="stylesheet" href="/css/main.css">
+        <title>{% block title %}BdzKermesse{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <div class="container-fluid pt-3">
+            {% if breadcrumb is defined %}
+                <div class="row">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            {% for link in breadcrumb.links %}
+                                {% if link.active %}
+                                    <li class="breadcrumb-item active" aria-current="page">
+                                {% else %}
+                                    <li class="breadcrumb-item"><a href="{{ link.href }}">
+                                {% endif %}
+                                {% if link.icon is not empty %}{% include "icon.html.twig" with {'icon': link.icon} only %} {% endif %}{{ link.name }}
+                                {% if not link.active %}</a>{% endif %}
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    </nav>
+                </div>
+            {% endif %}
+            <div class="row">
+                {% if menu is defined %}
+                    <aside class="col-md-2">
+                        <nav class="sidebar-nav">
+                            {% include "menu.html.twig" with {'menu': menu, 'menu_main': true} only %}
+                        </nav>
+                    </aside>
+                    <div class="col-md-10">
+                {% else %}
+                    <div class="col-md-12">
+                {% endif %}
+                {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.js"></script>
+        <script src="/js/main.js"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>

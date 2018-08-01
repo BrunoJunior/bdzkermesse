@@ -1,34 +1,23 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-    Kermesses
-{% endblock %}
+{% block title %}Kermesses{% endblock %}
 
 {% block body %}
-    <div class="container-fluid">
-        <fieldset>
-            <legend>Nos kermesses <a href="{{ path('nouvelle_kermesse') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
-            <div class="row">
-                {% if kermesses is empty %}
-                    <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
-                        <div class="card text-center">
-                            <div class="card-body">
-                                <h5 class="card-title">Aucune kermesse</h5>
-                            </div>
+    <fieldset>
+        <legend>Nos kermesses <a href="{{ path('nouvelle_kermesse') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
+        <div class="row">
+            {% if kermesses is empty %}
+                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Aucune kermesse</h5>
                         </div>
                     </div>
-                {% endif %}
-                {% for kermesse in kermesses %}
-                    {% include "kermesse/card.html.twig" with {'kermesse': kermesse, 'montants': montants} only %}
-                {% endfor %}
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend>Nos membres <a href="{{ path('nouveau_membre') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
-            <div class="row">
-                {% include "membre/table.html.twig" with {'membres': membres} only %}
-            </div>
-        </fieldset>
-    </div>
-
+                </div>
+            {% endif %}
+            {% for kermesse in kermesses %}
+                {% include "kermesse/card.html.twig" with {'kermesse': kermesse, 'montants': montants} only %}
+            {% endfor %}
+        </div>
+    </fieldset>
 {% endblock %}

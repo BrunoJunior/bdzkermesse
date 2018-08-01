@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos membres{% endblock %}
+
+{% block body %}
+    <fieldset>
+        <legend>Nos membres <a href="{{ path('nouveau_membre') }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
+        <div class="row">
+            {% include "membre/table.html.twig" with {'membres': membres} only %}
+        </div>
+    </fieldset>
+{% endblock %}

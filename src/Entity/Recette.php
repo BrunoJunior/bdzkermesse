@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Helper\HFloat;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -83,5 +84,15 @@ class Recette
             $montant += ($this->getNombreTicket() * $montantTicket);
         }
         return $montant;
+    }
+
+    /**
+     * Le montant en euro au format français
+     * @return string
+     */
+    public function getMontantEuro(): string
+    {
+        $montant = $this->montant ? $this->montant / 100 : 0.0;
+        return HFloat::getInstance($montant)->getMontantFormatFrancais();
     }
 }

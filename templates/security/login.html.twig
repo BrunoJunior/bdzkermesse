@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <div class="container">
     {% if error %}
         <div class="alert alert-danger">
             {{ error.messageKey }}
@@ -30,6 +29,4 @@
                 </form>
             </div>
         </div>
-    </div>
-
 {% endblock %}

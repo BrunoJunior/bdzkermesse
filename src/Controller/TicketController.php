@@ -5,12 +5,25 @@ namespace App\Controller;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Form\TicketType;
+use App\Helper\Breadcrumb;
+use App\Helper\MenuLink;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
-class TicketController extends Controller
+class TicketController extends MyController
 {
+
+    /**
+     * @param Kermesse $kermesse
+     * @return Breadcrumb
+     */
+    private function getMenu(Kermesse $kermesse) {
+        return Breadcrumb::getInstance(false)
+            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
+            ->addLink($this->getKermessesMenuLink($kermesse))
+            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
+    }
+
     /**
      * @Route("/kermesse/{id}/ticket/new", name="nouveau_ticket")
      */
@@ -28,7 +41,11 @@ class TicketController extends Controller
         }
         return $this->render(
             'ticket/nouveau.html.twig',
-            array('form' => $form->createView())
+            [
+                'form' => $form->createView(),
+                'kermesse' => $kermesse,
+                'menu' => $this->getMenu($kermesse)
+            ]
         );
     }
 }
