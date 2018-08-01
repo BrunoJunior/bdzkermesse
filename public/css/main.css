@@ -1,4 +1,7 @@
-.sidebar-nav {
+.sidebar-nav,
+header.navbar-dark,
+.sidebar-sticky
+{
     background: #212529;
 }
 .sidebar-nav ul {
@@ -68,4 +71,14 @@
     color: #f8f9fa;
     text-decoration: none;
     background: #0b7285;
+}
+
+.sidebar-sticky {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 48px;
+    height: calc(100vh - 48px);
+    padding-top: .5rem;
+    overflow-x: hidden;
+    overflow-y: auto;
 }

@@ -11,7 +11,25 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <div class="container-fluid pt-3">
+
+    <header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+        <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="BdzKermesse">BdzKermesse</a>
+        {% if app.user is not empty %}
+            <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+                <li class="nav-item dropdown">
+                    <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="user-infos" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% include "icon.html.twig" with {'icon': 'user'} only %} {{ app.user.nom }}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user-infos">
+                        <a class="dropdown-item" href="#">{% include "icon.html.twig" with {'icon': 'edit'} only %} Éditer</a>
+                        <a class="dropdown-item" href="{{ path('security_logout') }}">{% include "icon.html.twig" with {'icon': 'sign-out-alt'} only %} Déconnexion</a>
+                    </div>
+                </li>
+            </ul>
+        {% endif %}
+    </header>
+
+        <div class="container-fluid">
             {% if breadcrumb is defined %}
                 <div class="row">
                     <nav aria-label="breadcrumb">
@@ -32,7 +50,7 @@
             {% endif %}
             <div class="row">
                 {% if menu is defined %}
-                    <aside class="col-md-2">
+                    <aside class="col-md-2 px-0 sidebar-sticky">
                         <nav class="sidebar-nav">
                             {% include "menu.html.twig" with {'menu': menu, 'menu_main': true} only %}
                         </nav>
@@ -41,7 +59,9 @@
                 {% else %}
                     <div class="col-md-12">
                 {% endif %}
-                {% block body %}{% endblock %}
+                        <div class="container-fluid pt-3">
+                            {% block body %}{% endblock %}
+                        </div>
                 </div>
             </div>
         </div>

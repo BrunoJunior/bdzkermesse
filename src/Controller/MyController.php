@@ -32,7 +32,7 @@ abstract class MyController extends Controller
         $kermesseRepo = $this->getDoctrine()->getRepository(Kermesse::class);
         $kermesses = $kermesseRepo->findByEtablissementOrderByAnnee($this->getUser());
         foreach ($kermesses as $kermesse) {
-            $subMenu->addLink(MenuLink::getInstance($kermesse->getTheme(), null, $this->generateUrl('kermesse', ['id' => $kermesse->getId()]))->setActive($activeKermesse !== null && $activeKermesse->getId() === $kermesse->getId()));
+            $subMenu->addLink(MenuLink::getInstance($kermesse->getTheme() . ' (' . $kermesse->getAnnee() . ')', null, $this->generateUrl('kermesse', ['id' => $kermesse->getId()]))->setActive($activeKermesse !== null && $activeKermesse->getId() === $kermesse->getId()));
         }
         return MenuLink::getInstance('Kermesses', 'theater-masks', '#')
             ->setMenu($subMenu)
@@ -51,7 +51,7 @@ abstract class MyController extends Controller
             ->addLink(MenuLink::getInstance(static::MENU_RECETTES, null, $this->generateUrl('liste_recettes', ['id' => $kermesse->getId()])))
             ->addLink(MenuLink::getInstance(static::MENU_MEMBRES_ACTIFS, null, $this->generateUrl('membres_actifs', ['id' => $kermesse->getId()])))
             ->setActiveLinkByName($activeName);
-        return MenuLink::getInstance($kermesse->getTheme(), 'tag', '#')
+        return MenuLink::getInstance('Édition ' . $kermesse->getAnnee() , 'tag', '#')
             ->setMenu($subMenu)
             ->setActive($activeName !== '');
     }
