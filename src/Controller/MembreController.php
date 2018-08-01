@@ -4,24 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Membre;
 use App\Form\MembreType;
-use App\Helper\Breadcrumb;
-use App\Helper\MenuLink;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class MembreController extends MyController
 {
-
-    /**
-     * @return Breadcrumb
-     */
-    private function getMenu() {
-        return $menu = Breadcrumb::getInstance(false)
-            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
-            ->addLink($this->getKermessesMenuLink())
-            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres'))->setActive());
-    }
-
     /**
      * @Route("/membre", name="membres")
      */
@@ -29,7 +16,7 @@ class MembreController extends MyController
     {
         return $this->render('membre/index.html.twig', [
             'membres' => $this->getUser()->getMembres(),
-            'menu' => $this->getMenu()
+            'menu' => $this->getMenu(null, static::MENU_MEMBRES)
         ]);
     }
 
@@ -47,12 +34,33 @@ class MembreController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($membre);
             $em->flush();
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('membres');
         }
         return $this->render(
             'membre/nouveau.html.twig',
             array('form' => $form->createView(),
-                'menu' => $this->getMenu())
+                'menu' => $this->getMenu(null, static::MENU_MEMBRES))
+        );
+    }
+
+    /**
+     * @Route("/membre/{id}/edit", name="editer_membre")
+     */
+    public function editerMembre(Membre $membre, Request $request)
+    {
+        $form = $this->createForm(MembreType::class, $membre);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // On enregistre l'utilisateur dans la base
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($membre);
+            $em->flush();
+            return $this->redirectToRoute('membres');
+        }
+        return $this->render(
+            'membre/edition.html.twig',
+            array('form' => $form->createView(),
+                'menu' => $this->getMenu(null, static::MENU_MEMBRES))
         );
     }
 }

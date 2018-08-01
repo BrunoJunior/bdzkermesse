@@ -5,24 +5,11 @@ namespace App\Controller;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Form\TicketType;
-use App\Helper\Breadcrumb;
-use App\Helper\MenuLink;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class TicketController extends MyController
 {
-
-    /**
-     * @param Kermesse $kermesse
-     * @return Breadcrumb
-     */
-    private function getMenu(Kermesse $kermesse) {
-        return Breadcrumb::getInstance(false)
-            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
-            ->addLink($this->getKermessesMenuLink($kermesse))
-            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
-    }
 
     /**
      * @Route("/kermesse/{id}/ticket/new", name="nouveau_ticket")
@@ -37,14 +24,35 @@ class TicketController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
         }
         return $this->render(
             'ticket/nouveau.html.twig',
             [
                 'form' => $form->createView(),
-                'kermesse' => $kermesse,
-                'menu' => $this->getMenu($kermesse)
+                'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
+            ]
+        );
+    }
+
+    /**
+     * @Route("/ticket/{id}/edit", name="editer_ticket")
+     */
+    public function editerTicket(Request $request, Ticket $ticket)
+    {
+        $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $ticket->getKermesse()]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ticket);
+            $em->flush();
+            return $this->redirectToRoute('liste_tickets', ['id' => $ticket->getKermesse()->getId()]);
+        }
+        return $this->render(
+            'ticket/edition.html.twig',
+            [
+                'form' => $form->createView(),
+                'menu' => $this->getMenu($ticket->getKermesse(), static::MENU_TICKETS)
             ]
         );
     }

@@ -5,29 +5,13 @@ namespace App\Controller;
 use App\Entity\Kermesse;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
-use App\Helper\Breadcrumb;
 use App\Helper\HFloat;
-use App\Helper\MenuLink;
 use App\Service\KermesseService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class KermesseController extends MyController
 {
-
-    /**
-     * @param Kermesse $kermesse
-     * @return Breadcrumb
-     */
-    private function getMenu(Kermesse $kermesse, string $activeLink = '') {
-        $activeKermesse = empty($activeLink) ? $kermesse : null;
-        return Breadcrumb::getInstance(false)
-            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
-            ->addLink($this->getKermessesMenuLink($activeKermesse))
-            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')))
-            ->addLink($this->getKermesseMenu($kermesse, $activeLink));
-    }
-
     /**
      * @Route("/kermesse/new", name="nouvelle_kermesse")
      */
@@ -45,14 +29,10 @@ class KermesseController extends MyController
             $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
             return $this->redirectToRoute('index');
         }
-        $menu = Breadcrumb::getInstance(false)
-            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index'))->setActive())
-            ->addLink($this->getKermessesMenuLink())
-            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
         return $this->render(
             'kermesse/nouvelle.html.twig',
             array('form' => $form->createView(),
-                'menu' => $menu)
+                'menu' => $this->getMenu(null, static::MENU_ACCUEIL))
         );
     }
 
@@ -113,7 +93,6 @@ class KermesseController extends MyController
             // On enregistre l'utilisateur dans la base
             $em->persist($kermesse);
             $em->flush();
-            return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
         }
         return $this->render(
             'kermesse/membres.html.twig',

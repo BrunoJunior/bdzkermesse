@@ -21,6 +21,8 @@ abstract class MyController extends Controller
     const MENU_TICKETS = 'Tickets';
     const MENU_RECETTES = 'Recettes';
     const MENU_MEMBRES_ACTIFS = 'Membres actifs';
+    const MENU_ACCUEIL = 'Accueil';
+    const MENU_MEMBRES = 'Membres';
 
     /**
      * @param Kermesse $activeKermesse
@@ -54,5 +56,22 @@ abstract class MyController extends Controller
         return MenuLink::getInstance('Édition ' . $kermesse->getAnnee() , 'tag', '#')
             ->setMenu($subMenu)
             ->setActive($activeName !== '');
+    }
+
+    /**
+     * @param Kermesse|null $kermesse
+     * @param string|null $activeLink
+     * @return Breadcrumb
+     */
+    protected function getMenu(?Kermesse $kermesse = null, string $activeLink = '') {
+        $activeKermesse = empty($activeLink) ? $kermesse : null;
+        $menu = Breadcrumb::getInstance(false)
+            ->addLink(MenuLink::getInstance(static::MENU_ACCUEIL, 'home', $this->generateUrl('index'))->setActive($activeLink === static::MENU_ACCUEIL))
+            ->addLink($this->getKermessesMenuLink($activeKermesse))
+            ->addLink(MenuLink::getInstance(static::MENU_MEMBRES, 'users', $this->generateUrl('membres'))->setActive($activeLink === static::MENU_MEMBRES));
+        if ($kermesse !== null) {
+            $menu->addLink($this->getKermesseMenu($kermesse, $activeLink));
+        }
+        return $menu;
     }
 }

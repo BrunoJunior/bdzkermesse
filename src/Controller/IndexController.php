@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Kermesse;
-use App\Helper\Breadcrumb;
 use App\Helper\HFloat;
-use App\Helper\MenuLink;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends MyController
@@ -15,11 +13,6 @@ class IndexController extends MyController
      */
     public function kermessesListe()
     {
-        $menu = Breadcrumb::getInstance(false)
-            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index'))->setActive())
-            ->addLink($this->getKermessesMenuLink())
-            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
-
         $kermesseRepo = $this->getDoctrine()->getRepository(Kermesse::class);
         $kermesses = $kermesseRepo->findByEtablissementOrderByAnnee($this->getUser());
         $montants = [];
@@ -32,7 +25,7 @@ class IndexController extends MyController
         return $this->render('index/index.html.twig', [
             'kermesses' => $kermesses,
             'montants' => $montants,
-            'menu' => $menu
+            'menu' => $this->getMenu(null, static::MENU_ACCUEIL)
         ]);
     }
 }

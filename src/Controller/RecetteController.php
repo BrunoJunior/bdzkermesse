@@ -5,25 +5,11 @@ namespace App\Controller;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use App\Form\RecetteType;
-use App\Helper\Breadcrumb;
-use App\Helper\MenuLink;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RecetteController extends MyController
 {
-
-    /**
-     * @param Kermesse $kermesse
-     * @return Breadcrumb
-     */
-    private function getMenu(Kermesse $kermesse) {
-        return Breadcrumb::getInstance(false)
-            ->addLink(MenuLink::getInstance('Accueil', 'home', $this->generateUrl('index')))
-            ->addLink($this->getKermessesMenuLink($kermesse))
-            ->addLink(MenuLink::getInstance('Membres', 'users', $this->generateUrl('membres')));
-    }
-
     /**
      * @Route("/kermesse/{id}/recette/new", name="nouvelle_recette")
      */
@@ -36,14 +22,35 @@ class RecetteController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($recette);
             $em->flush();
-            return $this->redirectToRoute('index');
+            return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
         }
         return $this->render(
             'recette/nouvelle.html.twig',
             [
                 'form' => $form->createView(),
-                'kermesse' => $kermesse,
-                'menu' => $this->getMenu($kermesse)
+                'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
+            ]
+        );
+    }
+
+    /**
+     * @Route("/recette/{id}/edit", name="editer_recette")
+     */
+    public function editerRecette(Recette $recette, Request $request)
+    {
+        $form = $this->createForm(RecetteType::class, $recette, ['kermesse' => $recette->getActivite()->getKermesse()]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($recette);
+            $em->flush();
+            return $this->redirectToRoute('liste_recettes', ['id' => $recette->getActivite()->getKermesse()->getId()]);
+        }
+        return $this->render(
+            'recette/edition.html.twig',
+            [
+                'form' => $form->createView(),
+                'menu' => $this->getMenu($recette->getActivite()->getKermesse(), static::MENU_RECETTES)
             ]
         );
     }

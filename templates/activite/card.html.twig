@@ -12,6 +12,7 @@
         </div>
         <div class="card-footer">
             <a href="#" class="btn btn-primary"><i class="fas fa-eye"></i></a>
+            <a href="{{ path('editer_activite', {'id': activite.id}) }}" class="btn btn-secondary"><i class="fas fa-edit"></i></a>
             <a href="{{ path('supprimer_activite', {'id': activite.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
         </div>
     </div>

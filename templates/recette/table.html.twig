@@ -5,6 +5,7 @@
         <th scope="col"><i class="fas fa-cubes"></i> Activité</th>
         <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
         <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Action</th>
     </tr>
     </thead>
     <tbody>
@@ -14,9 +15,10 @@
             <td>{{ recette.activite.nom }}</td>
             <td>{{ recette.nombreTicket }}</td>
             <td>{{ recette.montantEuro }}</td>
+            <td><a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a></td>
         </tr>
     {% else %}
-        <tr><td colspan="4">Aucune recette</td></tr>
+        <tr><td colspan="5">Aucune recette</td></tr>
     {% endfor %}
     </tbody>
     {% if recettes is not empty %}
@@ -24,6 +26,7 @@
             <tr>
                 <th scope="row" colspan="3">Total</th>
                 <td>{{ total }}</td>
+                <td></td>
             </tr>
         </tfoot>
     {% endif %}
