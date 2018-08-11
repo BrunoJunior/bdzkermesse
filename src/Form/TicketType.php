@@ -7,6 +7,7 @@ use App\Entity\Membre;
 use App\Entity\Ticket;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -29,6 +30,14 @@ class TicketType extends AbstractType
                 'choice_label' => function (Membre $membre) {
                 return $membre->getPrenom() . ' ' . $membre->getNom();
             }])
+            ->add('depenses', CollectionType::class, [
+                'label' => 'Dispatch par activité',
+                'entry_type' => DepenseType::class,
+                'entry_options' => ['kermesse' => $kermesse],
+                'allow_add' => true,
+                'allow_delete' => true,
+                'prototype' => true
+            ])
         ;
     }
 
