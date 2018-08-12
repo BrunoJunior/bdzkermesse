@@ -2,8 +2,9 @@ function addRemoveLinkCollectionWidget(element) {
     var removeFormButton = $('<button type="button" class="btn btn-danger collection-widget-remove"><i class="fas fa-times"></i></button>');
     element.append(removeFormButton);
     removeFormButton.on('click', function(e) {
-        // remove the li for the tag form
+        var parent = element.parent();
         element.remove();
+        parent.trigger('collection-widget-removed');
     });
 };
 
@@ -36,5 +37,10 @@ $(function() {
         list.trigger('collection-widget-added', [element]);
 
         addRemoveLinkCollectionWidget(element);
+    });
+
+    $('.js-datepicker').datepicker({
+        language: 'fr',
+        format: 'yyyy-mm-dd'
     });
 });

@@ -5,7 +5,7 @@
         <th scope="col"><i class="fas fa-cubes"></i> Activité</th>
         <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
         <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
-        <th scope="col"><i class="fab fa-telegram-plane"></i> Action</th>
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -15,7 +15,10 @@
             <td>{{ recette.activite.nom }}</td>
             <td>{{ recette.nombreTicket }}</td>
             <td>{{ recette.montantEuro }}</td>
-            <td><a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a></td>
+            <td>
+                <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
+                <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
+            </td>
         </tr>
     {% else %}
         <tr><td colspan="5">Aucune recette</td></tr>
@@ -24,8 +27,9 @@
     {% if recettes is not empty %}
         <tfoot>
             <tr>
-                <th scope="row" colspan="3">Total</th>
-                <td>{{ total }}</td>
+                <th scope="row" colspan="2">Total</th>
+                <td>{{ total.tickets }}</td>
+                <td>{{ total.recettes }}</td>
                 <td></td>
             </tr>
         </tfoot>

@@ -127,7 +127,10 @@ class KermesseController extends MyController
             'kermesse/recettes.html.twig',
             [
                 'kermesse' => $kermesse,
-                'total' => HFloat::getInstance($kermesse->getRecetteTotale() / 100.0)->getMontantFormatFrancais(),
+                'total' => [
+                    'recettes' => HFloat::getInstance($kermesse->getRecetteTotale() / 100.0)->getMontantFormatFrancais(),
+                    'tickets' => $kermesse->getNbTicketsTotale()
+                ],
                 'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
             ]
         );

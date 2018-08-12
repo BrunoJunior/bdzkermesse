@@ -10,6 +10,8 @@
                     <legend><i class="fas fa-plus-circle"></i> Activité</legend>
                     {{ form_start(form) }}
                     {{ form_row(form.nom) }}
+                    {{ form_row(form.accepteTickets) }}
+                    {{ form_row(form.accepteMonnaie) }}
                     <button class="btn btn-primary" type="submit">Enregistrer !</button>
                     {{ form_end(form) }}
                 </fieldset>

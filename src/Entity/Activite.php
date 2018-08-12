@@ -41,6 +41,16 @@ class Activite
      */
     private $recettes;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $accepte_tickets;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $accepte_monnaie;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -180,5 +190,29 @@ class Activite
             $total += $recette->getNombreTicket();
         }
         return $total;
+    }
+
+    public function isAccepteTickets(): ?bool
+    {
+        return $this->accepte_tickets;
+    }
+
+    public function setAccepteTickets(bool $accepte_tickets): self
+    {
+        $this->accepte_tickets = $accepte_tickets;
+
+        return $this;
+    }
+
+    public function isAccepteMonnaie(): ?bool
+    {
+        return $this->accepte_monnaie;
+    }
+
+    public function setAccepteMonnaie(bool $accepte_monnaie): self
+    {
+        $this->accepte_monnaie = $accepte_monnaie;
+
+        return $this;
     }
 }

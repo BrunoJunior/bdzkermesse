@@ -16,12 +16,15 @@ class RecetteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $kermesse = $options['kermesse'];
+        if (!$options['activite'] instanceof Activite) {
+            $builder->add('activite', EntityType::class, [
+                    'class' => Activite::class,
+                    'choices' => $kermesse->getActivites(),
+                    'choice_label' => 'nom'
+                ]);
+        }
+
         $builder
-            ->add('activite', EntityType::class, [
-                'class' => Activite::class,
-                'choices' => $kermesse->getActivites(),
-                'choice_label' => 'nom'
-            ])
             ->add('montant', MoneyType::class, [
                 'divisor' => 100
             ])
@@ -33,6 +36,7 @@ class RecetteType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Recette::class,
+            'activite' => null,
         ]);
         $resolver->setRequired([
             'kermesse'

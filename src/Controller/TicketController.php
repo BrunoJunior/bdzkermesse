@@ -56,4 +56,16 @@ class TicketController extends MyController
             ]
         );
     }
+
+    /**
+     * @Route("/ticket/{id}/supprimer", name="supprimer_ticket")
+     */
+    public function supprimerTicket(Ticket $ticket)
+    {
+        $kermesse = $ticket->getKermesse();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($ticket);
+        $em->flush();
+        return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
+    }
 }

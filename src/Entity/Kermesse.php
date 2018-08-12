@@ -217,6 +217,19 @@ class Kermesse
     }
 
     /**
+     * Nb de tickets total de la kermesse
+     * @return int
+     */
+    public function getNbTicketsTotale(): int
+    {
+        $nombre = 0;
+        foreach ($this->getActivites() as $activite) {
+            $nombre += $activite->getNombreTotalTickets();
+        }
+        return $nombre;
+    }
+
+    /**
      * Les recettes du ticket
      * @return Collection|Recette[]
      */

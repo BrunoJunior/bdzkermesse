@@ -58,7 +58,7 @@ class Ticket
     private $remboursement;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="ticket", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="ticket", orphanRemoval=true, cascade={"persist"})
      */
     private $depenses;
 
@@ -167,9 +167,9 @@ class Ticket
 
     public function addDepense(Depense $depense): self
     {
+        $depense->setTicket($this);
         if (!$this->depenses->contains($depense)) {
             $this->depenses[] = $depense;
-            $depense->setTicket($this);
         }
 
         return $this;
@@ -196,5 +196,18 @@ class Ticket
     {
         $montant = $this->montant ? $this->montant / 100 : 0.0;
         return HFloat::getInstance($montant)->getMontantFormatFrancais();
+    }
+
+    /**
+     * Le montant affecté en euro au format français
+     * @return string
+     */
+    public function getMontantAffecte(): string
+    {
+        $montant = 0.0;
+        foreach ($this->getDepenses() as $depense) {
+            $montant += $depense->getMontant();
+        }
+        return HFloat::getInstance($montant / 100.0)->getMontantFormatFrancais();
     }
 }

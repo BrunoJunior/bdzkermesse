@@ -3,8 +3,10 @@
         <div class="card-body">
             <h5 class="card-title">{{ activite.nom }}</h5>
             <p class="card-text"><i class="fas fa-receipt"></i> {{ recettes[activite.id]['depense'] }}</p>
-            <p class="card-text"><i class="fas fa-money-bill-wave-alt"></i> {{ recettes[activite.id]['montant'] }}</p>
-            {% if activite.kermesse.montantTicket > 0 %}
+            {% if activite.accepteMonnaie %}
+                <p class="card-text"><i class="fas fa-money-bill-wave-alt"></i> {{ recettes[activite.id]['montant'] }}</p>
+            {% endif %}
+            {% if activite.kermesse.montantTicket > 0 and activite.accepteTickets %}
                 <p class="card-text"><i class="fas fa-ticket-alt"></i> {{ activite.nombreTotalTickets }} (x{{ montantTicket }})</p>
             {% endif %}
             <hr />

@@ -54,4 +54,16 @@ class RecetteController extends MyController
             ]
         );
     }
+
+    /**
+     * @Route("/recette/{id}/supprimer", name="supprimer_recette")
+     */
+    public function supprimerRecette(Recette $recette)
+    {
+        $kermesse = $recette->getActivite()->getKermesse();
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($recette);
+        $em->flush();
+        return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
+    }
 }

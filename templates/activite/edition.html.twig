@@ -10,6 +10,9 @@
                     <legend><i class="fas fa-edit"></i> Activité</legend>
                     {{ form_start(form) }}
                     {{ form_row(form.nom) }}
+                    {{ form_row(form.accepteTickets) }}
+                    {{ form_row(form.accepteMonnaie) }}
+                    {{ form_row(form.nom) }}
                     <button class="btn btn-primary" type="submit">Enregistrer !</button>
                     {{ form_end(form) }}
                 </fieldset>

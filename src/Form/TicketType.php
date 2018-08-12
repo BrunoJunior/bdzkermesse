@@ -20,7 +20,11 @@ class TicketType extends AbstractType
     {
         $kermesse = $options['kermesse'];
         $builder
-            ->add('date', DateType::class)
+            ->add('date', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
+            ])
             ->add('fournisseur', TextType::class)
             ->add('numero', TextType::class)
             ->add('montant', MoneyType::class, ['divisor' => 100])
@@ -31,7 +35,8 @@ class TicketType extends AbstractType
                 return $membre->getPrenom() . ' ' . $membre->getNom();
             }])
             ->add('depenses', CollectionType::class, [
-                'label' => 'Dispatch par activité',
+                'label' => 'Activités associées',
+                'by_reference' => false,
                 'entry_type' => DepenseType::class,
                 'entry_options' => ['kermesse' => $kermesse],
                 'allow_add' => true,
