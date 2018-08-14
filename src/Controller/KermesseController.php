@@ -18,10 +18,10 @@ class KermesseController extends MyController
     public function nouvelleKermesse(Request $request, KermesseService $sKermesse)
     {
         $kermesse = new Kermesse();
+        $kermesse->setEtablissement($this->getUser());
         $form = $this->createForm(KermesseType::class, $kermesse);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $kermesse->setEtablissement($this->getUser());
             // On enregistre l'utilisateur dans la base
             $em = $this->getDoctrine()->getManager();
             $em->persist($kermesse);
@@ -42,9 +42,9 @@ class KermesseController extends MyController
     public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse)
     {
         $form = $this->createForm(KermesseType::class, $kermesse);
+        $kermesse->setEtablissement($this->getUser());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $kermesse->setEtablissement($this->getUser());
             // On enregistre l'utilisateur dans la base
             $em = $this->getDoctrine()->getManager();
             $em->persist($kermesse);

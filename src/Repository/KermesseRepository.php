@@ -35,15 +35,23 @@ class KermesseRepository extends ServiceEntityRepository
         ;
     }
 
-    /*
-    public function findOneBySomeField($value): ?Kermesse
+    /**
+     * Trouver une autre kermesse similaire (même établissement et même année)
+     * @param Kermesse $kermesse
+     * @return Kermesse|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findSimilarAnotherOne(Kermesse $kermesse): ?Kermesse
     {
         return $this->createQueryBuilder('k')
-            ->andWhere('k.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('k.etablissement = :etablissement')
+            ->andWhere('k.annee = :annee')
+            ->andWhere('k != :kermesse')
+            ->setParameter('etablissement', $kermesse->getEtablissement())
+            ->setParameter('annee', $kermesse->getAnnee())
+            ->setParameter('kermesse', $kermesse)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
 }
