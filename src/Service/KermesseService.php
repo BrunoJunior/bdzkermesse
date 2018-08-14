@@ -74,6 +74,10 @@ class KermesseService
             $this->entityManager->persist($caisseCentrale);
         } elseif ($caisseCentrale instanceof Activite && $montantTicket <= 0) {
             $this->entityManager->remove($caisseCentrale);
+            foreach ($this->kermesse->getActivites() as $activite) {
+                $activite->setAccepteSeulementMonnaie();
+                $this->entityManager->persist($activite);
+            }
         }
         $this->entityManager->flush();
         return $this;

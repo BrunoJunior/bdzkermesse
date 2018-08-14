@@ -88,6 +88,9 @@ class Activite
     public function setKermesse(?Kermesse $kermesse): self
     {
         $this->kermesse = $kermesse;
+        if ($kermesse instanceof Kermesse && $kermesse->getMontantTicket() == 0) {
+            $this->setAccepteSeulementMonnaie();
+        }
         return $this;
     }
 
@@ -234,8 +237,7 @@ class Activite
     {
         $this->caisse_centrale = $caisse_centrale;
         if ($caisse_centrale) {
-            $this->accepte_tickets = false;
-            $this->accepte_monnaie = true;
+            $this->setAccepteSeulementMonnaie();
         }
         return $this;
     }
@@ -246,5 +248,12 @@ class Activite
         $this->kermesse = null;
         $this->depenses = new ArrayCollection();
         $this->recettes = new ArrayCollection();
+    }
+
+    public function setAccepteSeulementMonnaie(): self
+    {
+        $this->accepte_tickets = false;
+        $this->accepte_monnaie = true;
+        return $this;
     }
 }

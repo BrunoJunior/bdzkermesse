@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
-use App\Helper\Breadcrumb;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -53,7 +52,6 @@ class ActiviteController extends MyController
             $em->flush();
             return $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
         }
-        $breadcrumb = new Breadcrumb();
         return $this->render(
             'activite/edition.html.twig',
             [

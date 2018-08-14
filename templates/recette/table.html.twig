@@ -2,7 +2,9 @@
     <thead class="thead-dark">
     <tr>
         <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-calendar"></i> Date</th>
         <th scope="col"><i class="fas fa-cubes"></i> Activité</th>
+        <th scope="col"><i class="fas fa-tag"></i> Libelle</th>
         <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
         <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
         <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
@@ -12,7 +14,9 @@
     {% for recette in recettes %}
         <tr>
             <th scope="row">{{ recette.id }}</th>
+            <td>{{ recette.date|date('d/m/Y') }}</td>
             <td>{{ recette.activite.nom }}</td>
+            <td>{{ recette.libelle }}</td>
             <td>{{ recette.nombreTicket }}</td>
             <td>{{ recette.montantEuro }}</td>
             <td>
@@ -21,13 +25,13 @@
             </td>
         </tr>
     {% else %}
-        <tr><td colspan="5">Aucune recette</td></tr>
+        <tr><td colspan="7">Aucune recette</td></tr>
     {% endfor %}
     </tbody>
     {% if recettes is not empty %}
         <tfoot>
             <tr>
-                <th scope="row" colspan="2">Total</th>
+                <th scope="row" colspan="4">Total</th>
                 <td>{{ total.tickets }}</td>
                 <td>{{ total.recettes }}</td>
                 <td></td>

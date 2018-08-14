@@ -33,6 +33,16 @@ class Recette
      */
     private $activite;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $libelle;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $date;
+
     public function getId()
     {
         return $this->id;
@@ -94,5 +104,29 @@ class Recette
     {
         $montant = $this->montant ? $this->montant / 100 : 0.0;
         return HFloat::getInstance($montant)->getMontantFormatFrancais();
+    }
+
+    public function getLibelle(): ?string
+    {
+        return $this->libelle;
+    }
+
+    public function setLibelle(string $libelle): self
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
     }
 }

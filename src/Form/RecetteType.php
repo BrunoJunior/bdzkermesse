@@ -6,6 +6,7 @@ use App\Entity\Activite;
 use App\Entity\Recette;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,8 +24,13 @@ class RecetteType extends AbstractType
                     'choice_label' => 'nom'
                 ]);
         }
-
         $builder
+            ->add('libelle')
+            ->add('date', DateType::class, [
+                'widget' => 'single_text',
+                'html5' => false,
+                'attr' => ['class' => 'js-datepicker'],
+            ])
             ->add('montant', MoneyType::class, [
                 'divisor' => 100
             ])

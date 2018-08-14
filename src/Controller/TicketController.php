@@ -17,10 +17,10 @@ class TicketController extends MyController
     public function nouveauTicket(Request $request, Kermesse $kermesse)
     {
         $ticket = new Ticket();
+        $ticket->setKermesse($kermesse);
         $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $ticket->setKermesse($kermesse);
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();

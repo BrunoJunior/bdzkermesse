@@ -38,15 +38,15 @@ class ActiviteRepository extends ServiceEntityRepository
     */
 
     /**
+     * @param Kermesse $kermesse
      * @return Activite|null
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function findCaisseCentrale(Kermesse $kermesse): ?Activite
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.nom = :nom')
+            ->andWhere('a.caisse_centrale = 1')
             ->andWhere('a.kermesse = :kermesse')
-            ->setParameter('nom', Activite::NOM_CAISSE_CENT)
             ->setParameter('kermesse', $kermesse)
             ->getQuery()
             ->getOneOrNullResult()

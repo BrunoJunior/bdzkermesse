@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recette{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-sm-10 col-md-8 col-xl-5">
+            <div class="well">
+                <fieldset>
+                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Recette</legend>
+                    {{ form_start(form) }}
+                    {{ form_row(form.date) }}
+                    {{ form_row(form.activite) }}
+                    {{ form_row(form.libelle) }}
+                    {{ form_row(form.montant) }}
+                    {{ form_row(form.nombre_ticket) }}
+                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
+                    {{ form_end(form) }}
+                </fieldset>
+            </div>
+        </div>
+    </div>
+{% endblock %}
