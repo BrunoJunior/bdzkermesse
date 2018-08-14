@@ -233,10 +233,18 @@ class Activite
     public function setCaisseCentrale(bool $caisse_centrale): self
     {
         $this->caisse_centrale = $caisse_centrale;
-        if ($this->caisse_centrale) {
-            $this->setAccepteTickets(false);
-            $this->setAccepteMonnaie(true);
+        if ($caisse_centrale) {
+            $this->accepte_tickets = false;
+            $this->accepte_monnaie = true;
         }
         return $this;
+    }
+
+    public function __clone()
+    {
+        $this->id = null;
+        $this->kermesse = null;
+        $this->depenses = new ArrayCollection();
+        $this->recettes = new ArrayCollection();
     }
 }

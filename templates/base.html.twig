@@ -60,6 +60,14 @@
                 {% else %}
                     <div class="col-md-12">
                 {% endif %}
+                        {% if global_alert is defined and global_alert is not empty %}
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ global_alert }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endif %}
                         <div class="container-fluid pt-3">
                             {% block body %}{% endblock %}
                         </div>

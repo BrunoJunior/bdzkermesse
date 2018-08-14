@@ -7,6 +7,8 @@ use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
 use App\Service\KermesseService;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,6 +35,40 @@ class KermesseController extends MyController
             'kermesse/nouvelle.html.twig',
             array('form' => $form->createView(),
                 'menu' => $this->getMenu(null, static::MENU_ACCUEIL))
+        );
+    }
+
+    /**
+     * @Route("/kermesse/{id}/dupliquer", name="dupliquer_kermesse")
+     */
+    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager) {
+        $alert = null;
+        $nouvelleKermesse = new Kermesse();
+        $nouvelleKermesse->setEtablissement($this->getUser());
+        $nouvelleKermesse->setMontantTicket($kermesse->getMontantTicket());
+        $form = $this->createForm(KermesseType::class, $nouvelleKermesse);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Débuter une trasaction, tout passe ou rien ne passe
+            try {
+                $entityManager->beginTransaction();
+                $entityManager->persist($nouvelleKermesse);
+                $entityManager->flush();
+                $sKermesse->setKermesse($nouvelleKermesse)->dupliquerInfos($kermesse);
+                $entityManager->commit();
+                return $this->redirectToRoute('index');
+            } catch (\Exception $exc) {
+                $entityManager->rollback();
+                $alert = $exc->getMessage();
+            }
+        }
+        return $this->render(
+            'kermesse/edition.html.twig',
+            [
+                'form' => $form->createView(),
+                'menu' => $this->getMenu(null, static::MENU_ACCUEIL),
+                'global_alert' => $alert,
+            ]
         );
     }
 
