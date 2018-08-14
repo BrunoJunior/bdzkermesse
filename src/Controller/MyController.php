@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 abstract class MyController extends Controller
 {
     const MENU_ACTIVITES = 'Activités';
-    const MENU_TICKETS = 'Tickets';
+    const MENU_TICKETS = 'Dépenses';
     const MENU_RECETTES = 'Recettes';
     const MENU_MEMBRES_ACTIFS = 'Membres actifs';
     const MENU_ACCUEIL = 'Accueil';

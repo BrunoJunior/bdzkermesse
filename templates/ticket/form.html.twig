@@ -2,14 +2,14 @@
 
 {% block stylesheets %}<link rel="stylesheet" href="/css/ticket_form.css">{% endblock %}
 
-{% block title %}Ticket{% endblock %}
+{% block title %}Dépense{% endblock %}
 
 {% block body %}
     <div class="row">
         <div class="col-sm-5">
             <div class="well">
                 <fieldset>
-                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Ticket</legend>
+                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Dépense</legend>
                     {{ form_start(form) }}
                     {{ form_row(form.date) }}
                     {{ form_row(form.fournisseur) }}

@@ -70,8 +70,7 @@ class KermesseService
             $caisseCentrale = new Activite();
             $caisseCentrale->setNom(Activite::NOM_CAISSE_CENT);
             $caisseCentrale->setKermesse($this->kermesse);
-            $caisseCentrale->setAccepteMonnaie(true);
-            $caisseCentrale->setAccepteTickets(false);
+            $caisseCentrale->setCaisseCentrale(true);
             $this->entityManager->persist($caisseCentrale);
         } elseif ($caisseCentrale instanceof Activite && $montantTicket <= 0) {
             $this->entityManager->remove($caisseCentrale);

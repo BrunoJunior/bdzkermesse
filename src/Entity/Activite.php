@@ -5,9 +5,11 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ActiviteRepository")
+ * @UniqueEntity(fields={"nom", "kermesse"})
  */
 class Activite
 {
@@ -50,6 +52,11 @@ class Activite
      * @ORM\Column(type="boolean")
      */
     private $accepte_monnaie;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $caisse_centrale;
 
     public function __construct()
     {
@@ -199,8 +206,9 @@ class Activite
 
     public function setAccepteTickets(bool $accepte_tickets): self
     {
-        $this->accepte_tickets = $accepte_tickets;
-
+        if (!$this->isCaisseCentrale()) {
+            $this->accepte_tickets = $accepte_tickets;
+        }
         return $this;
     }
 
@@ -211,8 +219,24 @@ class Activite
 
     public function setAccepteMonnaie(bool $accepte_monnaie): self
     {
-        $this->accepte_monnaie = $accepte_monnaie;
+        if (!$this->isCaisseCentrale()) {
+            $this->accepte_monnaie = $accepte_monnaie;
+        }
+        return $this;
+    }
 
+    public function isCaisseCentrale(): ?bool
+    {
+        return $this->caisse_centrale;
+    }
+
+    public function setCaisseCentrale(bool $caisse_centrale): self
+    {
+        $this->caisse_centrale = $caisse_centrale;
+        if ($this->caisse_centrale) {
+            $this->setAccepteTickets(false);
+            $this->setAccepteMonnaie(true);
+        }
         return $this;
     }
 }

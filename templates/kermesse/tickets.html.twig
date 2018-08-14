@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ kermesse.theme }} - Tickets{% endblock %}
+{% block title %}{{ kermesse.theme }} - Dépenses{% endblock %}
 
 {% block body %}
     <fieldset>
-        <legend>Tickets <a href="{{ path('nouveau_ticket', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
+        <legend>Dépenses <a href="{{ path('nouveau_ticket', {'id': kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
             {% include "ticket/table.html.twig" with {'tickets': kermesse.tickets} only %}
         </div>

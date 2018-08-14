@@ -18,10 +18,11 @@ class ActiviteController extends MyController
     public function nouvelleActivite(Kermesse $kermesse, Request $request)
     {
         $activite = new Activite();
+        $activite->setCaisseCentrale(false);
+        $activite->setKermesse($kermesse);
         $form = $this->createForm(ActiviteType::class, $activite);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $activite->setKermesse($kermesse);
             $em = $this->getDoctrine()->getManager();
             $em->persist($activite);
             $em->flush();
@@ -41,6 +42,9 @@ class ActiviteController extends MyController
      */
     public function editerActivite(Activite $activite, Request $request)
     {
+        if ($activite->isCaisseCentrale()) {
+            $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
+        }
         $form = $this->createForm(ActiviteType::class, $activite);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -65,9 +69,11 @@ class ActiviteController extends MyController
     public function supprimerActivite(Activite $activite)
     {
         $kermesse = $activite->getKermesse();
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($activite);
-        $em->flush();
+        if (!$activite->isCaisseCentrale()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($activite);
+            $em->flush();
+        }
         return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
     }
 }

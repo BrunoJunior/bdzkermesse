@@ -4,7 +4,7 @@
 
 {% block body %}
     <fieldset>
-        <legend>Recettes <a href="{{ path('nouvelle_recette', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
+        <legend>Recettes <a href="{{ path('nouvelle_recette', {'id': kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
             {% include "recette/table.html.twig" with {'recettes': kermesse.recettes, 'total': total} only %}
         </div>

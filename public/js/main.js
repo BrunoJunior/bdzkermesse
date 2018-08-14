@@ -43,4 +43,8 @@ $(function() {
         language: 'fr',
         format: 'yyyy-mm-dd'
     });
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
 });

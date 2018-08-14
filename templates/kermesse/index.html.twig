@@ -4,7 +4,7 @@
 
 {% block body %}
     <fieldset>
-        <legend>Activités <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary"><i class="fas fa-plus"></i></a></legend>
+        <legend>Activités <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle activité"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
             {% if kermesse.activites is empty %}
             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
