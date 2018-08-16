@@ -2,29 +2,25 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\KermesseCard;
 use App\Entity\Kermesse;
-use App\Helper\HFloat;
+use App\Repository\KermesseRepository;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends MyController
 {
     /**
      * @Route("/", name="index")
+     * @param KermesseRepository $rKermesse
+     * @param KermesseCard $cardService
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function kermessesListe()
+    public function kermessesListe(KermesseRepository $rKermesse, KermesseCard $cardService)
     {
-        $kermesseRepo = $this->getDoctrine()->getRepository(Kermesse::class);
-        $kermesses = $kermesseRepo->findByEtablissementOrderByAnnee($this->getUser());
-        $montants = [];
-        foreach ($kermesses as $kermesse) {
-            $montants[$kermesse->getId()]['ticket'] = HFloat::getInstance($kermesse->getMontantTicket() / 100.0)->getMontantFormatFrancais();
-            $montants[$kermesse->getId()]['recette'] = HFloat::getInstance($kermesse->getRecetteTotale() / 100.0)->getMontantFormatFrancais();
-            $montants[$kermesse->getId()]['depense'] = HFloat::getInstance($kermesse->getDepenseTotale() / 100.0)->getMontantFormatFrancais();
-            $montants[$kermesse->getId()]['balance'] = HFloat::getInstance($kermesse->getBalance() / 100.0)->getMontantFormatFrancais();
-        }
         return $this->render('index/index.html.twig', [
-            'kermesses' => $kermesses,
-            'montants' => $montants,
+            'cards' => array_map(function(Kermesse $kermesse) use($cardService) {
+                    return $cardService->generer($kermesse);
+                }, $rKermesse->findByEtablissementOrderByAnnee($this->getUser())),
             'menu' => $this->getMenu(null, static::MENU_ACCUEIL)
         ]);
     }

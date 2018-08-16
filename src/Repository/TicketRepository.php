@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -17,6 +18,22 @@ class TicketRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Ticket::class);
+    }
+
+    /**
+     * Le montant total des dépenses d'une kermesse
+     * @param Kermesse $kermesse
+     * @return int
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getMontantTotalPourKermesse(Kermesse $kermesse):int
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.kermesse = :kermesse')
+            ->setParameter('kermesse', $kermesse)
+            ->select('COALESCE(SUM(t.montant),0) as montantTotal')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**

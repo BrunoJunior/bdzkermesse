@@ -245,27 +245,4 @@ class Kermesse
         }
         return $recettes;
     }
-
-    /**
-     * Dépense totale de la kermesse
-     * @return int
-     */
-    public function getDepenseTotale(): int
-    {
-        $depense = 0;
-        foreach ($this->getTickets() as $ticket)
-        {
-            $depense += $ticket->getMontant();
-        }
-        return $depense;
-    }
-
-    /**
-     * Recette - Dépense
-     * @return int
-     */
-    public function getBalance(): int
-    {
-        return $this->getRecetteTotale() - $this->getDepenseTotale();
-    }
 }
