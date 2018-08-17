@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Activite;
 use App\Entity\Depense;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -17,6 +18,22 @@ class DepenseRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Depense::class);
+    }
+
+    /**
+     * Le montant total des dépenses d'une activité
+     * @param Activite $activite
+     * @return int
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getMontantTotalPourActivite(Activite $activite):int
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.activite = :activite')
+            ->setParameter('activite', $activite)
+            ->select('COALESCE(SUM(d.montant),0)')
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**

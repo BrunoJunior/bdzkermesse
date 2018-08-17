@@ -82,21 +82,6 @@ class Recette
     }
 
     /**
-     * Montant global d'une recette
-     * Montant en centimes + nombre de tickets * le montant d'un ticket
-     * @return int
-     */
-    public function getMontantGlobal(): int
-    {
-        $montant = $this->getMontant();
-        if ($this->getActivite() !== null && $this->getActivite()->getKermesse() !== null) {
-            $montantTicket = $this->getActivite()->getKermesse()->getMontantTicket();
-            $montant += ($this->getNombreTicket() * $montantTicket);
-        }
-        return $montant;
-    }
-
-    /**
      * Le montant en euro au format français
      * @return string
      */

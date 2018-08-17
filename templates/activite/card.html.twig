@@ -1,22 +1,22 @@
 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-3">
     <div class="card text-center">
         <div class="card-body">
-            <h5 class="card-title">{{ activite.nom }}</h5>
-            <p class="card-text" data-toggle="tooltip" title="Dépenses"><i class="fas fa-receipt"></i> {{ recettes[activite.id]['depense'] }}</p>
-            {% if activite.accepteMonnaie %}
-                <p class="card-text" data-toggle="tooltip" title="Recette"><i class="fas fa-money-bill-wave-alt"></i> {{ recettes[activite.id]['montant'] }}</p>
+            <h5 class="card-title">{{ card.titre }}</h5>
+            <p class="card-text" data-toggle="tooltip" title="Dépenses"><i class="fas fa-receipt"></i> {{ card.depense }}</p>
+            {% if card.recette is not empty %}
+                <p class="card-text" data-toggle="tooltip" title="Recette"><i class="fas fa-money-bill-wave-alt"></i> {{ card.recette }}</p>
             {% endif %}
-            {% if activite.kermesse.montantTicket > 0 and activite.accepteTickets %}
-                <p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ activite.nombreTotalTickets }} (x{{ montantTicket }})</p>
+            {% if card.nombreTickets is not empty %}
+                <p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ card.nombreTickets }}</p>
             {% endif %}
             <hr />
-            <p class="card-text">Total : {{ recettes[activite.id]['total'] }}</p>
+            <p class="card-text">Total : {{ card.total }}</p>
         </div>
         <div class="card-footer">
             <a href="#" class="btn btn-primary" data-toggle="tooltip" title="Détail"><i class="fas fa-eye"></i></a>
-            {% if not activite.caisseCentrale %}
-                <a href="{{ path('editer_activite', {'id': activite.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
-                <a href="{{ path('supprimer_activite', {'id': activite.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
+            {% if not card.activite.caisseCentrale %}
+                <a href="{{ path('editer_activite', {'id': card.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
+                <a href="{{ path('supprimer_activite', {'id': card.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
             {% endif %}
         </div>
     </div>

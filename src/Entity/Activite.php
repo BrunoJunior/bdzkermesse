@@ -166,30 +166,6 @@ class Activite
     }
 
     /**
-     * Le montant des dépenses de l'activité
-     * @return int
-     */
-    public function getMontantDepense(): int
-    {
-        $total = 0;
-        foreach ($this->getDepenses() as $depense) {
-            $total += $depense->getMontant();
-        }
-        return $total;
-    }
-
-    /**
-     * La balance de l'activité en prenant en compte les tickets
-     * Cette balance est une approximation, car la vraie recette ne tient pas compte des tickets car ces derniers
-     * ont dus être achetés et donc la somme est comptabilisée dans la balance globale
-     * @return int
-     */
-    public function getBalance(): int
-    {
-        return $this->getMontantRecette() - $this->getMontantDepense() + ($this->getKermesse()->getMontantTicket() * $this->getNombreTotalTickets());
-    }
-
-    /**
      * Le nombre total de ticket de l'activité
      * @return int
      */

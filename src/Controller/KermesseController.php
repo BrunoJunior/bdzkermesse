@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
+use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormError;
@@ -97,21 +99,20 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}", name="kermesse")
+     * @param Kermesse $kermesse
+     * @param ActiviteCardGenerator $activiteCardGenerator
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Kermesse $kermesse) {
+    public function index(Kermesse $kermesse, ActiviteCardGenerator $activiteCardGenerator) {
 
-        $recettesActivites = [];
-        foreach ($kermesse->getActivites() as $activite) {
-            $recettesActivites[$activite->getId()]['total'] = HFloat::getInstance($activite->getBalance() / 100.0)->getMontantFormatFrancais();
-            $recettesActivites[$activite->getId()]['montant'] = HFloat::getInstance($activite->getMontantRecette() / 100.0)->getMontantFormatFrancais();
-            $recettesActivites[$activite->getId()]['depense'] = HFloat::getInstance($activite->getMontantDepense() / 100.0)->getMontantFormatFrancais();
-        }
+        $activiteCards = $kermesse->getActivites()->map(function(Activite $activite) use($activiteCardGenerator) {
+            return $activiteCardGenerator->generate($activite);
+        });
         return $this->render(
             'kermesse/index.html.twig',
             [
                 'kermesse' => $kermesse,
-                'recettes' => $recettesActivites,
-                'montantTicket' => number_format($kermesse->getMontantTicket() / 100.0, 2, ',', '.') . ' €',
+                'activiteCards' => $activiteCards->toArray(),
                 'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
             ]
         );
