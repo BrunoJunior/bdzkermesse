@@ -2,11 +2,9 @@
 
 namespace App\Repository;
 
-use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -37,23 +35,6 @@ class RecetteRepository extends ServiceEntityRepository
             ->select('COALESCE(SUM(r.montant),0) as montantTotal')
             ->getQuery()
             ->getSingleScalarResult();
-    }
-
-    /**
-     * Le montant total des recettes d'une activité
-     * @param Activite $activite
-     * @return array
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\NoResultException
-     */
-    public function getTotauxPourActivite(Activite $activite):array
-    {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.activite = :activite')
-            ->setParameter('activite', $activite)
-            ->select('COALESCE(SUM(r.montant),0) as montant, COALESCE(SUM(r.nombre_ticket),0) as nombre_ticket')
-            ->getQuery()
-            ->getSingleResult(Query::HYDRATE_ARRAY);
     }
 
 //    /**

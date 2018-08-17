@@ -101,20 +101,14 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}", name="kermesse", requirements={"id"="\d+"})
-     * @param int $id
+     * @param Kermesse $kermesse
      * @param ActiviteRepository $rActivite
      * @param ActiviteCardGenerator $activiteCardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(int $id, ActiviteRepository $rActivite, ActiviteCardGenerator $activiteCardGenerator)
+    public function index(Kermesse $kermesse, ActiviteRepository $rActivite, ActiviteCardGenerator $activiteCardGenerator)
     {
-        $activites = $rActivite->findByKermesseId($id);
-        $activiteCards = array_map(function(Activite $activite) use($activiteCardGenerator) {
-            return $activiteCardGenerator->generate($activite);
-        }, $activites);
-        // Évite de faire une requête si la kermesse est déjà hydratée par la recherche des activités
-        // S'il n'y a aucune activité, on récupère la kermesse par son id
-        $kermesse = empty($activites) ? $this->getDoctrine()->getRepository(Kermesse::class)->find($id) : $activites[0]->getKermesse();
+        $activiteCards = $activiteCardGenerator->generateList($kermesse);
         return $this->render(
             'kermesse/index.html.twig',
             [

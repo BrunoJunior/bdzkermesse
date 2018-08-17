@@ -11,44 +11,43 @@ namespace App\Service;
 
 use App\DataTransfer\ActiviteCard;
 use App\Entity\Activite;
-use App\Repository\DepenseRepository;
-use App\Repository\RecetteRepository;
+use App\Entity\Kermesse;
+use App\Repository\ActiviteRepository;
 
 class ActiviteCardGenerator
 {
     /**
-     * @var RecetteRepository
+     * @var ActiviteRepository
      */
-    private $rRecette;
-
-    /**
-     * @var DepenseRepository
-     */
-    private $rDepense;
+    private $rActivite;
 
     /**
      * ActiviteCard constructor.
-     * @param RecetteRepository $rRecette
-     * @param DepenseRepository $rDepense
+     * @param ActiviteRepository $rActivite
      */
-    public function __construct(RecetteRepository $rRecette, DepenseRepository $rDepense)
+    public function __construct(ActiviteRepository $rActivite)
     {
-        $this->rRecette = $rRecette;
-        $this->rDepense = $rDepense;
+        $this->rActivite = $rActivite;
     }
 
+
     /**
-     * @param Activite $activite
-     * @return ActiviteCard
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @param Kermesse $kermesse
+     * @return array|ActiviteCard[]
      */
-    public function generate(Activite $activite): ActiviteCard
+    public function generateList(Kermesse $kermesse): array
     {
-        $recette = $this->rRecette->getTotauxPourActivite($activite);
-        $card = new ActiviteCard($activite);
-        return $card->setDepense($this->rDepense->getMontantTotalPourActivite($activite))
-            ->setNombreTickets($recette['nombre_ticket'])
-            ->setRecette($recette['montant']);
+        $totaux = $this->rActivite->getTotaux($kermesse);
+        $cards = array_map(function (Activite $activite) use($totaux) {
+            $card = new ActiviteCard($activite);
+            $key = '' . $activite->getId();
+            if ($totaux->containsKey($key)) {
+                $card->setDepense($totaux->get($key)['depense'])
+                    ->setNombreTickets($totaux->get($key)['nombre_ticket'])
+                    ->setRecette($totaux->get($key)['recette']);
+            }
+            return $card;
+        }, $this->rActivite->findByKermesseId($kermesse->getId()));
+        return $cards;
     }
 }
