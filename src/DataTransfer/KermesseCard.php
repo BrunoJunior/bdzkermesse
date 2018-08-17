@@ -9,8 +9,6 @@
 namespace App\DataTransfer;
 use App\Entity\Kermesse;
 use App\Helper\HFloat;
-use App\Repository\RecetteRepository;
-use App\Repository\TicketRepository;
 
 /**
  * Class KermesseCard
@@ -20,42 +18,96 @@ class KermesseCard
 {
 
     /**
-     * @var RecetteRepository
+     * @var Kermesse
      */
-    private $rRecette;
+    private $kermesse;
 
     /**
-     * @var TicketRepository
+     * @var int
      */
-    private $rTicket;
+    private $recette;
 
     /**
-     * KermesseDto constructor.
-     * @param RecetteRepository $rRecette
+     * @var int
      */
-    public function __construct(RecetteRepository $rRecette, TicketRepository $rTicket)
+    private $depense;
+
+    /**
+     * KermesseCard constructor.
+     * @param Kermesse $kermesse
+     */
+    public function __construct(Kermesse $kermesse)
     {
-        $this->rRecette = $rRecette;
-        $this->rTicket = $rTicket;
+        $this->kermesse = $kermesse;
     }
 
     /**
-     * Export à destination de l'IHM
-     * @param Kermesse $kermesse
-     * @return \stdClass
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * Montant au format HTML
+     * @return null|string
      */
-    public function generer(Kermesse $kermesse):\stdClass
+    public function getMontantTicket(): ?string
     {
-        $recette = $this->rRecette->getMontantTotalPourKermesse($kermesse);
-        $depense = $this->rTicket->getMontantTotalPourKermesse($kermesse);
-        $card = new \stdClass();
-        $card->id = $kermesse->getId();
-        $card->titre = $kermesse->getAnnee() . ' - ' . $kermesse->getTheme();
-        $card->montantTicket = HFloat::getInstance($kermesse->getMontantTicket() / 100.0)->getMontantFormatFrancais();
-        $card->recetteTotale = HFloat::getInstance($recette / 100.00)->getMontantFormatFrancais();
-        $card->depenseTotale = HFloat::getInstance($depense / 100.00)->getMontantFormatFrancais();
-        $card->balance = HFloat::getInstance(($recette - $depense) / 100.00)->getMontantFormatFrancais();
-        return $card;
+        $montant = $this->kermesse->getMontantTicket();
+        return $montant ? HFloat::getInstance($montant / 100.0)->getMontantFormatFrancais() : null;
+    }
+
+    /**
+     * @param int $recette
+     * @return KermesseCard
+     */
+    public function setRecette(int $recette): KermesseCard
+    {
+        $this->recette = $recette;
+        return $this;
+    }
+
+    /**
+     * @param int $depense
+     * @return KermesseCard
+     */
+    public function setDepense(int $depense): KermesseCard
+    {
+        $this->depense = $depense;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecette(): string
+    {
+        return HFloat::getInstance($this->recette / 100.0)->getMontantFormatFrancais();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDepense(): string
+    {
+        return HFloat::getInstance($this->depense / 100.0)->getMontantFormatFrancais();
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitre(): string
+    {
+        return $this->kermesse->getAnnee() . ' - ' . $this->kermesse->getTheme();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBalance(): string
+    {
+        return HFloat::getInstance(($this->recette - $this->depense) / 100.00)->getMontantFormatFrancais();
+    }
+
+    /**
+     * @return Kermesse
+     */
+    public function getKermesse(): Kermesse
+    {
+        return $this->kermesse;
     }
 }

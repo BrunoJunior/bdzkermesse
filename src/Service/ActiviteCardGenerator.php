@@ -47,9 +47,8 @@ class ActiviteCardGenerator
     {
         $recette = $this->rRecette->getTotauxPourActivite($activite);
         $card = new ActiviteCard($activite);
-        $card->setDepense($this->rDepense->getMontantTotalPourActivite($activite));
-        $card->setNombreTickets($recette['nombre_ticket']);
-        $card->setRecette($recette['montant']);
-        return $card;
+        return $card->setDepense($this->rDepense->getMontantTotalPourActivite($activite))
+            ->setNombreTickets($recette['nombre_ticket'])
+            ->setRecette($recette['montant']);
     }
 }
