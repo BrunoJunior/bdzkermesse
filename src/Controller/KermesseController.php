@@ -4,13 +4,15 @@ namespace App\Controller;
 
 use App\Entity\Activite;
 use App\Entity\Kermesse;
+use App\Entity\Ticket;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
+use App\Repository\ActiviteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseService;
+use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -98,21 +100,26 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}", name="kermesse")
-     * @param Kermesse $kermesse
+     * @Route("/kermesse/{id}", name="kermesse", requirements={"id"="\d+"})
+     * @param int $id
+     * @param ActiviteRepository $rActivite
      * @param ActiviteCardGenerator $activiteCardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Kermesse $kermesse, ActiviteCardGenerator $activiteCardGenerator) {
-
-        $activiteCards = $kermesse->getActivites()->map(function(Activite $activite) use($activiteCardGenerator) {
+    public function index(int $id, ActiviteRepository $rActivite, ActiviteCardGenerator $activiteCardGenerator)
+    {
+        $activites = $rActivite->findByKermesseId($id);
+        $activiteCards = array_map(function(Activite $activite) use($activiteCardGenerator) {
             return $activiteCardGenerator->generate($activite);
-        });
+        }, $activites);
+        // Évite de faire une requête si la kermesse est déjà hydratée par la recherche des activités
+        // S'il n'y a aucune activité, on récupère la kermesse par son id
+        $kermesse = empty($activites) ? $this->getDoctrine()->getRepository(Kermesse::class)->find($id) : $activites[0]->getKermesse();
         return $this->render(
             'kermesse/index.html.twig',
             [
                 'kermesse' => $kermesse,
-                'activiteCards' => $activiteCards->toArray(),
+                'activiteCards' => $activiteCards,
                 'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
             ]
         );
@@ -143,13 +150,19 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}/tickets", name="liste_tickets")
+     * @param Kermesse $kermesse
+     * @param TicketRowGenerator $ticketGenerator
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listeTickets(Kermesse $kermesse)
+    public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator)
     {
         return $this->render(
             'kermesse/tickets.html.twig',
             [
                 'kermesse' => $kermesse,
+                'rows' => $kermesse->getTickets()->map(function (Ticket $ticket) use ($ticketGenerator) {
+                    return $ticketGenerator->generate($ticket);
+                })->toArray(),
                 'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
             ]
         );

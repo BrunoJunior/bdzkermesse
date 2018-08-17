@@ -7,23 +7,23 @@
         <th scope="col"><i class="fas fa-barcode"></i> N°</th>
         <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
         <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
-        <th scope="col"><i class="fas fa-link"></i> Montant affecté</th>
+        <th scope="col"><i class="fas fa-link"></i> Activités liées</th>
         <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
     </tr>
     </thead>
     <tbody>
-    {% for ticket in tickets %}
-        <tr {% if ticket.montantEuro is not same as(ticket.montantAffecte) %}class="table-danger"{% endif %}>
-            <th scope="row">{{ ticket.id }}</th>
-            <td>{{ ticket.date|date('d/m/Y') }}</td>
-            <td>{{ ticket.membre.prenom }} {{ ticket.membre.nom }}</td>
-            <td>{{ ticket.numero }}</td>
-            <td>{{ ticket.fournisseur }}</td>
-            <td>{{ ticket.montantEuro }}</td>
-            <td>{{ ticket.montantAffecte }}</td>
+    {% for row in rows %}
+        <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>
+            <th scope="row">{{ row.id }}</th>
+            <td>{{ row.date }}</td>
+            <td>{{ row.acheteur }}</td>
+            <td>{{ row.numero }}</td>
+            <td>{{ row.fournisseur }}</td>
+            <td>{{ row.montant }}</td>
+            <td>{{ row.activitesLiees }}</td>
             <td>
-                <a href="{{ path('editer_ticket', {'id': ticket.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                <a href="{{ path('supprimer_ticket', {'id': ticket.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
+                <a href="{{ path('supprimer_ticket', {'id': row.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
             </td>
         </tr>
     {% else %}

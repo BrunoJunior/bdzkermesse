@@ -20,22 +20,23 @@ class ActiviteRepository extends ServiceEntityRepository
         parent::__construct($registry, Activite::class);
     }
 
-//    /**
-//     * @return Activite[] Returns an array of Activite objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Les activités d'une kermesse avec réduction du nombre de requêtes
+     * @param int $kermesseId
+     * @return Activite[] Returns an array of Activite objects
+     */
+    public function findByKermesseId(int $kermesseId):array
     {
         return $this->createQueryBuilder('a')
-            ->andWhere('a.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('a.id', 'ASC')
-            ->setMaxResults(10)
+            ->innerJoin('a.kermesse', 'k')
+            ->addSelect('k')
+            ->andWhere('k.id = :kermesseId')
+            ->setParameter('kermesseId', $kermesseId)
+            ->orderBy('a.nom', 'ASC')
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /**
      * @param Kermesse $kermesse
