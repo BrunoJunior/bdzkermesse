@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\KermesseRepository")
  * @UniqueEntity(fields={"annee", "etablissement"})
  */
-class Kermesse
+class Kermesse extends MyEntity
 {
     /**
      * @ORM\Id()
@@ -244,5 +244,13 @@ class Kermesse
             }
         }
         return $recettes;
+    }
+
+    /**
+     * @return Etablissement
+     */
+    protected function getProprietaire(): ?Etablissement
+    {
+        return $this->getEtablissement();
     }
 }

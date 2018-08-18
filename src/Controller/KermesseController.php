@@ -2,14 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\Activite;
 use App\Entity\Kermesse;
-use App\Entity\Ticket;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
 use App\Repository\ActiviteRepository;
-use App\Repository\TicketRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseService;
 use App\Service\TicketRowGenerator;
@@ -17,6 +14,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class KermesseController extends MyController
 {
@@ -46,6 +44,7 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}/dupliquer", name="dupliquer_kermesse")
+     * @Security("kermesse.isProprietaire(user)")
      */
     public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager) {
         $alert = null;
@@ -80,6 +79,7 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}/edit", name="editer_kermesse")
+     * @Security("kermesse.isProprietaire(user)")
      */
     public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse)
     {
@@ -103,6 +103,7 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}", name="kermesse", requirements={"id"="\d+"})
+     * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param ActiviteRepository $rActivite
      * @param ActiviteCardGenerator $activiteCardGenerator
@@ -123,6 +124,7 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}/membres_actifs", name="membres_actifs")
+     * @Security("kermesse.isProprietaire(user)")
      */
     public function definirMembresActifs(Kermesse $kermesse, Request $request)
     {
@@ -146,6 +148,7 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}/tickets", name="liste_tickets")
+     * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param TicketRowGenerator $ticketGenerator
      * @return Response
@@ -165,6 +168,7 @@ class KermesseController extends MyController
 
     /**
      * @Route("/kermesse/{id}/recettes", name="liste_recettes")
+     * @Security("kermesse.isProprietaire(user)")
      */
     public function listeRecettes(Kermesse $kermesse)
     {

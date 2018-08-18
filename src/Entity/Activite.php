@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\ActiviteRepository")
  * @UniqueEntity(fields={"nom", "kermesse"})
  */
-class Activite
+class Activite extends MyEntity
 {
     const NOM_CAISSE_CENT = 'Caisse centrale';
 
@@ -231,5 +231,17 @@ class Activite
         $this->accepte_tickets = false;
         $this->accepte_monnaie = true;
         return $this;
+    }
+
+    /**
+     * @return Etablissement
+     */
+    protected function getProprietaire(): ?Etablissement
+    {
+        $kermesse = $this->getKermesse();
+        if (!$kermesse instanceof Kermesse) {
+            return null;
+        }
+        return $kermesse->getEtablissement();
     }
 }
