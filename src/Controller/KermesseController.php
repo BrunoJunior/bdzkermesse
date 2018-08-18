@@ -9,11 +9,13 @@ use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
 use App\Repository\ActiviteRepository;
+use App\Repository\TicketRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseService;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class KermesseController extends MyController
@@ -146,17 +148,16 @@ class KermesseController extends MyController
      * @Route("/kermesse/{id}/tickets", name="liste_tickets")
      * @param Kermesse $kermesse
      * @param TicketRowGenerator $ticketGenerator
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
+     * @throws \Doctrine\DBAL\DBALException
      */
-    public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator)
+    public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator): Response
     {
         return $this->render(
             'kermesse/tickets.html.twig',
             [
                 'kermesse' => $kermesse,
-                'rows' => $kermesse->getTickets()->map(function (Ticket $ticket) use ($ticketGenerator) {
-                    return $ticketGenerator->generate($ticket);
-                })->toArray(),
+                'rows' => $ticketGenerator->generateList($kermesse),
                 'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
             ]
         );

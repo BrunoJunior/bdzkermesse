@@ -32,9 +32,9 @@ class TicketRow
     private $montantAffecte = 0;
 
     /**
-     * @var ArrayCollection
+     * @var string
      */
-    private $activitesLies;
+    private $activitesLiees;
 
     /**
      * TicketRow constructor.
@@ -44,11 +44,24 @@ class TicketRow
     {
         $this->ticket = $ticket;
         $this->montant = $this->ticket->getMontant() ?? 0;
-        $this->activitesLies = new ArrayCollection();
-        foreach ($ticket->getDepenses() as $depense) {
-            $this->montantAffecte += $depense->getMontant();
-            $this->activitesLies->add($depense->getActivite()->getNom());
-        }
+    }
+
+    /**
+     * @param int $montant
+     * @return $this
+     */
+    public function setMontantAffecte(int $montant)
+    {
+        $this->montantAffecte = $montant;
+        return $this;
+    }
+
+    /**
+     * @param string $activites
+     */
+    public function setActivitesLiees(string $activites)
+    {
+        $this->activitesLiees = $activites;
     }
 
     /**
@@ -105,7 +118,7 @@ class TicketRow
      */
     public function getActivitesLiees(): string
     {
-        return $this->activitesLies->isEmpty() ? 'Aucune activité liée' : implode(', ', $this->activitesLies->toArray());
+        return empty($this->activitesLiees) ? 'Aucune activité liée' : $this->activitesLiees;
     }
 
     /**

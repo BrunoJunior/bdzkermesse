@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -34,6 +35,47 @@ class TicketRepository extends ServiceEntityRepository
             ->select('COALESCE(SUM(t.montant),0) as montantTotal')
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * @param Kermesse $kermesse
+     * @return array|Ticket[]
+     */
+    public function findByKermesse(Kermesse $kermesse):array
+    {
+        return $this->createQueryBuilder('t')
+            ->innerJoin('t.membre', 'm')
+            ->andWhere('t.kermesse = :kermesse')
+            ->orderBy('t.date')
+            ->setParameter('kermesse', $kermesse)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Kermesse $kermesse
+     * @return ArrayCollection
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getTotauxParTicketByKermesse(Kermesse $kermesse):ArrayCollection
+    {
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT t.id, COALESCE(SUM(d.montant),0) AS depense, GROUP_CONCAT(a.nom SEPARATOR \', \') AS activites_liees
+            FROM ticket AS t 
+            LEFT JOIN depense AS d ON (d.ticket_id = t.id)
+            INNER JOIN activite AS a ON (d.activite_id = a.id)
+            WHERE t.kermesse_id = :id
+            GROUP BY t.id
+            ORDER BY t.id
+        ';
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(array('id' => $kermesse->getId()));
+        $result = new ArrayCollection();
+        foreach ($stmt->fetchAll() as $row) {
+            $result->set("".$row['id'], $row);
+        }
+        return $result;
     }
 
 //    /**
