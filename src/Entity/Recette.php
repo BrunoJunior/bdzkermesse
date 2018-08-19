@@ -10,6 +10,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Recette extends MyEntity
 {
+    const LIB_REPORT_STOCK = 'Stock N+1';
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -48,6 +50,11 @@ class Recette extends MyEntity
      * @ORM\JoinColumn(nullable=false)
      */
     private $etablissement;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $report_stock;
 
     /**
      * Recette constructor.
@@ -103,8 +110,10 @@ class Recette extends MyEntity
 
     public function setLibelle(string $libelle): self
     {
+        if ($this->isReportStock()) {
+            $libelle = static::LIB_REPORT_STOCK;
+        }
         $this->libelle = $libelle;
-
         return $this;
     }
 
@@ -129,6 +138,20 @@ class Recette extends MyEntity
     {
         $this->etablissement = $etablissement;
 
+        return $this;
+    }
+
+    public function isReportStock(): ?bool
+    {
+        return $this->report_stock;
+    }
+
+    public function setReportStock(bool $report_stock): self
+    {
+        $this->report_stock = $report_stock;
+        if ($report_stock) {
+            $this->setLibelle("");
+        }
         return $this;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Repository;
 
+use App\Entity\Etablissement;
+use App\Entity\Kermesse;
 use App\Entity\Membre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -17,6 +19,22 @@ class MembreRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Membre::class);
+    }
+
+    /**
+     * @param Etablissement $etablissement
+     * @return Membre|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findDefautPourEtablissement(Etablissement $etablissement): ?Membre
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.defaut = :defaut')
+            ->andWhere('m.etablissement = :etablissement')
+            ->setParameter('defaut', true)
+            ->setParameter('etablissement', $etablissement)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
 //    /**

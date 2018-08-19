@@ -13,6 +13,7 @@ use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -57,6 +58,7 @@ class KermesseController extends MyController
      * @param KermesseService $sKermesse
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @throws \Exception
      */
     public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager): Response
     {
@@ -77,7 +79,7 @@ class KermesseController extends MyController
                 return $this->redirectToRoute('index');
             } catch (\Exception $exc) {
                 $entityManager->rollback();
-                $alert = $exc->getMessage();
+                throw $exc;
             }
         }
         return $this->render(

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Etablissement;
+use App\Entity\Membre;
 use App\Form\EtablissementType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -21,8 +22,17 @@ class RegistrationController extends MyController
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $passwordEncoder->encodePassword($etablissement, $etablissement->getPassword());
             $etablissement->setPassword($password);
+            // Ajout d'un membre par défaut (Membre établissement)
+            $partiesNom = explode(' ', $etablissement->getNom());
+            $dftMembre = new Membre();
+            $dftMembre->setDefaut(true);
+            $dftMembre->setEmail("");
+            $dftMembre->setPrenom(array_shift($partiesNom));
+            $dftMembre->setNom(implode(' ', $partiesNom));
+            $etablissement->addMembre($dftMembre);
             // On enregistre l'utilisateur dans la base
             $em = $this->getDoctrine()->getManager();
+            $em->persist($dftMembre);
             $em->persist($etablissement);
             $em->flush();
             return $this->redirectToRoute('security_login');

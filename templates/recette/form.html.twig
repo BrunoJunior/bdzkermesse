@@ -11,6 +11,7 @@
                     {{ form_start(form) }}
                     {{ form_row(form.date) }}
                     {{ form_row(form.activite) }}
+                    {{ form_row(form.report_stock) }}
                     {{ form_row(form.libelle) }}
                     {{ form_row(form.montant) }}
                     {{ form_row(form.nombre_ticket) }}
@@ -21,3 +22,5 @@
         </div>
     </div>
 {% endblock %}
+
+{% block javascripts %}<script src="/js/recette_form.js"></script>{% endblock %}

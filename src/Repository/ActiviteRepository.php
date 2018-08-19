@@ -40,6 +40,24 @@ class ActiviteRepository extends ServiceEntityRepository
     }
 
     /**
+     * L'activité d'une kermesse ayant un certain nom
+     * @param string $nom
+     * @param Kermesse $kermesse
+     * @return Activite|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findParNomPourKermesse(string $nom, Kermesse $kermesse): ?Activite
+    {
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.kermesse = :kermesse')
+            ->andWhere('a.nom = :nom')
+            ->setParameter('kermesse', $kermesse)
+            ->setParameter('nom', $nom)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
      * @param Kermesse $kermesse
      * @return Activite|null
      * @throws \Doctrine\ORM\NonUniqueResultException

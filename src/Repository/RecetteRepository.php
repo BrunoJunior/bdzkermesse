@@ -62,6 +62,25 @@ class RecetteRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * Liste des recettes utiles pour le report de stock
+     * @param Kermesse $kermesse
+     * @return array
+     */
+    public function findReportStock(Kermesse $kermesse):array
+    {
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.activite', 'a')
+            ->addSelect('a')
+            ->andWhere('a.kermesse = :kermesse')
+            ->andWhere('r.libelle = :libelle')
+            ->orderBy('r.date')
+            ->setParameter('kermesse', $kermesse)
+            ->setParameter('libelle', Recette::LIB_REPORT_STOCK)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Recette[] Returns an array of Recette objects
 //     */

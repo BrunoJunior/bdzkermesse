@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Helper\HFloat;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,6 +13,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Ticket extends MyEntity
 {
+    const FOUNISSEUR_STOCK_PREC = "Stock N-1";
+    const NUMERO_STOCK_PREC = "STOCK";
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()

@@ -55,6 +55,11 @@ class Membre extends MyEntity
      */
     private $tickets;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $defaut;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
@@ -206,6 +211,18 @@ class Membre extends MyEntity
     public function setEtablissement(Etablissement $etablissement): Membre
     {
         $this->etablissement = $etablissement;
+        return $this;
+    }
+
+    public function getDefaut(): ?bool
+    {
+        return $this->defaut;
+    }
+
+    public function setDefaut(bool $defaut): self
+    {
+        $this->defaut = $defaut;
+
         return $this;
     }
 }

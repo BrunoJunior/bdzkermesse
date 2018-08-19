@@ -59,6 +59,7 @@ class Etablissement implements UserInterface, \Serializable
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
+        $this->membres = new ArrayCollection();
         $this->admin = false;
     }
 
