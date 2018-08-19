@@ -204,12 +204,4 @@ class Kermesse extends MyEntity
         $this->montant_ticket = $montant_ticket;
         return $this;
     }
-
-    /**
-     * @return Etablissement
-     */
-    protected function getProprietaire(): ?Etablissement
-    {
-        return $this->getEtablissement();
-    }
 }

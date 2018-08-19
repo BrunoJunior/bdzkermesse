@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use App\DataTransfer\TicketRow;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DepenseRepository")
  */
-class Depense
+class Depense extends MyEntity
 {
     /**
      * @ORM\Id()
@@ -33,6 +34,12 @@ class Depense
      */
     private $activite;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etablissement;
+
     public function getId()
     {
         return $this->id;
@@ -57,6 +64,9 @@ class Depense
     public function setTicket(?Ticket $ticket): self
     {
         $this->ticket = $ticket;
+        if ($ticket instanceof Ticket) {
+            $this->setEtablissement($ticket->getEtablissement());
+        }
         return $this;
     }
 
@@ -68,6 +78,18 @@ class Depense
     public function setActivite(?Activite $activite): self
     {
         $this->activite = $activite;
+        return $this;
+    }
+
+    public function getEtablissement(): ?Etablissement
+    {
+        return $this->etablissement;
+    }
+
+    public function setEtablissement(?Etablissement $etablissement): self
+    {
+        $this->etablissement = $etablissement;
+
         return $this;
     }
 }

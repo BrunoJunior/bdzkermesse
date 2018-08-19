@@ -58,6 +58,12 @@ class Activite extends MyEntity
      */
     private $caisse_centrale;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etablissement;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -88,8 +94,11 @@ class Activite extends MyEntity
     public function setKermesse(?Kermesse $kermesse): self
     {
         $this->kermesse = $kermesse;
-        if ($kermesse instanceof Kermesse && $kermesse->getMontantTicket() == 0) {
-            $this->setAccepteSeulementMonnaie();
+        if ($kermesse instanceof Kermesse) {
+            $this->setEtablissement($kermesse->getEtablissement());
+            if ($kermesse->getMontantTicket() === 0) {
+                $this->setAccepteSeulementMonnaie();
+            }
         }
         return $this;
     }
@@ -207,15 +216,15 @@ class Activite extends MyEntity
         return $this;
     }
 
-    /**
-     * @return Etablissement
-     */
-    protected function getProprietaire(): ?Etablissement
+    public function getEtablissement(): ?Etablissement
     {
-        $kermesse = $this->getKermesse();
-        if (!$kermesse instanceof Kermesse) {
-            return null;
-        }
-        return $kermesse->getEtablissement();
+        return $this->etablissement;
+    }
+
+    public function setEtablissement(?Etablissement $etablissement): self
+    {
+        $this->etablissement = $etablissement;
+
+        return $this;
     }
 }

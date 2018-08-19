@@ -6,15 +6,21 @@ use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ActiviteController extends MyController
 {
 
     /**
      * @Route("/kermesse/{id}/activite/new", name="nouvelle_activite")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param Request $request
+     * @return Response
      */
-    public function nouvelleActivite(Kermesse $kermesse, Request $request)
+    public function nouvelleActivite(Kermesse $kermesse, Request $request):Response
     {
         $activite = new Activite();
         $activite->setCaisseCentrale(false);
@@ -38,8 +44,12 @@ class ActiviteController extends MyController
 
     /**
      * @Route("/activite/{id}/edit", name="editer_activite")
+     * @Security("activite.isProprietaire(user)")
+     * @param Activite $activite
+     * @param Request $request
+     * @return Response
      */
-    public function editerActivite(Activite $activite, Request $request)
+    public function editerActivite(Activite $activite, Request $request):Response
     {
         if ($activite->isCaisseCentrale()) {
             $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
@@ -63,8 +73,11 @@ class ActiviteController extends MyController
 
     /**
      * @Route("/activite/{id}/supprimer", name="supprimer_activite")
+     * @Security("activite.isProprietaire(user)")
+     * @param Activite $activite
+     * @return Response
      */
-    public function supprimerActivite(Activite $activite)
+    public function supprimerActivite(Activite $activite):Response
     {
         $kermesse = $activite->getKermesse();
         if (!$activite->isCaisseCentrale()) {

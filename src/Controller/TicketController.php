@@ -7,12 +7,14 @@ use App\Entity\Ticket;
 use App\Form\TicketType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class TicketController extends MyController
 {
 
     /**
      * @Route("/kermesse/{id}/ticket/new", name="nouveau_ticket")
+     * @Security("kermesse.isProprietaire(user)")
      */
     public function nouveauTicket(Request $request, Kermesse $kermesse)
     {
@@ -37,6 +39,7 @@ class TicketController extends MyController
 
     /**
      * @Route("/ticket/{id}/edit", name="editer_ticket")
+     * @Security("ticket.isProprietaire(user)")
      */
     public function editerTicket(Request $request, Ticket $ticket)
     {
@@ -59,6 +62,7 @@ class TicketController extends MyController
 
     /**
      * @Route("/ticket/{id}/supprimer", name="supprimer_ticket")
+     * @Security("ticket.isProprietaire(user)")
      */
     public function supprimerTicket(Ticket $ticket)
     {

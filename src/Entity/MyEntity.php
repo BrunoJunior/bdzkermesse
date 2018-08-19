@@ -14,7 +14,7 @@ abstract class MyEntity
     /**
      * @return Etablissement
      */
-    protected abstract function getProprietaire():?Etablissement;
+    public abstract function getEtablissement():?Etablissement;
 
     /**
      * L'établissement est-il le propriétaire de la donnée ?
@@ -23,6 +23,6 @@ abstract class MyEntity
      */
     public function isProprietaire(?Etablissement $etablissement = null):bool
     {
-        return $etablissement && $this->getProprietaire() === $etablissement;
+        return $etablissement && $this->getEtablissement() === $etablissement;
     }
 }

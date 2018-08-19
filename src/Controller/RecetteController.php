@@ -7,11 +7,13 @@ use App\Entity\Recette;
 use App\Form\RecetteType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class RecetteController extends MyController
 {
     /**
      * @Route("/kermesse/{id}/recette/new", name="nouvelle_recette")
+     * @Security("kermesse.isProprietaire(user)")
      */
     public function nouvelleRecette(Kermesse $kermesse, Request $request)
     {
@@ -35,6 +37,7 @@ class RecetteController extends MyController
 
     /**
      * @Route("/recette/{id}/edit", name="editer_recette")
+     * @Security("recette.isProprietaire(user)")
      */
     public function editerRecette(Recette $recette, Request $request)
     {
@@ -57,6 +60,7 @@ class RecetteController extends MyController
 
     /**
      * @Route("/recette/{id}/supprimer", name="supprimer_recette")
+     * @Security("recette.isProprietaire(user)")
      */
     public function supprimerRecette(Recette $recette)
     {

@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\TicketRepository")
  * @UniqueEntity(fields={"numero", "kermesse"})
  */
-class Ticket
+class Ticket extends MyEntity
 {
     /**
      * @ORM\Id()
@@ -63,6 +63,12 @@ class Ticket
      * @ORM\OneToMany(targetEntity="App\Entity\Depense", mappedBy="ticket", orphanRemoval=true, cascade={"persist"})
      */
     private $depenses;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etablissement;
 
     public function __construct()
     {
@@ -131,7 +137,9 @@ class Ticket
     public function setKermesse(?Kermesse $kermesse): self
     {
         $this->kermesse = $kermesse;
-
+        if ($kermesse instanceof Kermesse) {
+            $this->setEtablissement($kermesse->getEtablissement());
+        }
         return $this;
     }
 
@@ -186,6 +194,18 @@ class Ticket
                 $depense->setTicket(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEtablissement(): ?Etablissement
+    {
+        return $this->etablissement;
+    }
+
+    public function setEtablissement(?Etablissement $etablissement): self
+    {
+        $this->etablissement = $etablissement;
 
         return $this;
     }

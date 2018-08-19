@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RemboursementRepository")
  */
-class Remboursement
+class Remboursement extends MyEntity
 {
     /**
      * @ORM\Id()
@@ -49,9 +49,19 @@ class Remboursement
      */
     private $tickets;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etablissement;
+
+    /**
+     * Remboursement constructor.
+     */
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
+        $this->date = new \DateTime();
     }
 
     public function getId()
@@ -112,6 +122,9 @@ class Remboursement
     public function setMembre(?Membre $membre): self
     {
         $this->membre = $membre;
+        if ($membre instanceof Membre) {
+            $this->setEtablissement($membre->getEtablissement());
+        }
         return $this;
     }
 
@@ -141,6 +154,18 @@ class Remboursement
                 $ticket->setRemboursement(null);
             }
         }
+        return $this;
+    }
+
+    public function getEtablissement(): ?Etablissement
+    {
+        return $this->etablissement;
+    }
+
+    public function setEtablissement(?Etablissement $etablissement): self
+    {
+        $this->etablissement = $etablissement;
+
         return $this;
     }
 }

@@ -195,6 +195,8 @@ class KermesseController extends MyController
      * @param RecetteRepository $rRecette
      * @param RecetteRowGenerator $rowGenerator
      * @return Response
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function listeRecettes(Kermesse $kermesse, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator): Response
     {

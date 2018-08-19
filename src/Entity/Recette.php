@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\RecetteRepository")
  */
-class Recette
+class Recette extends MyEntity
 {
     /**
      * @ORM\Id()
@@ -42,6 +42,20 @@ class Recette
      * @ORM\Column(type="date")
      */
     private $date;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\Etablissement")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $etablissement;
+
+    /**
+     * Recette constructor.
+     */
+    public function __construct()
+    {
+        $this->date = new \DateTime();
+    }
 
     public function getId()
     {
@@ -78,6 +92,7 @@ class Recette
     public function setActivite(Activite $activite): self
     {
         $this->activite = $activite;
+        $this->setEtablissement($activite->getEtablissement());
         return $this;
     }
 
@@ -101,6 +116,18 @@ class Recette
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getEtablissement(): ?Etablissement
+    {
+        return $this->etablissement;
+    }
+
+    public function setEtablissement(?Etablissement $etablissement): self
+    {
+        $this->etablissement = $etablissement;
 
         return $this;
     }
