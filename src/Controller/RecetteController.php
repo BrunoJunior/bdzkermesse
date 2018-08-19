@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use App\Form\RecetteType;
+use App\Repository\ActiviteRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -15,10 +16,14 @@ class RecetteController extends MyController
      * @Route("/kermesse/{id}/recette/new", name="nouvelle_recette")
      * @Security("kermesse.isProprietaire(user)")
      */
-    public function nouvelleRecette(Kermesse $kermesse, Request $request)
+    public function nouvelleRecette(Kermesse $kermesse, Request $request, ActiviteRepository $rActivite)
     {
         $recette = new Recette();
-        $form = $this->createForm(RecetteType::class, $recette, ['kermesse' => $kermesse]);
+        $form = $this->createForm(RecetteType::class, $recette, [
+            'kermesse' => $kermesse,
+            'acceptent_tickets' => $rActivite->getListeIdAccepteTickets($kermesse),
+            'acceptent_monnaie' => $rActivite->getListeIdAccepteMonnaie($kermesse)
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
@@ -39,21 +44,26 @@ class RecetteController extends MyController
      * @Route("/recette/{id}/edit", name="editer_recette")
      * @Security("recette.isProprietaire(user)")
      */
-    public function editerRecette(Recette $recette, Request $request)
+    public function editerRecette(Recette $recette, Request $request, ActiviteRepository $rActivite)
     {
-        $form = $this->createForm(RecetteType::class, $recette, ['kermesse' => $recette->getActivite()->getKermesse()]);
+        $kermesse = $recette->getActivite()->getKermesse();
+        $form = $this->createForm(RecetteType::class, $recette, [
+            'kermesse' => $recette->getActivite()->getKermesse(),
+            'acceptent_tickets' => $rActivite->getListeIdAccepteTickets($kermesse),
+            'acceptent_monnaie' => $rActivite->getListeIdAccepteMonnaie($kermesse)
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($recette);
             $em->flush();
-            return $this->redirectToRoute('liste_recettes', ['id' => $recette->getActivite()->getKermesse()->getId()]);
+            return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
         }
         return $this->render(
             'recette/edition.html.twig',
             [
                 'form' => $form->createView(),
-                'menu' => $this->getMenu($recette->getActivite()->getKermesse(), static::MENU_RECETTES)
+                'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
             ]
         );
     }

@@ -113,4 +113,44 @@ class ActiviteRepository extends ServiceEntityRepository
         }
         return $resultat;
     }
+
+    /**
+     * @param Kermesse $kermesse
+     * @param string $colonne
+     * @return array
+     */
+    private function getListeIdAccepte(Kermesse $kermesse, string $colonne): array
+    {
+        $result = $this->createQueryBuilder('a')
+            ->andWhere('a.kermesse = :kermesse')
+            ->andWhere('a.'.$colonne.' = :accepte')
+            ->setParameter('kermesse', $kermesse)
+            ->setParameter('accepte', true)
+            ->select('a.id')
+            ->getQuery()
+            ->getArrayResult();
+        return array_map(function ($row) {
+            return $row['id'];
+        }, $result);
+    }
+
+    /**
+     * Liste des ids d'activités de la kermesse acceptant les tickets
+     * @param Kermesse $kermesse
+     * @return array
+     */
+    public function getListeIdAccepteTickets(Kermesse $kermesse): array
+    {
+        return $this->getListeIdAccepte($kermesse, 'accepte_tickets');
+    }
+
+    /**
+     * Liste des ids d'activités de la kermesse acceptant la monnaie
+     * @param Kermesse $kermesse
+     * @return array
+     */
+    public function getListeIdAccepteMonnaie(Kermesse $kermesse): array
+    {
+        return $this->getListeIdAccepte($kermesse, 'accepte_monnaie');
+    }
 }

@@ -34,9 +34,12 @@ class RecetteType extends AbstractType
                 'attr' => ['class' => 'js-datepicker'],
             ])
             ->add('montant', MoneyType::class, [
-                'divisor' => 100
+                'divisor' => 100,
+                'attr' => ['data-activites_autorisees' => json_encode($options['acceptent_monnaie'])]
             ])
-            ->add('nombre_ticket', NumberType::class)
+            ->add('nombre_ticket', NumberType::class, [
+                'attr' => ['data-activites_autorisees' => json_encode($options['acceptent_tickets'])]
+            ])
         ;
     }
 
@@ -45,6 +48,8 @@ class RecetteType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Recette::class,
             'activite' => null,
+            'acceptent_tickets' => [],
+            'acceptent_monnaie' => [],
         ]);
         $resolver->setRequired([
             'kermesse'
