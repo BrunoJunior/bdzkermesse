@@ -5,6 +5,9 @@ namespace App\Controller;
 use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
+use App\Helper\HFloat;
+use App\Repository\RecetteRepository;
+use App\Service\RecetteRowGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -86,5 +89,30 @@ class ActiviteController extends MyController
             $em->flush();
         }
         return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
+    }
+
+    /**
+     * @Route("/activite/{id}", name="activite")
+     * @Security("activite.isProprietaire(user)")
+     * @param Activite $activite
+     * @param RecetteRepository $rRecette
+     * @param RecetteRowGenerator $rowGenerator
+     * @return Response
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function index(Activite $activite, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator): Response
+    {
+        $totaux = $rRecette->getTotauxPourActivite($activite);
+        $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
+        return $this->render(
+            'activite/index.html.twig',
+            [
+                'activite' => $activite,
+                'recettes' => $rowGenerator->generateListPourActivite($activite),
+                'total_recettes' => $totaux,
+                'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
+            ]
+        );
     }
 }

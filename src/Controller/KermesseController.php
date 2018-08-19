@@ -208,7 +208,7 @@ class KermesseController extends MyController
             'kermesse/recettes.html.twig',
             [
                 'kermesse' => $kermesse,
-                'recettes' => $rowGenerator->generateList($kermesse),
+                'recettes' => $rowGenerator->generateListPourKermesse($kermesse),
                 'total' => $totaux,
                 'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
             ]

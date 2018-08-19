@@ -13,7 +13,7 @@
             <p class="card-text">Total : {{ card.total }}</p>
         </div>
         <div class="card-footer">
-            <a href="#" class="btn btn-primary" data-toggle="tooltip" title="Détail"><i class="fas fa-eye"></i></a>
+            <a href="{{ path('activite', {'id': card.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Détail"><i class="fas fa-eye"></i></a>
             {% if not card.activite.caisseCentrale %}
                 <a href="{{ path('editer_activite', {'id': card.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
                 <a href="{{ path('supprimer_activite', {'id': card.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>

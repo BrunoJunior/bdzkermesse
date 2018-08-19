@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -48,6 +49,25 @@ class RecetteRepository extends ServiceEntityRepository
     }
 
     /**
+     * Le montant total des recettes ainsi que le nombre total de tickets d'une activité
+     * @param Activite $activite
+     * @return array
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function getTotauxPourActivite(Activite $activite):array
+    {
+        $result = $this->createQueryBuilder('r')
+            ->andWhere('r.activite = :activite')
+            ->setParameter('activite', $activite)
+            ->select('COALESCE(SUM(r.montant),0) as montant, COALESCE(SUM(r.nombre_ticket),0) as nombre_ticket')
+            ->getQuery()
+            ->getSingleResult();
+        $this->logger->debug(print_r($result, true));
+        return empty($result) ? ['montant' => 0, 'nombre_ticket' => 0] : $result;
+    }
+
+    /**
      * @param Kermesse $kermesse
      * @return array|Recette[]
      */
@@ -58,6 +78,20 @@ class RecetteRepository extends ServiceEntityRepository
             ->andWhere('a.kermesse = :kermesse')
             ->orderBy('r.date')
             ->setParameter('kermesse', $kermesse)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param Activite $activite
+     * @return array|Recette[]
+     */
+    public function findByActivite(Activite $activite):array
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.activite = :activite')
+            ->orderBy('r.date')
+            ->setParameter('activite', $activite)
             ->getQuery()
             ->getResult();
     }

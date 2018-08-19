@@ -9,6 +9,7 @@
 namespace App\Service;
 
 use App\DataTransfer\RecetteRow;
+use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use App\Repository\RecetteRepository;
@@ -44,10 +45,23 @@ class RecetteRowGenerator
      * @param Kermesse $kermesse
      * @return ArrayCollection|RecetteRow[]
      */
-    public function generateList(Kermesse $kermesse): ArrayCollection
+    public function generateListPourKermesse(Kermesse $kermesse): ArrayCollection
     {
         $rows = new ArrayCollection();
         foreach ($this->rRecette->findByKermesse($kermesse) as $recette) {
+            $rows->add($this->generate($recette));
+        }
+        return $rows;
+    }
+
+    /**
+     * @param Activite $activite
+     * @return ArrayCollection|RecetteRow[]
+     */
+    public function generateListPourActivite(Activite $activite): ArrayCollection
+    {
+        $rows = new ArrayCollection();
+        foreach ($this->rRecette->findByActivite($activite) as $recette) {
             $rows->add($this->generate($recette));
         }
         return $rows;

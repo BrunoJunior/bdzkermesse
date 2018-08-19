@@ -3,11 +3,11 @@
     <tr>
         <th scope="col">#</th>
         <th scope="col"><i class="fas fa-calendar"></i> Date</th>
-        <th scope="col"><i class="fas fa-cubes"></i> Activité</th>
+        {% if activite is not defined %}<th scope="col"><i class="fas fa-cubes"></i> Activité</th>{% endif %}
         <th scope="col"><i class="fas fa-tag"></i> Libelle</th>
         <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
         <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
-        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
+        {% if activite is not defined %}<th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>{% endif %}
     </tr>
     </thead>
     <tbody>
@@ -15,26 +15,28 @@
         <tr>
             <th scope="row">{{ recette.id }}</th>
             <td>{{ recette.date }}</td>
-            <td>{{ recette.activite }}</td>
+            {% if activite is not defined %}<td>{{ recette.activite }}</td>{% endif %}
             <td>{{ recette.libelle }}</td>
             <td>{{ recette.nombreTickets }}</td>
             <td>{{ recette.montant }}</td>
-            <td>
-                <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
-            </td>
+            {% if activite is not defined %}
+                <td>
+                    <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
+                    <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                </td>
+            {% endif %}
         </tr>
     {% else %}
-        <tr><td colspan="7">Aucune recette</td></tr>
+        <tr><td colspan="{% if activite is not defined %}7{% else %}5{% endif %}">Aucune recette</td></tr>
     {% endfor %}
     </tbody>
     {% if recettes is not empty %}
         <tfoot>
             <tr>
-                <th scope="row" colspan="4">Total</th>
+                <th scope="row" colspan="{% if activite is not defined %}4{% else %}3{% endif %}">Total</th>
                 <td>{{ total.nombre_ticket }}</td>
                 <td>{{ total.montant }}</td>
-                <td></td>
+                {% if activite is not defined %}<td></td>{% endif %}
             </tr>
         </tfoot>
     {% endif %}

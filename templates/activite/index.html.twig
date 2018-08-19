@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Activité - {{ activite.nom }}{% endblock %}
+
+{% block body %}
+    <fieldset>
+        <legend>{{ activite.nom }} - Recettes</legend>
+        <div class="row">
+            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite} only %}
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>{{ activite.nom }} - Dépenses</legend>
+        <div class="row">
+
+        </div>
+    </fieldset>
+{% endblock %}
