@@ -7,8 +7,10 @@ use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
 use App\Repository\ActiviteRepository;
+use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseService;
+use App\Service\RecetteRowGenerator;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +22,13 @@ class KermesseController extends MyController
 {
     /**
      * @Route("/kermesse/new", name="nouvelle_kermesse")
+     * @param Request $request
+     * @param KermesseService $sKermesse
+     * @return Response
+     * @throws \App\Exception\ServiceException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function nouvelleKermesse(Request $request, KermesseService $sKermesse)
+    public function nouvelleKermesse(Request $request, KermesseService $sKermesse): Response
     {
         $kermesse = new Kermesse();
         $kermesse->setEtablissement($this->getUser());
@@ -45,8 +52,14 @@ class KermesseController extends MyController
     /**
      * @Route("/kermesse/{id}/dupliquer", name="dupliquer_kermesse")
      * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param Request $request
+     * @param KermesseService $sKermesse
+     * @param EntityManagerInterface $entityManager
+     * @return Response
      */
-    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager) {
+    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager): Response
+    {
         $alert = null;
         $nouvelleKermesse = new Kermesse();
         $nouvelleKermesse->setEtablissement($this->getUser());
@@ -80,8 +93,14 @@ class KermesseController extends MyController
     /**
      * @Route("/kermesse/{id}/edit", name="editer_kermesse")
      * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param Request $request
+     * @param KermesseService $sKermesse
+     * @return Response
+     * @throws \App\Exception\ServiceException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse)
+    public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse): Response
     {
         $form = $this->createForm(KermesseType::class, $kermesse);
         $kermesse->setEtablissement($this->getUser());
@@ -109,7 +128,7 @@ class KermesseController extends MyController
      * @param ActiviteCardGenerator $activiteCardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Kermesse $kermesse, ActiviteRepository $rActivite, ActiviteCardGenerator $activiteCardGenerator)
+    public function index(Kermesse $kermesse, ActiviteRepository $rActivite, ActiviteCardGenerator $activiteCardGenerator): Response
     {
         $activiteCards = $activiteCardGenerator->generateList($kermesse);
         return $this->render(
@@ -125,8 +144,11 @@ class KermesseController extends MyController
     /**
      * @Route("/kermesse/{id}/membres_actifs", name="membres_actifs")
      * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param Request $request
+     * @return Response
      */
-    public function definirMembresActifs(Kermesse $kermesse, Request $request)
+    public function definirMembresActifs(Kermesse $kermesse, Request $request): Response
     {
         $form = $this->createForm(MembresKermesseType::class, $kermesse);
         $form->handleRequest($request);
@@ -169,17 +191,21 @@ class KermesseController extends MyController
     /**
      * @Route("/kermesse/{id}/recettes", name="liste_recettes")
      * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param RecetteRepository $rRecette
+     * @param RecetteRowGenerator $rowGenerator
+     * @return Response
      */
-    public function listeRecettes(Kermesse $kermesse)
+    public function listeRecettes(Kermesse $kermesse, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator): Response
     {
+        $totaux = $rRecette->getTotauxPourKermesse($kermesse);
+        $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
         return $this->render(
             'kermesse/recettes.html.twig',
             [
                 'kermesse' => $kermesse,
-                'total' => [
-                    'recettes' => HFloat::getInstance($kermesse->getRecetteTotale() / 100.0)->getMontantFormatFrancais(),
-                    'tickets' => $kermesse->getNbTicketsTotale()
-                ],
+                'recettes' => $rowGenerator->generateList($kermesse),
+                'total' => $totaux,
                 'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
             ]
         );

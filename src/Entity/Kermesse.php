@@ -206,47 +206,6 @@ class Kermesse extends MyEntity
     }
 
     /**
-     * Recette totale de la kermesse
-     * @return int
-     */
-    public function getRecetteTotale(): int
-    {
-        $recette = 0;
-        foreach ($this->getActivites() as $activite) {
-            $recette += $activite->getMontantRecette();
-        }
-        return $recette;
-    }
-
-    /**
-     * Nb de tickets total de la kermesse
-     * @return int
-     */
-    public function getNbTicketsTotale(): int
-    {
-        $nombre = 0;
-        foreach ($this->getActivites() as $activite) {
-            $nombre += $activite->getNombreTotalTickets();
-        }
-        return $nombre;
-    }
-
-    /**
-     * Les recettes du ticket
-     * @return Collection|Recette[]
-     */
-    public function getRecettes(): Collection
-    {
-        $recettes = new ArrayCollection();
-        foreach ($this->getActivites() as $activite) {
-            foreach ($activite->getRecettes() as $recette) {
-                $recettes->add($recette);
-            }
-        }
-        return $recettes;
-    }
-
-    /**
      * @return Etablissement
      */
     protected function getProprietaire(): ?Etablissement

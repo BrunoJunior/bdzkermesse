@@ -45,7 +45,8 @@ class KermesseCardGenerator
     public function generate(Kermesse $kermesse): KermesseCard
     {
         $card = new KermesseCard($kermesse);
+        $totaux = $this->rRecette->getTotauxPourKermesse($kermesse);
         return $card->setDepense($this->rTicket->getMontantTotalPourKermesse($kermesse))
-            ->setRecette($this->rRecette->getMontantTotalPourKermesse($kermesse));
+            ->setRecette($totaux['montant']);
     }
 }

@@ -152,32 +152,6 @@ class Activite extends MyEntity
         return $this;
     }
 
-    /**
-     * La recette en monaie de l'activité
-     * @return int
-     */
-    public function getMontantRecette(): int
-    {
-        $total = 0;
-        foreach ($this->getRecettes() as $recette) {
-            $total += $recette->getMontant();
-        }
-        return $total;
-    }
-
-    /**
-     * Le nombre total de ticket de l'activité
-     * @return int
-     */
-    public function getNombreTotalTickets(): int
-    {
-        $total = 0;
-        foreach ($this->getRecettes() as $recette) {
-            $total += $recette->getNombreTicket();
-        }
-        return $total;
-    }
-
     public function isAccepteTickets(): ?bool
     {
         return $this->accepte_tickets;

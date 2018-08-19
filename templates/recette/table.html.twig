@@ -14,11 +14,11 @@
     {% for recette in recettes %}
         <tr>
             <th scope="row">{{ recette.id }}</th>
-            <td>{{ recette.date|date('d/m/Y') }}</td>
-            <td>{{ recette.activite.nom }}</td>
+            <td>{{ recette.date }}</td>
+            <td>{{ recette.activite }}</td>
             <td>{{ recette.libelle }}</td>
-            <td>{{ recette.nombreTicket }}</td>
-            <td>{{ recette.montantEuro }}</td>
+            <td>{{ recette.nombreTickets }}</td>
+            <td>{{ recette.montant }}</td>
             <td>
                 <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
                 <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
@@ -32,8 +32,8 @@
         <tfoot>
             <tr>
                 <th scope="row" colspan="4">Total</th>
-                <td>{{ total.tickets }}</td>
-                <td>{{ total.recettes }}</td>
+                <td>{{ total.nombre_ticket }}</td>
+                <td>{{ total.montant }}</td>
                 <td></td>
             </tr>
         </tfoot>
