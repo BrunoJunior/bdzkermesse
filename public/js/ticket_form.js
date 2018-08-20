@@ -35,4 +35,8 @@ $(function() {
     $('form').on('collection-widget-removed', function () {
         affichageAucuneActivite();
     });
+
+    $('form .custom-file label').remove();
+    $('form .custom-file input').removeClass('custom-file-input');
+    $('form .custom-file').removeClass('file');
 });

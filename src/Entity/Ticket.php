@@ -72,6 +72,11 @@ class Ticket extends MyEntity
      */
     private $etablissement;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $duplicata;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -209,6 +214,17 @@ class Ticket extends MyEntity
     {
         $this->etablissement = $etablissement;
 
+        return $this;
+    }
+
+    public function getDuplicata()
+    {
+        return $this->duplicata;
+    }
+
+    public function setDuplicata($duplicata): self
+    {
+        $this->duplicata = $duplicata;
         return $this;
     }
 }

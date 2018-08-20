@@ -136,4 +136,16 @@ class TicketRow
     {
         return $this->ticket->getId();
     }
+
+    /**
+     * @return null|string
+     */
+    public function getCheminFichier(): ?string
+    {
+        $duplicata = $this->ticket->getDuplicata();
+        if ($duplicata) {
+            return $this->ticket->getKermesse()->getId() . '/' . $duplicata;
+        }
+        return null;
+    }
 }
