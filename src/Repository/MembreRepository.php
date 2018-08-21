@@ -6,6 +6,7 @@ use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Entity\Membre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -35,6 +36,28 @@ class MembreRepository extends ServiceEntityRepository
             ->setParameter('etablissement', $etablissement)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    /**
+     * @param Etablissement $etablissement
+     * @return ArrayCollection id => montant
+     */
+    public function getMontantsNonRemboursesParMembre(Etablissement $etablissement):ArrayCollection
+    {
+        $result = $this->createQueryBuilder('m')
+            ->leftJoin('m.tickets', 't')
+            ->andWhere('m.etablissement = :etablissement')
+            ->andWhere('t.remboursement IS NULL')
+            ->setParameter('etablissement', $etablissement)
+            ->select('m.id, COALESCE(SUM(t.montant),0) as montant')
+            ->groupBy('m.id')
+            ->getQuery()
+            ->getArrayResult();
+        $final = new ArrayCollection();
+        foreach ($result as $row) {
+            $final->set($row['id'], $row['montant']);
+        }
+        return $final;
     }
 
 //    /**

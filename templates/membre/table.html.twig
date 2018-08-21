@@ -2,21 +2,26 @@
     <thead class="thead-dark">
     <tr>
         <th scope="col">#</th>
-        <th scope="col"><i class="fas fa-user"></i> Nom</th>
+        <th scope="col"><i class="fas fa-user"></i> Identité</th>
         <th scope="col"><i class="fas fa-at"></i> Adresse e-mail</th>
-        <th scope="col"><i class="fab fa-telegram-plane"></i> Action</th>
+        <th scope="col"><i class="fas fa-euro-sign"></i> À rembourser</th>
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
     </tr>
     </thead>
     <tbody>
     {% for membre in membres %}
         <tr>
             <th scope="row">{{ membre.id }}</th>
-            <td>{{ membre.prenom }} {{ membre.nom }}</td>
+            <td>{{ membre.identite }}</td>
             <td>{{ membre.email }}</td>
-            <td><a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a></td>
+            <td>{{ membre.montantNonRembourse }}</td>
+            <td>
+                <a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
+                {% if membre.aRembourser %}<a href="" class="btn btn-secondary"><i class="fas fa-money-check"></i> Rembourser</a>{% endif %}
+            </td>
         </tr>
     {% else %}
-        <tr><td colspan="4">Aucun membre</td></tr>
+        <tr><td colspan="5">Aucun membre</td></tr>
     {% endfor %}
     </tbody>
 </table>
