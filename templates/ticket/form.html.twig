@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}<link rel="stylesheet" href="/css/ticket_form.css">{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/ticket_form.css') }}">{% endblock %}
 
 {% block title %}Dépense{% endblock %}
 
@@ -29,4 +29,4 @@
     </div>
 {% endblock %}
 
-{% block javascripts %}<script src="/js/ticket_form.js"></script>{% endblock %}
+{% block javascripts %}<script src="{{ asset('js/ticket_form.js') }}"></script>{% endblock %}
