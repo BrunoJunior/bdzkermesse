@@ -18,10 +18,6 @@ class ActiviteType extends AbstractType
                 ->add('accepteTickets', CheckboxType::class, [
                     'label'    => 'Accepte les tickets ?',
                     'required' => false
-                ])
-                ->add('accepteMonnaie', CheckboxType::class, [
-                    'label'    => 'Accepte la monnaie ?',
-                    'required' => false
                 ]);
         }
     }

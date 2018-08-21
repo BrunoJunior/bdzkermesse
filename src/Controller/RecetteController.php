@@ -21,8 +21,7 @@ class RecetteController extends MyController
         $recette = new Recette();
         $form = $this->createForm(RecetteType::class, $recette, [
             'kermesse' => $kermesse,
-            'acceptent_tickets' => $rActivite->getListeIdAccepteTickets($kermesse),
-            'acceptent_monnaie' => $rActivite->getListeIdAccepteMonnaie($kermesse)
+            'acceptent_tickets' => $rActivite->getListeIdAccepteTickets($kermesse)
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -49,8 +48,7 @@ class RecetteController extends MyController
         $kermesse = $recette->getActivite()->getKermesse();
         $form = $this->createForm(RecetteType::class, $recette, [
             'kermesse' => $recette->getActivite()->getKermesse(),
-            'acceptent_tickets' => $rActivite->getListeIdAccepteTickets($kermesse),
-            'acceptent_monnaie' => $rActivite->getListeIdAccepteMonnaie($kermesse)
+            'acceptent_tickets' => $rActivite->getListeIdAccepteTickets($kermesse)
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

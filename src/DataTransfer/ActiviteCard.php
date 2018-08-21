@@ -25,7 +25,7 @@ class ActiviteCard
     /**
      * @var ?int
      */
-    private $recette;
+    private $recette = 0;
 
     /**
      * @var int
@@ -52,9 +52,7 @@ class ActiviteCard
      */
     public function setRecette(int $recette): ActiviteCard
     {
-        if ($this->activite->isAccepteMonnaie()) {
-            $this->recette = $recette;
-        }
+        $this->recette = $recette;
         return $this;
     }
 
@@ -104,7 +102,7 @@ class ActiviteCard
      */
     public function getRecette(): string
     {
-        return $this->recette === null ? '' : HFloat::getInstance($this->recette / 100.00)->getMontantFormatFrancais();
+        return $this->recette == 0 ? '' : HFloat::getInstance($this->recette / 100.00)->getMontantFormatFrancais();
     }
 
     /**

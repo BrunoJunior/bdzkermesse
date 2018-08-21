@@ -143,14 +143,4 @@ class ActiviteRepository extends ServiceEntityRepository
     {
         return $this->getListeIdAccepte($kermesse, 'accepte_tickets');
     }
-
-    /**
-     * Liste des ids d'activités de la kermesse acceptant la monnaie
-     * @param Kermesse $kermesse
-     * @return array
-     */
-    public function getListeIdAccepteMonnaie(Kermesse $kermesse): array
-    {
-        return $this->getListeIdAccepte($kermesse, 'accepte_monnaie');
-    }
 }

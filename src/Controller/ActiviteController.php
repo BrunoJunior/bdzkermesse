@@ -31,6 +31,7 @@ class ActiviteController extends MyController
         $activite = new Activite();
         $activite->setCaisseCentrale(false);
         $activite->setKermesse($kermesse);
+        $activite->setAccepteMonnaie(true);
         $form = $this->createForm(ActiviteType::class, $activite);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -60,6 +61,7 @@ class ActiviteController extends MyController
         if ($activite->isCaisseCentrale()) {
             $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
         }
+        $activite->setAccepteMonnaie(true);
         $form = $this->createForm(ActiviteType::class, $activite);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
