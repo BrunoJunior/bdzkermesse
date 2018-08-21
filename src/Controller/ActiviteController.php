@@ -6,7 +6,10 @@ use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
 use App\Helper\HFloat;
+use App\Repository\DepenseRepository;
 use App\Repository\RecetteRepository;
+use App\Service\ActiviteCardGenerator;
+use App\Service\DepenseRowGenerator;
 use App\Service\RecetteRowGenerator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -96,21 +99,30 @@ class ActiviteController extends MyController
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param RecetteRepository $rRecette
+     * @param DepenseRepository $rDepense
      * @param RecetteRowGenerator $rowGenerator
+     * @param DepenseRowGenerator $dRowGenerator
      * @return Response
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(Activite $activite, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator): Response
+    public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator, ActiviteCardGenerator $actCardGenerator): Response
     {
         $totaux = $rRecette->getTotauxPourActivite($activite);
+        $recette = $totaux['montant'];
+        $nbTickets = $totaux['nombre_ticket'];
+        $depense = $rDepense->getTotalPourActivite($activite);
         $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
         return $this->render(
             'activite/index.html.twig',
             [
                 'activite' => $activite,
                 'recettes' => $rowGenerator->generateListPourActivite($activite),
+                'depenses' => $dRowGenerator->generateList($activite),
+                'card' => $actCardGenerator->generate($activite, $depense, $recette, $nbTickets),
                 'total_recettes' => $totaux,
+                'total_depenses' => HFloat::getInstance($depense / 100.0)->getMontantFormatFrancais(),
                 'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
             ]
         );

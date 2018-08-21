@@ -1,0 +1,34 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-calendar"></i> Date</th>
+        <th scope="col"><i class="fas fa-user"></i> Acheteur</th>
+        <th scope="col"><i class="fas fa-barcode"></i> N°</th>
+        <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
+        <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for depense in depenses %}
+        <tr>
+            <th scope="row">{{ depense.id }}</th>
+            <td>{{ depense.date }}</td>
+            <td>{{ depense.acheteur }}</td>
+            <td>{{ depense.numero }}</td>
+            <td>{{ depense.fournisseur }}</td>
+            <td>{{ depense.montant }}</td>
+        </tr>
+    {% else %}
+        <tr><td colspan="6">Aucune dépense</td></tr>
+    {% endfor %}
+    </tbody>
+    {% if depenses is not empty %}
+        <tfoot>
+        <tr>
+            <th scope="row" colspan="5">Total</th>
+            <td>{{ total }}</td>
+        </tr>
+        </tfoot>
+    {% endif %}
+</table>

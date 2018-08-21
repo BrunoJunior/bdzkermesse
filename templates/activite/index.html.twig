@@ -3,16 +3,19 @@
 {% block title %}Activité - {{ activite.nom }}{% endblock %}
 
 {% block body %}
+    <div class="row justify-content-center">
+        {% include "activite/card.html.twig" with {'card': card} only %}
+    </div>
     <fieldset>
-        <legend>{{ activite.nom }} - Recettes</legend>
+        <legend>Recettes</legend>
         <div class="row">
             {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite} only %}
         </div>
     </fieldset>
     <fieldset>
-        <legend>{{ activite.nom }} - Dépenses</legend>
+        <legend>Dépenses</legend>
         <div class="row">
-
+            {% include "depense/table.html.twig" with {'depenses': depenses, 'total': total_depenses} only %}
         </div>
     </fieldset>
 {% endblock %}

@@ -30,6 +30,20 @@ class ActiviteCardGenerator
         $this->rActivite = $rActivite;
     }
 
+    /**
+     * @param Activite $activite
+     * @param int $depense
+     * @param int $recette
+     * @param int $nbTickets
+     * @return ActiviteCard
+     */
+    public function generate(Activite $activite, int $depense = 0, int $recette = 0, int $nbTickets = 0): ActiviteCard
+    {
+        $card = new ActiviteCard($activite);
+        return $card->setDepense($depense)
+            ->setRecette($recette)
+            ->setNombreTickets($nbTickets);
+    }
 
     /**
      * @param Kermesse $kermesse
@@ -39,14 +53,11 @@ class ActiviteCardGenerator
     {
         $totaux = $this->rActivite->getTotaux($kermesse);
         $cards = array_map(function (Activite $activite) use($totaux) {
-            $card = new ActiviteCard($activite);
             $key = '' . $activite->getId();
             if ($totaux->containsKey($key)) {
-                $card->setDepense($totaux->get($key)['depense'])
-                    ->setNombreTickets($totaux->get($key)['nombre_ticket'])
-                    ->setRecette($totaux->get($key)['recette']);
+                return $this->generate($activite, $totaux->get($key)['depense'], $totaux->get($key)['recette'], $totaux->get($key)['nombre_ticket']);
             }
-            return $card;
+            return $this->generate($activite);
         }, $this->rActivite->findByKermesseId($kermesse->getId()));
         return $cards;
     }
