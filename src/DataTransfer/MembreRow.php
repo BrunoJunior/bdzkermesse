@@ -25,6 +25,11 @@ class MembreRow
     private $montantNonRembourse = 0;
 
     /**
+     * @var int
+     */
+    private $montantAttenteRemboursement = 0;
+
+    /**
      * MembreRow constructor.
      * @param Membre $membre
      */
@@ -49,6 +54,16 @@ class MembreRow
     public function setMontantNonRembourse(int $montant):self
     {
         $this->montantNonRembourse = $montant;
+        return $this;
+    }
+
+    /**
+     * @param int $montantAttenteRemboursement
+     * @return MembreRow
+     */
+    public function setMontantAttenteRemboursement(int $montantAttenteRemboursement): self
+    {
+        $this->montantAttenteRemboursement = $montantAttenteRemboursement;
         return $this;
     }
 
@@ -82,6 +97,14 @@ class MembreRow
     public function getMontantNonRembourse():string
     {
         return HFloat::getInstance($this->montantNonRembourse / 100.0)->getMontantFormatFrancais();
+    }
+
+    /**
+     * @return string
+     */
+    public function getMontantAttenteRemboursement():string
+    {
+        return HFloat::getInstance($this->montantAttenteRemboursement / 100.0)->getMontantFormatFrancais();
     }
 
     /**

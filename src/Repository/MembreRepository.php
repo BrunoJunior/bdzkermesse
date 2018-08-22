@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Entity\Membre;
+use App\Entity\Remboursement;
+use App\Enum\RemboursementEtatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -49,6 +51,30 @@ class MembreRepository extends ServiceEntityRepository
             ->andWhere('m.etablissement = :etablissement')
             ->andWhere('t.remboursement IS NULL')
             ->setParameter('etablissement', $etablissement)
+            ->select('m.id, COALESCE(SUM(t.montant),0) as montant')
+            ->groupBy('m.id')
+            ->getQuery()
+            ->getArrayResult();
+        $final = new ArrayCollection();
+        foreach ($result as $row) {
+            $final->set($row['id'], $row['montant']);
+        }
+        return $final;
+    }
+
+    /**
+     * @param Etablissement $etablissement
+     * @return ArrayCollection id => montant
+     */
+    public function getMontantsAttenteRemboursementParMembre(Etablissement $etablissement):ArrayCollection
+    {
+        $result = $this->createQueryBuilder('m')
+            ->leftJoin('m.tickets', 't')
+            ->leftJoin('t.remboursement', 'r')
+            ->andWhere('m.etablissement = :etablissement')
+            ->andWhere('r.etat = :etat')
+            ->setParameter('etablissement', $etablissement)
+            ->setParameter('etat', RemboursementEtatEnum::EN_ATTENTE)
             ->select('m.id, COALESCE(SUM(t.montant),0) as montant')
             ->groupBy('m.id')
             ->getQuery()
