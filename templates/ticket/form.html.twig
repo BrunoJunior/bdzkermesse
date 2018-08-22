@@ -26,6 +26,16 @@
                 </fieldset>
             </div>
         </div>
+        {% if duplicata is defined and duplicata is not empty and is_image %}
+            <div class="col-sm-10 col-md-8 col-xl-5">
+                <div class="well">
+                    <fieldset>
+                        <legend><i class="fas fa-file-image"></i> Duplicata</legend>
+                        <img src="{{ asset('uploads/tickets/' ~ duplicata) }}" class="img-fluid" alt="Duplicata" />
+                    </fieldset>
+                </div>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 

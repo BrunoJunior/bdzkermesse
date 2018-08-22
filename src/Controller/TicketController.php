@@ -6,6 +6,7 @@ use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Form\TicketType;
 use App\Service\FileUploader;
+use Stringy\Stringy;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -61,9 +62,11 @@ class TicketController extends MyController
     {
         $kermesse = $ticket->getKermesse();
         $prevDuplicata = null;
+        $file = null;
         if ($ticket->getDuplicata()) {
             $prevDuplicata = $ticket->getDuplicata();
-            $ticket->setDuplicata(new File($this->getDuplicataDir($kermesse) . '/' . $prevDuplicata));
+            $file = new File($this->getDuplicataDir($kermesse) . '/' . $prevDuplicata);
+            $ticket->setDuplicata($file);
         }
         $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
         $form->handleRequest($request);
@@ -88,6 +91,8 @@ class TicketController extends MyController
             'ticket/edition.html.twig',
             [
                 'form' => $form->createView(),
+                'duplicata' => $kermesse->getId() . '/' . $prevDuplicata,
+                'is_image' => $file ? Stringy::create($file->getMimeType())->startsWith('image/') : false,
                 'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
             ]
         );
