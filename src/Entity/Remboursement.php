@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\RemboursementEtatEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -54,6 +55,11 @@ class Remboursement extends MyEntity
      * @ORM\JoinColumn(nullable=false)
      */
     private $etablissement;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default" : 0})
+     */
+    private $etat = RemboursementEtatEnum::EN_ATTENTE;
 
     /**
      * Remboursement constructor.
@@ -165,6 +171,18 @@ class Remboursement extends MyEntity
     public function setEtablissement(?Etablissement $etablissement): self
     {
         $this->etablissement = $etablissement;
+
+        return $this;
+    }
+
+    public function getEtat(): ?int
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(int $etat): self
+    {
+        $this->etat = $etat;
 
         return $this;
     }

@@ -11,6 +11,7 @@ namespace App\DataTransfer;
 
 use App\Entity\Depense;
 use App\Entity\Ticket;
+use App\Enum\TicketEtatEnum;
 use App\Helper\HFloat;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -37,13 +38,20 @@ class TicketRow
     private $activitesLiees;
 
     /**
+     * @var TicketEtatEnum
+     */
+    private $etat;
+
+    /**
      * TicketRow constructor.
      * @param Ticket $ticket
+     * @throws \SimpleEnum\Exception\UnknownEumException
      */
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;
         $this->montant = $this->ticket->getMontant() ?? 0;
+        $this->etat = TicketEtatEnum::getInstance($this->ticket->getEtat());
     }
 
     /**
@@ -147,5 +155,21 @@ class TicketRow
             return $this->ticket->getKermesse()->getId() . '/' . $duplicata;
         }
         return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEtat(): string
+    {
+        return $this->etat->getLabel();
+    }
+
+    /**
+     * @return string
+     */
+    public function getPastilleEtat(): string
+    {
+        return $this->etat->getPastille();
     }
 }

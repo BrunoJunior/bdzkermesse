@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TicketEtatEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -76,6 +77,11 @@ class Ticket extends MyEntity
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $duplicata;
+
+    /**
+     * @ORM\Column(type="smallint", options={"default" : 0})
+     */
+    private $etat = TicketEtatEnum::A_REMBOURSER;
 
     public function __construct()
     {
@@ -225,6 +231,18 @@ class Ticket extends MyEntity
     public function setDuplicata($duplicata): self
     {
         $this->duplicata = $duplicata;
+        return $this;
+    }
+
+    public function getEtat(): int
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(int $etat): self
+    {
+        $this->etat = $etat;
+
         return $this;
     }
 }

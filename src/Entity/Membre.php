@@ -56,9 +56,9 @@ class Membre extends MyEntity
     private $tickets;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $defaut;
+    private $defaut = false;
 
     public function __construct()
     {
