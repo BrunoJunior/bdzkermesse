@@ -12,8 +12,7 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-
-    <header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">
+    <header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar fixed-top">
         <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="BdzKermesse">BdzKermesse</a>
         {% if app.user is not empty %}
             <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
@@ -29,6 +28,13 @@
             </ul>
         {% endif %}
     </header>
+    {% if menu is defined %}
+        <aside class="col-md-2 d-none d-md-block px-0 sidebar-sticky fixed-top">
+            <nav class="sidebar-nav">
+                {% include "menu.html.twig" with {'menu': menu, 'menu_main': true} only %}
+            </nav>
+        </aside>
+    {% endif %}
 
         <div class="container-fluid">
             {% if breadcrumb is defined %}
@@ -49,28 +55,19 @@
                     </nav>
                 </div>
             {% endif %}
-            <div class="row">
-                {% if menu is defined %}
-                    <aside class="col-md-2 px-0 sidebar-sticky">
-                        <nav class="sidebar-nav">
-                            {% include "menu.html.twig" with {'menu': menu, 'menu_main': true} only %}
-                        </nav>
-                    </aside>
-                    <div class="col-md-10">
-                {% else %}
-                    <div class="col-md-12">
-                {% endif %}
-                        {% if global_alert is defined and global_alert is not empty %}
-                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                {{ global_alert }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        {% endif %}
-                        <div class="container-fluid pt-3">
-                            {% block body %}{% endblock %}
+            <div class="row justify-content-end">
+                <div class="col-md-{% if menu is defined %}10{% else %}12{% endif %}">
+                    {% if global_alert is defined and global_alert is not empty %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ global_alert }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                         </div>
+                    {% endif %}
+                    <div class="container-fluid pt-3">
+                        {% block body %}{% endblock %}
+                    </div>
                 </div>
             </div>
         </div>

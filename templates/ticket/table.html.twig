@@ -2,13 +2,13 @@
     <thead class="thead-dark">
     <tr>
         <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-question-circle"></i> État</th>
         <th scope="col"><i class="fas fa-calendar"></i> Date</th>
         <th scope="col"><i class="fas fa-user"></i> Acheteur</th>
         <th scope="col"><i class="fas fa-barcode"></i> N°</th>
         <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
         <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
         <th scope="col"><i class="fas fa-link"></i> Activités liées</th>
-        <th scope="col"><i class="fas fa-question-circle"></i> État</th>
         <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
     </tr>
     </thead>
@@ -16,13 +16,13 @@
     {% for row in rows %}
         <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>
             <th scope="row">{{ row.id }}</th>
+            <td><span  data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
             <td>{{ row.date }}</td>
             <td>{{ row.acheteur }}</td>
             <td>{{ row.numero }}</td>
             <td>{{ row.fournisseur }}</td>
             <td>{{ row.montant }}</td>
             <td>{{ row.activitesLiees }}</td>
-            <td><span  data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
             <td>
                 <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
                 {% if row.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ row.cheminFichier) }}" target="_blank" class="btn btn-secondary"><i class="fas fa-file-image"></i> Duplicata</a>{% endif %}
