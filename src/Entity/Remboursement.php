@@ -30,7 +30,7 @@ class Remboursement extends MyEntity
     private $montant;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", nullable=true)
      */
     private $mode;
 
@@ -102,7 +102,7 @@ class Remboursement extends MyEntity
         return $this->mode;
     }
 
-    public function setMode(int $mode): self
+    public function setMode(?int $mode): self
     {
         $this->mode = $mode;
 

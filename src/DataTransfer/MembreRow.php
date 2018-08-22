@@ -48,22 +48,22 @@ class MembreRow
     }
 
     /**
-     * @param int $montant
+     * @param int|null $montant
      * @return MembreRow
      */
-    public function setMontantNonRembourse(int $montant):self
+    public function setMontantNonRembourse(?int $montant):self
     {
-        $this->montantNonRembourse = $montant;
+        $this->montantNonRembourse = $montant ?? 0;
         return $this;
     }
 
     /**
-     * @param int $montantAttenteRemboursement
+     * @param int|null $montantAttenteRemboursement
      * @return MembreRow
      */
-    public function setMontantAttenteRemboursement(int $montantAttenteRemboursement): self
+    public function setMontantAttenteRemboursement(?int $montantAttenteRemboursement): self
     {
-        $this->montantAttenteRemboursement = $montantAttenteRemboursement;
+        $this->montantAttenteRemboursement = $montantAttenteRemboursement ?? 0;
         return $this;
     }
 

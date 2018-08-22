@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Kermesse;
+use App\Entity\Membre;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -76,6 +77,22 @@ class TicketRepository extends ServiceEntityRepository
             $result->set("".$row['id'], $row);
         }
         return $result;
+    }
+
+    /**
+     * Les tickets non remboursés d'un membre
+     * @param Membre $membre
+     * @return array|Ticket[]
+     */
+    public function findNonRembourses(Membre $membre):array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.membre = :membre')
+            ->andWhere('t.remboursement IS NULL')
+            ->orderBy('t.date')
+            ->setParameter('membre', $membre)
+            ->getQuery()
+            ->getResult();
     }
 
 //    /**

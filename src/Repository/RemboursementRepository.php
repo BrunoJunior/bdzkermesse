@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Membre;
 use App\Entity\Remboursement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
@@ -17,6 +18,21 @@ class RemboursementRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Remboursement::class);
+    }
+
+    /**
+     * @param Membre $membre
+     * @return int
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function countRemboursementsMembres(Membre $membre):int
+    {
+        return $this->createQueryBuilder('r')
+            ->select("COUNT(r)")
+            ->andWhere('r.membre = :membre')
+            ->setParameter('membre', $membre)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
 //    /**
