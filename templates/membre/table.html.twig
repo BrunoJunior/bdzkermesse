@@ -18,9 +18,13 @@
             <td>{{ membre.montantNonRembourse }}</td>
             <td>{{ membre.montantAttenteRemboursement }}</td>
             <td>
-                <a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                {% if membre.aRembourser %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary"><i class="fas fa-money-check"></i> Demander remboursement</a>{% endif %}
-                {% if membre.enAttenteRemboursement %}<a href="{{ path('valider_remboursement', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-secondary"><i class="fas fa-clipboard-check"></i> Confirmer remboursement</a>{% endif %}
+                <a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+                <a href="" class="btn btn-warning" data-toggle="tooltip" title="Contacter"><i class="fas fa-envelope"></i></a>
+                {% if membre.aRembourser %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Demander remboursement"><i class="fas fa-money-check"></i></a>{% endif %}
+                {% if membre.enAttenteRemboursement %}
+                    <a href="" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
+                    <a href="{{ path('valider_remboursement', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer remboursement"><i class="fas fa-clipboard-check"></i></a>
+                {% endif %}
             </td>
         </tr>
     {% else %}
