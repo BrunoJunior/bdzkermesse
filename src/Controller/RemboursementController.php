@@ -66,11 +66,11 @@ class RemboursementController extends MyController
      */
     public function validerRemboursement(Request $request, Remboursement $remboursement): Response
     {
+        $remboursement->setDate(new \DateTime());
         $form = $this->createForm(ValiderRemboursementType::class, $remboursement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $remboursement->setEtat(RemboursementEtatEnum::VALIDE);
-            $remboursement->setDate(new \DateTime());
             $em = $this->getDoctrine()->getManager();
             foreach ($remboursement->getTickets() as $ticket) {
                 $ticket->setEtat(TicketEtatEnum::REMBOURSE);

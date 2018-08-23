@@ -9,8 +9,10 @@
                 <fieldset>
                     <legend><i class="fas fa-clipboard-check"></i> Confirmation de remboursement</legend>
                     {{ form_start(form) }}
+                    {{ form_row(form.membre) }}
                     {{ form_row(form.numero_suivi) }}
                     {{ form_row(form.montant) }}
+                    {{ form_row(form.date) }}
                     {{ form_row(form.mode) }}
                     <button class="btn btn-primary" type="submit">Enregistrer !</button>
                     {{ form_end(form) }}

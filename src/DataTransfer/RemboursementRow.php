@@ -119,4 +119,12 @@ class RemboursementRow
     {
         return $this->mode ? $this->mode->getLabel() : '';
     }
+
+    /**
+     * @return bool
+     */
+    public function isEnAttente():bool
+    {
+        return $this->etat->is(RemboursementEtatEnum::EN_ATTENTE);
+    }
 }

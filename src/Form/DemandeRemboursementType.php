@@ -23,6 +23,13 @@ class DemandeRemboursementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('membre', EntityType::class, [
+                'class' => Membre::class,
+                'disabled' => true,
+                'choice_label' => function (Membre $membre) {
+                    return $membre->getPrenom() . ' ' . $membre->getNom();
+                }
+            ])
             ->add('numero_suivi', TextType::class)
             ->add('montant', MoneyType::class, [
                 'divisor' => 100,

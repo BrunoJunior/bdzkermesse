@@ -21,7 +21,9 @@
             <td>{{ row.membre }}</td>
             <td>{{ row.montant }}</td>
             <td>{{ row.mode }}</td>
-            <td></td>
+            <td>
+                {% if row.enAttente %}<a href="{{ path('valider_remboursement', {'id': row.id}) }}" class="btn btn-secondary"><i class="fas fa-clipboard-check"></i> Confirmer</a>{% endif %}
+            </td>
         </tr>
     {% else %}
         <tr><td colspan="8">Aucun remboursement</td></tr>

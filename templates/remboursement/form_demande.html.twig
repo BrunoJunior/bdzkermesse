@@ -9,6 +9,7 @@
                 <fieldset>
                     <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Demande de remboursement</legend>
                     {{ form_start(form) }}
+                    {{ form_row(form.membre) }}
                     {{ form_row(form.numero_suivi) }}
                     {{ form_row(form.montant) }}
                     {{ form_row(form.tickets) }}

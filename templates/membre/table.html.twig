@@ -19,7 +19,7 @@
             <td>{{ membre.montantAttenteRemboursement }}</td>
             <td>
                 <a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                {% if membre.aRembourser and not membre.enAttenteRemboursement %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary"><i class="fas fa-money-check"></i> Demander remboursement</a>{% endif %}
+                {% if membre.aRembourser %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary"><i class="fas fa-money-check"></i> Demander remboursement</a>{% endif %}
                 {% if membre.enAttenteRemboursement %}<a href="{{ path('valider_remboursement', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-secondary"><i class="fas fa-clipboard-check"></i> Confirmer remboursement</a>{% endif %}
             </td>
         </tr>
