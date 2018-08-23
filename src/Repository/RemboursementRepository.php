@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\Etablissement;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
+use App\Enum\RemboursementEtatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -52,15 +55,39 @@ class RemboursementRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Remboursement
+    /**
+     * @param Etablissement $etablissement
+     * @return ArrayCollection|Remboursement[] Clé : id membre, Valeur : premier remboursement en attente
+     */
+    public function findPremierEnAttenteParMembre(Etablissement $etablissement): ArrayCollection
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
+        $ids = $this->createQueryBuilder('r')
+            ->select("MIN(r.id)")
+            ->andWhere('r.etablissement = :etablissement')
+            ->andWhere('r.etat = :etat')
+            ->groupBy('r.membre')
+            ->setParameter('etablissement', $etablissement)
+            ->setParameter('etat', RemboursementEtatEnum::EN_ATTENTE)
             ->getQuery()
-            ->getOneOrNullResult()
+            ->getScalarResult()
         ;
+        $final = new ArrayCollection();
+        if (!empty($ids)) {
+            $result = $this->createQueryBuilder('r')
+                ->andWhere('r.id IN (:ids)')
+                ->setParameter('ids', $ids)
+                ->getQuery()
+                ->getResult();
+            foreach ($etablissement->getMembres() as $membre) {
+                foreach ($result as $index => $remboursement) {
+                    if ($membre == $remboursement->getMembre()) {
+                        $final->set($membre->getId(), $remboursement);
+                        unset($result[$index]);
+                        break;
+                    }
+                }
+            }
+        }
+        return $final;
     }
-    */
 }

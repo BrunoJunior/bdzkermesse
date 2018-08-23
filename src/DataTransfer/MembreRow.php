@@ -10,6 +10,7 @@ namespace App\DataTransfer;
 
 
 use App\Entity\Membre;
+use App\Entity\Remboursement;
 use App\Helper\HFloat;
 
 class MembreRow
@@ -28,6 +29,11 @@ class MembreRow
      * @var int
      */
     private $montantAttenteRemboursement = 0;
+
+    /**
+     * @var Remboursement
+     */
+    private $pemierRemboursementAttente;
 
     /**
      * MembreRow constructor.
@@ -54,6 +60,16 @@ class MembreRow
     public function setMontantNonRembourse(?int $montant):self
     {
         $this->montantNonRembourse = $montant ?? 0;
+        return $this;
+    }
+
+    /**
+     * @param Remboursement|null $pemierRemboursementAttente
+     * @return MembreRow
+     */
+    public function setPremierRemboursementEnAttente(?Remboursement $pemierRemboursementAttente):self
+    {
+        $this->pemierRemboursementAttente = $pemierRemboursementAttente;
         return $this;
     }
 
@@ -113,6 +129,22 @@ class MembreRow
     public function isARembourser():bool
     {
         return $this->montantNonRembourse > 0 && !$this->isDefaut();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnAttenteRemboursement():bool
+    {
+        return $this->montantAttenteRemboursement > 0 && !$this->isDefaut();
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getIdPremierRemboursementAttente():?int
+    {
+        return $this->pemierRemboursementAttente ? $this->pemierRemboursementAttente->getId() : null;
     }
 
     /**
