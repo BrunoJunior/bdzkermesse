@@ -3,11 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\Etablissement;
+use App\Entity\Kermesse;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -18,9 +20,15 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class RemboursementRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(RegistryInterface $registry, LoggerInterface $logger)
     {
         parent::__construct($registry, Remboursement::class);
+        $this->logger = $logger;
     }
 
     /**
@@ -38,22 +46,30 @@ class RemboursementRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-//    /**
-//     * @return Remboursement[] Returns an array of Remboursement objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * Liste des remboursements d'une kermesse
+     * @param Kermesse $kermesse
+     * @return Remboursement[] Returns an array of Remboursement objects
+     */
+    public function getListePourKermesse(Kermesse $kermesse):array
     {
-        return $this->createQueryBuilder('r')
-            ->andWhere('r.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('r.id', 'ASC')
-            ->setMaxResults(10)
+        $ids = $this->createQueryBuilder('r')
+            ->select("DISTINCT(r)")
+            ->leftJoin('r.tickets', 't')
+            ->andWhere('t.kermesse = :kermesse')
+            ->setParameter('kermesse', $kermesse)
             ->getQuery()
-            ->getResult()
-        ;
+            ->getScalarResult();
+        if (empty($ids)) {
+            return [];
+        }
+        $query = $this->createQueryBuilder('r')
+            ->andWhere('r.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->addOrderBy('r.date', 'DESC')
+            ->getQuery();
+        return $query->getResult();
     }
-    */
 
     /**
      * @param Etablissement $etablissement

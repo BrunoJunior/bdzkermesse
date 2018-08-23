@@ -11,6 +11,7 @@ use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
+use App\Service\RemboursementRowGenerator;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -211,6 +212,26 @@ class KermesseController extends MyController
                 'recettes' => $rowGenerator->generateListPourKermesse($kermesse),
                 'total' => $totaux,
                 'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
+            ]
+        );
+    }
+
+    /**
+     * @Route("/kermesse/{id}/remboursements", name="liste_remboursements")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param RemboursementRowGenerator $rGenerator
+     * @return Response
+     * @throws \SimpleEnum\Exception\UnknownEumException
+     */
+    public function listeRemboursements(Kermesse $kermesse, RemboursementRowGenerator $rGenerator): Response
+    {
+        return $this->render(
+            'kermesse/remboursements.html.twig',
+            [
+                'kermesse' => $kermesse,
+                'rows' => $rGenerator->generateList($kermesse),
+                'menu' => $this->getMenu($kermesse, static::MENU_REMBOURSEMENTS)
             ]
         );
     }

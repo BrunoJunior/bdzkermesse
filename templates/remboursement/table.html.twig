@@ -1,0 +1,30 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col"><i class="far fa-eye"></i> N° de suivi</th>
+        <th scope="col"><i class="fas fa-question-circle"></i> État</th>
+        <th scope="col"><i class="fas fa-calendar"></i> Date</th>
+        <th scope="col"><i class="fas fa-user"></i> Membre</th>
+        <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
+        <th scope="col"><i class="fas fa-info-circle"></i> Mode</th>
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for row in rows %}
+        <tr>
+            <th scope="row">{{ row.id }}</th>
+            <td>{{ row.numeroSuivi }}</td>
+            <td><span data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
+            <td>{{ row.date }}</td>
+            <td>{{ row.membre }}</td>
+            <td>{{ row.montant }}</td>
+            <td>{{ row.mode }}</td>
+            <td></td>
+        </tr>
+    {% else %}
+        <tr><td colspan="8">Aucun remboursement</td></tr>
+    {% endfor %}
+    </tbody>
+</table>

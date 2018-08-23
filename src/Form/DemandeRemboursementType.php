@@ -24,6 +24,10 @@ class DemandeRemboursementType extends AbstractType
     {
         $builder
             ->add('numero_suivi', TextType::class)
+            ->add('montant', MoneyType::class, [
+                'divisor' => 100,
+                'disabled' => true,
+            ])
             ->add('tickets', EntityType::class, [
                 'class' => Ticket::class,
                 'choices' => $options['tickets'],
@@ -32,7 +36,11 @@ class DemandeRemboursementType extends AbstractType
                 'mapped' => true,
                 'choice_label' => function (Ticket $ticket) {
                     return "Ticket #" . $ticket->getId() . ' du ' . $ticket->getDate()->format('d/m/Y') . '(' . HFloat::getInstance($ticket->getMontant() / 100.0)->getMontantFormatFrancais() . ')';
-                }
+                },
+                // Montant en entier dans les data pour calcul JS
+                'choice_attr' => function (Ticket $ticket) {
+                    return ['data-montant' => $ticket->getMontant()];
+                },
             ])
         ;
     }

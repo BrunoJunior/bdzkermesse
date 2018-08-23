@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ kermesse.theme }} - Remboursements{% endblock %}
+
+{% block body %}
+    <fieldset>
+        <legend>Remboursements</legend>
+        <div class="row">
+            {% include "remboursement/table.html.twig" with {'rows': rows} only %}
+        </div>
+    </fieldset>
+{% endblock %}

@@ -23,6 +23,7 @@ abstract class MyController extends Controller
     const MENU_MEMBRES_ACTIFS = 'Membres actifs';
     const MENU_ACCUEIL = 'Accueil';
     const MENU_MEMBRES = 'Membres';
+    const MENU_REMBOURSEMENTS = 'Remboursements';
 
     /**
      * @param Kermesse $activeKermesse
@@ -50,6 +51,7 @@ abstract class MyController extends Controller
         $subMenu = Breadcrumb::getInstance(false)
             ->addLink(MenuLink::getInstance(static::MENU_ACTIVITES, null, $this->generateUrl('kermesse', ['id' => $kermesse->getId()])))
             ->addLink(MenuLink::getInstance(static::MENU_TICKETS, null, $this->generateUrl('liste_tickets', ['id' => $kermesse->getId()])))
+            ->addLink(MenuLink::getInstance(static::MENU_REMBOURSEMENTS, null, $this->generateUrl('liste_remboursements', ['id' => $kermesse->getId()])))
             ->addLink(MenuLink::getInstance(static::MENU_RECETTES, null, $this->generateUrl('liste_recettes', ['id' => $kermesse->getId()])))
             ->addLink(MenuLink::getInstance(static::MENU_MEMBRES_ACTIFS, null, $this->generateUrl('membres_actifs', ['id' => $kermesse->getId()])))
             ->setActiveLinkByName($activeName);
