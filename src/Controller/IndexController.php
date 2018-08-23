@@ -17,9 +17,12 @@ class IndexController extends MyController
      */
     public function kermessesListe(KermesseRepository $rKermesse, KermesseCardGenerator $cardGenerator)
     {
+        $last = true;
         return $this->render('index/index.html.twig', [
-            'cards' => array_map(function(Kermesse $kermesse) use($cardGenerator) {
-                    return $cardGenerator->generate($kermesse);
+            'cards' => array_map(function(Kermesse $kermesse) use($cardGenerator, &$last) {
+                    $card = $cardGenerator->generate($kermesse)->setDerniere($last);
+                    $last = false;
+                    return $card;
                 }, $rKermesse->findByEtablissementOrderByAnnee($this->getUser())),
             'menu' => $this->getMenu(null, static::MENU_ACCUEIL)
         ]);

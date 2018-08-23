@@ -40,6 +40,7 @@ class KermesseCardGenerator
     /**
      * @param Kermesse $kermesse
      * @return KermesseCard
+     * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function generate(Kermesse $kermesse): KermesseCard
