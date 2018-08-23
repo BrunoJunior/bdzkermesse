@@ -14,7 +14,6 @@ final class Version20180822222525 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('ALTER TABLE remboursement CHANGE mode mode INT DEFAULT NULL');
     }
 
@@ -22,7 +21,6 @@ final class Version20180822222525 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-
         $this->addSql('ALTER TABLE remboursement CHANGE mode mode INT NOT NULL');
     }
 }
