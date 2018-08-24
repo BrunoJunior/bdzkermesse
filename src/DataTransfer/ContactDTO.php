@@ -128,4 +128,19 @@ class ContactDTO
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getMessageVars():array
+    {
+        return [
+            'messsage' => $this->getMessage()
+        ];
+    }
+
+    /**
+     * @param \Swift_Message $message
+     */
+    public function completerMessage(\Swift_Message $message) {}
+
 }

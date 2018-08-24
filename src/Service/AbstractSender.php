@@ -40,17 +40,6 @@ abstract class AbstractSender
 
     /**
      * @param ContactDTO $contact
-     * @return array
-     */
-    protected function getParametresTemplate(ContactDTO $contact): array
-    {
-        return [
-            'message' => $contact->getMessage()
-        ];
-    }
-
-    /**
-     * @param ContactDTO $contact
      * @return int
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
@@ -63,6 +52,7 @@ abstract class AbstractSender
             ->setTo($contact->getDestinataire())
             ->setBody($this->render($contact), 'text/html')
             ->addPart($this->render($contact, 'plain'), 'text/plain');
+        $contact->completerMessage($message);
         return $this->mailer->send($message);
     }
 
@@ -76,6 +66,6 @@ abstract class AbstractSender
      */
     private function render(ContactDTO $contact, $format = 'html'): string
     {
-        return $this->twig->render("mails/" . $this->getTemplate() . ".$format.twig", $this->getParametresTemplate($contact));
+        return $this->twig->render("mails/" . $this->getTemplate() . ".$format.twig", $contact->getMessageVars());
     }
 }

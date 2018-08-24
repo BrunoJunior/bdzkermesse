@@ -24,7 +24,7 @@
             <td>
                 <a href="" class="btn btn-primary" data-toggle="tooltip" title="Détails"><i class="fas fa-eye"></i></a>
                 {% if row.enAttente %}
-                    <a href="" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
+                    <a href="{{ path('renvoyer_demande', {'id': row.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
                     <a href="{{ path('valider_remboursement', {'id': row.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer"><i class="fas fa-clipboard-check"></i></a>
                 {% endif %}
             </td>

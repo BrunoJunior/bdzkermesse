@@ -24,9 +24,9 @@
             <td>{{ row.montant }}</td>
             <td>{{ row.activitesLiees }}</td>
             <td>
-                <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                {% if row.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ row.cheminFichier) }}" target="_blank" class="btn btn-secondary"><i class="fas fa-file-image"></i> Duplicata</a>{% endif %}
-                <a href="{{ path('supprimer_ticket', {'id': row.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+                {% if row.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ row.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
+                <a href="{{ path('supprimer_ticket', {'id': row.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
             </td>
         </tr>
     {% else %}

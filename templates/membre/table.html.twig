@@ -22,7 +22,7 @@
                 {% if membre.email is not empty %}<a href="{{ path('contacter_membre', {'id': membre.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Contacter"><i class="fas fa-envelope"></i></a>{% endif %}
                 {% if membre.aRembourser %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Demander remboursement"><i class="fas fa-money-check"></i></a>{% endif %}
                 {% if membre.enAttenteRemboursement %}
-                    <a href="" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
+                    <a href="{{ path('renvoyer_demande', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
                     <a href="{{ path('valider_remboursement', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer remboursement"><i class="fas fa-clipboard-check"></i></a>
                 {% endif %}
             </td>

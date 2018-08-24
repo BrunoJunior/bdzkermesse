@@ -66,8 +66,11 @@ class RemboursementBusiness
     /**
      * Création de la demande en BDD
      * @param Remboursement $remboursement
-     * @throws \SimpleEnum\Exception\UnknownEumException
      * @throws BusinessException
+     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function creerDemande(Remboursement $remboursement)
     {
@@ -109,7 +112,10 @@ class RemboursementBusiness
         if ($remboursement->getEtat() === RemboursementEtatEnum::VALIDE) {
             throw new BusinessException("Le remboursement a déjà été validé !");
         }
-        $retour = $this->sender->envoyer($this->bMembre->initialiserContact($remboursement->getMembre(), new ContactDemandeRbstDTO()));
+        $contact = $this->bMembre->initialiserContact($remboursement->getMembre(), (new ContactDemandeRbstDTO($this->bTicket))->setRemboursement($remboursement))
+            ->setTitre("BdzKermesse - Demande de remboursement")
+            ->setEmetteur('bdzkermesse@bdesprez.com');
+        $retour = $this->sender->envoyer($contact);
         if ($retour < 1) {
             throw new BusinessException("Erreur lors de l'envoi du message !");
         }

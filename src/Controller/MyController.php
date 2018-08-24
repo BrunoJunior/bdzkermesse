@@ -13,6 +13,7 @@ use App\Entity\Kermesse;
 use App\Helper\Breadcrumb;
 use App\Helper\MenuLink;
 use Doctrine\Common\Collections\Collection;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 abstract class MyController extends Controller
@@ -24,6 +25,20 @@ abstract class MyController extends Controller
     const MENU_ACCUEIL = 'Accueil';
     const MENU_MEMBRES = 'Membres';
     const MENU_REMBOURSEMENTS = 'Remboursements';
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * MyController constructor.
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
 
     /**
      * @param Kermesse $activeKermesse

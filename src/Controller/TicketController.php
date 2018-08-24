@@ -7,6 +7,7 @@ use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Form\TicketType;
 use App\Service\FileUploader;
+use Psr\Log\LoggerInterface;
 use Stringy\Stringy;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,9 +24,11 @@ class TicketController extends MyController
     /**
      * TicketController constructor.
      * @param TicketBusiness $business
+     * @param LoggerInterface $logger
      */
-    public function __construct(TicketBusiness $business)
+    public function __construct(TicketBusiness $business, LoggerInterface $logger)
     {
+        parent::__construct($logger);
         $this->business = $business;
     }
 
@@ -40,7 +43,6 @@ class TicketController extends MyController
         $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $ticket->getDuplicata();
             if ($file) {
                 $filename = $uploader->upload($file, $this->business->getDuplicataDir($kermesse));
@@ -78,7 +80,6 @@ class TicketController extends MyController
         $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $ticket->getDuplicata();
             if ($file) {
                 $filename = $uploader->upload($file, $this->business->getDuplicataDir($kermesse));

@@ -11,6 +11,7 @@ use App\Form\MembreType;
 use App\Repository\MembreRepository;
 use App\Repository\RemboursementRepository;
 use App\Service\ContactSender;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,8 +33,9 @@ class MembreController extends MyController
      * @param MembreBusiness $business
      * @param MembreRepository $repo
      */
-    public function __construct(MembreBusiness $business, MembreRepository $repo)
+    public function __construct(MembreBusiness $business, MembreRepository $repo, LoggerInterface $logger)
     {
+        parent::__construct($logger);
         $this->business = $business;
         $this->repo = $repo;
     }
