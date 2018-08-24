@@ -2,11 +2,14 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\ContactDTO;
 use App\DataTransfer\MembreRow;
 use App\Entity\Membre;
+use App\Form\ContactType;
 use App\Form\MembreType;
 use App\Repository\MembreRepository;
 use App\Repository\RemboursementRepository;
+use App\Service\ContactSender;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -15,7 +18,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class MembreController extends MyController
 {
     /**
-     * @Route("/membre", name="membres")
+     * @Route("/membres", name="membres")
      */
     public function index(MembreRepository $rMembre, RemboursementRepository $rRemboursement):Response
     {
@@ -35,7 +38,7 @@ class MembreController extends MyController
     }
 
     /**
-     * @Route("/membre/new", name="nouveau_membre")
+     * @Route("/membres/new", name="nouveau_membre")
      * @param Request $request
      * @return Response
      */
@@ -60,7 +63,7 @@ class MembreController extends MyController
     }
 
     /**
-     * @Route("/membre/{id}/edit", name="editer_membre")
+     * @Route("/membres/{id}/edit", name="editer_membre")
      * @Security("membre.isProprietaire(user)")
      * @param Membre $membre
      * @param Request $request
@@ -79,6 +82,37 @@ class MembreController extends MyController
         }
         return $this->render(
             'membre/edition.html.twig',
+            array('form' => $form->createView(),
+                'menu' => $this->getMenu(null, static::MENU_MEMBRES))
+        );
+    }
+
+    /**
+     * @Route("/membres/{id}/contact", name="contacter_membre")
+     * @Security("membre.isProprietaire(user)")
+     * @param Membre $membre
+     * @param Request $request
+     * @param ContactSender $sender
+     * @return Response
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function contacterMembre(Membre $membre, Request $request, ContactSender $sender): Response
+    {
+        $contact = new ContactDTO($membre);
+        $form = $this->createForm(ContactType::class, $contact);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            if ($sender->envoyer($contact) > 0) {
+                $this->addFlash("success", "E-mail envoyé !");
+            } else {
+                $this->addFlash("danger", "Erreur lors de l'envoi du message !");
+            }
+            return $this->redirectToRoute('membres');
+        }
+        return $this->render(
+            'membre/contact_form.html.twig',
             array('form' => $form->createView(),
                 'menu' => $this->getMenu(null, static::MENU_MEMBRES))
         );

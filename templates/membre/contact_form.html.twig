@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contacter un membre{% endblock %}
+
+{% block body %}
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-7 col-xl-5">
+            <div class="well">
+                <fieldset>
+                    <legend><i class="fas fa-edit"></i> Contact</legend>
+                    {{ form_start(form) }}
+                    {{ form_row(form.membre) }}
+                    {{ form_row(form.emetteur) }}
+                    {{ form_row(form.titre) }}
+                    {{ form_row(form.message) }}
+                    <button class="btn btn-primary" type="submit"><i class="fab fa-telegram-plane"></i> Envoyer !</button>
+                    {{ form_end(form) }}
+                </fieldset>
+            </div>
+        </div>
+    </div>
+{% endblock %}
