@@ -14,9 +14,14 @@ use App\Entity\Membre;
 class ContactDTO
 {
     /**
-     * @var Membre
+     * @var string
      */
     private $membre;
+
+    /**
+     * @var string
+     */
+    private $destinataire;
 
     /**
      * @var string
@@ -34,20 +39,23 @@ class ContactDTO
     private $emetteur = '';
 
     /**
-     * ContactDTO constructor.
-     * @param Membre $membreAContacter
+     * @param string $membre
+     * @return ContactDTO
      */
-    public function __construct(Membre $membreAContacter)
+    public function setMembre(string $membre): ContactDTO
     {
-        $this->membre = $membreAContacter;
+        $this->membre = $membre;
+        return $this;
     }
 
     /**
-     * @return string
+     * @param string $destinataire
+     * @return ContactDTO
      */
-    public function getMembre(): string
+    public function setDestinataire(string $destinataire): ContactDTO
     {
-        return $this->membre->getPrenom() . ' ' . $this->membre->getNom() . '[' . $this->membre->getEmail() . ']';
+        $this->destinataire = $destinataire;
+        return $this;
     }
 
     /**
@@ -55,7 +63,15 @@ class ContactDTO
      */
     public function getDestinataire(): string
     {
-        return $this->membre->getEmail();
+        return $this->destinataire;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMembre(): string
+    {
+        return $this->membre;
     }
 
     /**

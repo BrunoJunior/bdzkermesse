@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Business\MembreBusiness;
 use App\DataTransfer\ContactDTO;
 use App\DataTransfer\MembreRow;
 use App\Entity\Membre;
@@ -18,13 +19,33 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class MembreController extends MyController
 {
     /**
+     * @var MembreBusiness
+     */
+    private $business;
+    /**
+     * @var MembreRepository
+     */
+    private $repo;
+
+    /**
+     * MembreController constructor.
+     * @param MembreBusiness $business
+     * @param MembreRepository $repo
+     */
+    public function __construct(MembreBusiness $business, MembreRepository $repo)
+    {
+        $this->business = $business;
+        $this->repo = $repo;
+    }
+
+    /**
      * @Route("/membres", name="membres")
      */
-    public function index(MembreRepository $rMembre, RemboursementRepository $rRemboursement):Response
+    public function index(RemboursementRepository $rRemboursement):Response
     {
         $etablissement = $this->getUser();
-        $montantParMembre = $rMembre->getMontantsNonRemboursesParMembre($etablissement);
-        $montantEnAttenteParMembre = $rMembre->getMontantsAttenteRemboursementParMembre($etablissement);
+        $montantParMembre = $this->repo->getMontantsNonRemboursesParMembre($etablissement);
+        $montantEnAttenteParMembre = $this->repo->getMontantsAttenteRemboursementParMembre($etablissement);
         $premiersRbsts = $rRemboursement->findPremierEnAttenteParMembre($etablissement);
         return $this->render('membre/index.html.twig', [
             'membres' => array_map(function (Membre $membre) use($montantParMembre, $montantEnAttenteParMembre, $premiersRbsts) {
@@ -40,6 +61,7 @@ class MembreController extends MyController
     /**
      * @Route("/membres/new", name="nouveau_membre")
      * @param Request $request
+     * @param MembreBusiness $tMembre
      * @return Response
      */
     public function nouveauMembre(Request $request):Response
@@ -53,6 +75,7 @@ class MembreController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($membre);
             $em->flush();
+            $this->addFlash("success", "Membre  " . $this->business->getIdentite($membre) . ' créé !');
             return $this->redirectToRoute('membres');
         }
         return $this->render(
@@ -67,6 +90,7 @@ class MembreController extends MyController
      * @Security("membre.isProprietaire(user)")
      * @param Membre $membre
      * @param Request $request
+     * @param MembreBusiness $tMembre
      * @return Response
      */
     public function editerMembre(Membre $membre, Request $request):Response
@@ -78,6 +102,7 @@ class MembreController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($membre);
             $em->flush();
+            $this->addFlash("success", "Membre  " . $this->business->getIdentite($membre) . ' mis à jour !');
             return $this->redirectToRoute('membres');
         }
         return $this->render(
@@ -92,6 +117,7 @@ class MembreController extends MyController
      * @Security("membre.isProprietaire(user)")
      * @param Membre $membre
      * @param Request $request
+     * @param MembreBusiness $bMembre
      * @param ContactSender $sender
      * @return Response
      * @throws \Twig_Error_Loader
@@ -100,7 +126,7 @@ class MembreController extends MyController
      */
     public function contacterMembre(Membre $membre, Request $request, ContactSender $sender): Response
     {
-        $contact = new ContactDTO($membre);
+        $contact = $this->business->initialiserContact($membre, new ContactDTO());
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

@@ -3,26 +3,24 @@
  * Created by PhpStorm.
  * User: bruno
  * Date: 24/08/2018
- * Time: 11:32
+ * Time: 14:37
  */
 
 namespace App\Service;
 
-
-use App\DataTransfer\ContactDTO;
-
 /**
- * Class ContactSender
+ * Class DemandeRemboursementSender
  * @package App\Service
  */
-class ContactSender extends AbstractSender
+class DemandeRemboursementSender extends AbstractSender
 {
+
     /**
      * Sans les extensions
      * @return string
      */
     protected function getTemplate(): string
     {
-        return "contact";
+        return "remboursement_demande";
     }
 }

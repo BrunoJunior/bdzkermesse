@@ -13,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class RecetteController extends MyController
 {
     /**
-     * @Route("/kermesse/{id}/recette/new", name="nouvelle_recette")
+     * @Route("/kermesses/{id}/recettes/new", name="nouvelle_recette")
      * @Security("kermesse.isProprietaire(user)")
      */
     public function nouvelleRecette(Kermesse $kermesse, Request $request, ActiviteRepository $rActivite)
@@ -28,6 +28,7 @@ class RecetteController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($recette);
             $em->flush();
+            $this->addFlash("success", "Recette enregistrée avec succès !");
             return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
         }
         return $this->render(
@@ -40,7 +41,7 @@ class RecetteController extends MyController
     }
 
     /**
-     * @Route("/recette/{id}/edit", name="editer_recette")
+     * @Route("/recettes/{id}/edit", name="editer_recette")
      * @Security("recette.isProprietaire(user)")
      */
     public function editerRecette(Recette $recette, Request $request, ActiviteRepository $rActivite)
@@ -55,6 +56,7 @@ class RecetteController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($recette);
             $em->flush();
+            $this->addFlash("success", "Recette enregistrée avec succès !");
             return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
         }
         return $this->render(
@@ -67,7 +69,7 @@ class RecetteController extends MyController
     }
 
     /**
-     * @Route("/recette/{id}/supprimer", name="supprimer_recette")
+     * @Route("/recettes/{id}/supprimer", name="supprimer_recette")
      * @Security("recette.isProprietaire(user)")
      */
     public function supprimerRecette(Recette $recette)
@@ -76,6 +78,7 @@ class RecetteController extends MyController
         $em = $this->getDoctrine()->getManager();
         $em->remove($recette);
         $em->flush();
+        $this->addFlash("success", "Recette suprimmée !");
         return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
     }
 }

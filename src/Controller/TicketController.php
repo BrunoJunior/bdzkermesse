@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Business\TicketBusiness;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Form\TicketType;
@@ -15,16 +16,21 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class TicketController extends MyController
 {
     /**
-     * @param Kermesse $kermesse
-     * @return string
+     * @var TicketBusiness
      */
-    private function getDuplicataDir(Kermesse $kermesse)
+    private $business;
+
+    /**
+     * TicketController constructor.
+     * @param TicketBusiness $business
+     */
+    public function __construct(TicketBusiness $business)
     {
-        return $this->getParameter('duplicata_dir') . '/' . $kermesse->getId();
+        $this->business = $business;
     }
 
     /**
-     * @Route("/kermesse/{id}/ticket/new", name="nouveau_ticket")
+     * @Route("/kermesses/{id}/ticket/new", name="nouveau_ticket")
      * @Security("kermesse.isProprietaire(user)")
      */
     public function nouveauTicket(Request $request, Kermesse $kermesse, FileUploader $uploader)
@@ -37,12 +43,13 @@ class TicketController extends MyController
             /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $ticket->getDuplicata();
             if ($file) {
-                $filename = $uploader->upload($file, $this->getDuplicataDir($kermesse));
+                $filename = $uploader->upload($file, $this->business->getDuplicataDir($kermesse));
                 $ticket->setDuplicata($filename);
             }
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();
+            $this->addFlash("success", "Ticket enregistré avec succès !");
             return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
         }
         return $this->render(
@@ -55,7 +62,7 @@ class TicketController extends MyController
     }
 
     /**
-     * @Route("/ticket/{id}/edit", name="editer_ticket")
+     * @Route("/tickets/{id}/edit", name="editer_ticket")
      * @Security("ticket.isProprietaire(user)")
      */
     public function editerTicket(Request $request, Ticket $ticket, FileUploader $uploader)
@@ -65,7 +72,7 @@ class TicketController extends MyController
         $file = null;
         if ($ticket->getDuplicata()) {
             $prevDuplicata = $ticket->getDuplicata();
-            $file = new File($this->getDuplicataDir($kermesse) . '/' . $prevDuplicata);
+            $file = new File($this->business->getDuplicataDir($kermesse) . '/' . $prevDuplicata);
             $ticket->setDuplicata($file);
         }
         $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
@@ -74,10 +81,10 @@ class TicketController extends MyController
             /** @var Symfony\Component\HttpFoundation\File\UploadedFile $file */
             $file = $ticket->getDuplicata();
             if ($file) {
-                $filename = $uploader->upload($file, $this->getDuplicataDir($kermesse));
+                $filename = $uploader->upload($file, $this->business->getDuplicataDir($kermesse));
                 $ticket->setDuplicata($filename);
                 if ($prevDuplicata) {
-                    unlink($this->getDuplicataDir($kermesse) . '/' . $prevDuplicata);
+                    unlink($this->business->getDuplicataDir($kermesse) . '/' . $prevDuplicata);
                 }
             } elseif ($prevDuplicata) {
                 $ticket->setDuplicata($prevDuplicata);
@@ -85,6 +92,7 @@ class TicketController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();
+            $this->addFlash("success", "Ticket enregistré avec succès !");
             return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
         }
         return $this->render(
@@ -99,18 +107,14 @@ class TicketController extends MyController
     }
 
     /**
-     * @Route("/ticket/{id}/supprimer", name="supprimer_ticket")
+     * @Route("/tickets/{id}/supprimer", name="supprimer_ticket")
      * @Security("ticket.isProprietaire(user)")
      */
     public function supprimerTicket(Ticket $ticket)
     {
         $kermesse = $ticket->getKermesse();
-        if ($ticket->getDuplicata()) {
-            unlink($this->getDuplicataDir($kermesse) . '/' . $ticket->getDuplicata());
-        }
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($ticket);
-        $em->flush();
+        $this->business->supprimer($ticket);
+        $this->addFlash("success", "Ticket supprimé !");
         return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
     }
 }

@@ -23,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class KermesseController extends MyController
 {
     /**
-     * @Route("/kermesse/new", name="nouvelle_kermesse")
+     * @Route("/kermesses/new", name="nouvelle_kermesse")
      * @param Request $request
      * @param KermesseService $sKermesse
      * @return Response
@@ -42,6 +42,7 @@ class KermesseController extends MyController
             $em->persist($kermesse);
             $em->flush();
             $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
+            $this->addFlash("success", "Kermesse " . $kermesse->getAnnee() . ' créée !');
             return $this->redirectToRoute('index');
         }
         return $this->render(
@@ -52,18 +53,16 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}/dupliquer", name="dupliquer_kermesse")
+     * @Route("/kermesses/{id}/dupliquer", name="dupliquer_kermesse")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
      * @param KermesseService $sKermesse
      * @param EntityManagerInterface $entityManager
      * @return Response
-     * @throws \Exception
      */
-    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager): Response
+    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
     {
-        $alert = null;
         $nouvelleKermesse = new Kermesse();
         $nouvelleKermesse->setEtablissement($this->getUser());
         $nouvelleKermesse->setMontantTicket($kermesse->getMontantTicket());
@@ -77,24 +76,25 @@ class KermesseController extends MyController
                 $entityManager->flush();
                 $sKermesse->setKermesse($nouvelleKermesse)->dupliquerInfos($kermesse);
                 $entityManager->commit();
+                $this->addFlash("success", "Kermesse " . $nouvelleKermesse->getAnnee() . ' créée à partir de la kermesse ' . $kermesse->getAnnee() . ' !');
                 return $this->redirectToRoute('index');
             } catch (\Exception $exc) {
                 $entityManager->rollback();
-                throw $exc;
+                $this->addFlash('danger', $exc->getMessage());
+                $logger->critical($exc->getTraceAsString());
             }
         }
         return $this->render(
             'kermesse/edition.html.twig',
             [
                 'form' => $form->createView(),
-                'menu' => $this->getMenu(null, static::MENU_ACCUEIL),
-                'global_alert' => $alert,
+                'menu' => $this->getMenu(null, static::MENU_ACCUEIL)
             ]
         );
     }
 
     /**
-     * @Route("/kermesse/{id}/edit", name="editer_kermesse")
+     * @Route("/kermesses/{id}/edit", name="editer_kermesse")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
@@ -114,6 +114,7 @@ class KermesseController extends MyController
             $em->persist($kermesse);
             $em->flush();
             $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
+            $this->addFlash("success", "Kermesse " . $kermesse->getAnnee() . ' mise à jour !');
             return $this->redirectToRoute('index');
         }
         return $this->render(
@@ -124,7 +125,7 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}", name="kermesse", requirements={"id"="\d+"})
+     * @Route("/kermesses/{id}", name="kermesse", requirements={"id"="\d+"})
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param ActiviteRepository $rActivite
@@ -145,7 +146,7 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}/membres_actifs", name="membres_actifs")
+     * @Route("/kermesses/{id}/membres_actifs", name="membres_actifs")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
@@ -160,6 +161,7 @@ class KermesseController extends MyController
             // On enregistre l'utilisateur dans la base
             $em->persist($kermesse);
             $em->flush();
+            $this->addFlash("success", "Les membres actifs de la kermesse  " . $kermesse->getAnnee() . ' ont été définis !');
         }
         return $this->render(
             'kermesse/membres.html.twig',
@@ -172,7 +174,7 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}/tickets", name="liste_tickets")
+     * @Route("/kermesses/{id}/tickets", name="liste_tickets")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param TicketRowGenerator $ticketGenerator
@@ -192,7 +194,7 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}/recettes", name="liste_recettes")
+     * @Route("/kermesses/{id}/recettes", name="liste_recettes")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param RecetteRepository $rRecette
@@ -217,7 +219,7 @@ class KermesseController extends MyController
     }
 
     /**
-     * @Route("/kermesse/{id}/remboursements", name="liste_remboursements")
+     * @Route("/kermesses/{id}/remboursements", name="liste_remboursements")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param RemboursementRowGenerator $rGenerator

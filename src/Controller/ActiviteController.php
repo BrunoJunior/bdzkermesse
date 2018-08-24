@@ -20,7 +20,7 @@ class ActiviteController extends MyController
 {
 
     /**
-     * @Route("/kermesse/{id}/activite/new", name="nouvelle_activite")
+     * @Route("/kermesses/{id}/activites/new", name="nouvelle_activite")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
@@ -38,6 +38,7 @@ class ActiviteController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($activite);
             $em->flush();
+            $this->addFlash("success", "Activité " . $activite->getNom() . ' créée !');
             return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
         }
         return $this->render(
@@ -50,7 +51,7 @@ class ActiviteController extends MyController
     }
 
     /**
-     * @Route("/activite/{id}/edit", name="editer_activite")
+     * @Route("/activites/{id}/edit", name="editer_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param Request $request
@@ -68,6 +69,7 @@ class ActiviteController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($activite);
             $em->flush();
+            $this->addFlash("success", "Activité " . $activite->getNom() . ' mise à jour !');
             return $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
         }
         return $this->render(
@@ -80,7 +82,7 @@ class ActiviteController extends MyController
     }
 
     /**
-     * @Route("/activite/{id}/supprimer", name="supprimer_activite")
+     * @Route("/activites/{id}/supprimer", name="supprimer_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @return Response
@@ -92,12 +94,13 @@ class ActiviteController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->remove($activite);
             $em->flush();
+            $this->addFlash("success", "Activité " . $activite->getNom() . ' supprimée !');
         }
         return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
     }
 
     /**
-     * @Route("/activite/{id}", name="activite")
+     * @Route("/activites/{id}", name="activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param RecetteRepository $rRecette
