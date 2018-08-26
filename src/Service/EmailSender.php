@@ -39,7 +39,7 @@ class EmailSender extends AbstractEmailSender
     public function envoyer(ContactDTO $contact, callable $completer = null):int
     {
         $message = (new \Swift_Message($contact->getTitre()))
-            ->setFrom('bdzkermesse@bdesprez.com')
+            ->setFrom('mailgun@bdesprez.com')
             ->setTo($contact->getDestinataire())
             ->setBody($this->render(), 'text/html')
             ->addPart($this->render('plain'), 'text/plain');
