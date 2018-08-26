@@ -8,34 +8,14 @@
 
 namespace App\Service;
 
-
 use App\DataTransfer\ContactDTO;
 
-class EmailSender
+class EmailSender extends AbstractEmailSender
 {
     /**
      * @var \Swift_Mailer
      */
     protected $mailer;
-    /**
-     * @var \Twig_Environment
-     */
-    protected $twig;
-
-    /**
-     * @var string
-     */
-    private $template;
-
-    /**
-     * @var array
-     */
-    private $templateVars = [];
-
-    /**
-     * @var \Swift_Message
-     */
-    private $message;
 
     /**
      * ContactSender constructor.
@@ -44,28 +24,8 @@ class EmailSender
      */
     public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig)
     {
+        parent::__construct($twig);
         $this->mailer = $mailer;
-        $this->twig = $twig;
-    }
-
-    /**
-     * @param string $template
-     * @return EmailSender
-     */
-    public function setTemplate(string $template): EmailSender
-    {
-        $this->template = $template;
-        return $this;
-    }
-
-    /**
-     * @param array $templateVars
-     * @return EmailSender
-     */
-    public function setTemplateVars(array $templateVars): EmailSender
-    {
-        $this->templateVars = $templateVars;
-        return $this;
     }
 
     /**
@@ -79,7 +39,7 @@ class EmailSender
     public function envoyer(ContactDTO $contact, callable $completer = null):int
     {
         $message = (new \Swift_Message($contact->getTitre()))
-            ->setFrom($contact->getEmetteur())
+            ->setFrom('BdzKermesse <mailgun@bdesprez.com>')
             ->setTo($contact->getDestinataire())
             ->setBody($this->render(), 'text/html')
             ->addPart($this->render('plain'), 'text/plain');
@@ -87,17 +47,5 @@ class EmailSender
             $completer($message);
         }
         return $this->mailer->send($message);
-    }
-
-    /**
-     * @param string $format
-     * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     */
-    private function render($format = 'html'): string
-    {
-        return $this->twig->render("mails/" . $this->template . ".$format.twig", $this->templateVars);
     }
 }
