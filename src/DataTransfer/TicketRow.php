@@ -33,7 +33,7 @@ class TicketRow
     private $montantAffecte = 0;
 
     /**
-     * @var string
+     * @var array
      */
     private $activitesLiees;
 
@@ -65,9 +65,9 @@ class TicketRow
     }
 
     /**
-     * @param string $activites
+     * @param array $activites
      */
-    public function setActivitesLiees(string $activites)
+    public function setActivitesLiees(array $activites)
     {
         $this->activitesLiees = $activites;
     }
@@ -126,7 +126,15 @@ class TicketRow
      */
     public function getActivitesLiees(): string
     {
-        return empty($this->activitesLiees) ? 'Aucune activité liée' : $this->activitesLiees;
+        return empty($this->activitesLiees) ? 'Aucune activité liée' : implode(', ', $this->activitesLiees);
+    }
+
+    /**
+     * @return array
+     */
+    public function getActivites(): array
+    {
+        return $this->activitesLiees ?? [];
     }
 
     /**
@@ -143,6 +151,14 @@ class TicketRow
     public function getId(): int
     {
         return $this->ticket->getId();
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdAcheteur(): int
+    {
+        return $this->ticket->getMembre()->getId();
     }
 
     /**

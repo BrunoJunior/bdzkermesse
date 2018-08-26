@@ -44,7 +44,7 @@ class RemboursementController extends MyController
     public function demanderRemboursement(Request $request, Membre $membre, TicketRepository $rTicket): Response
     {
         $ticketsNonRembourses = $rTicket->findNonRembourses($membre);
-        $remboursement = $this->business->initialiserDemandeRemboursement(new Remboursement());
+        $remboursement = $this->business->initialiserDemandeRemboursement(new Remboursement(), $membre);
         $form = $this->createForm(DemandeRemboursementType::class, $remboursement, ['tickets' => $ticketsNonRembourses]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

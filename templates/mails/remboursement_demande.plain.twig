@@ -3,11 +3,11 @@ Vous avez effectué une demande de remboursement sur le site BdzKermesse
 Vous recevez cet e-mail suite à l'enregistrement de votre demande de remboursement sur le site BdzKermesse.<br />
 Voici le récapitulatif de votre demande :
 
-    * Numéro de suivi : {{ numero_suivi }}
-    * Montant : {{ montant }}
+    * Numéro de suivi : {{ demande.numeroSuivi }}
+    * Montant : {{ demande.montant }}
 
 Tickets associés :
-{% for ticket in tickets %}
+{% for ticket in demande.tickets %}
     * Ticket n° {{ ticket.numero }} du {{ ticket.date }} d'un montant de {{ ticket.montant }}. (Fournisseur : {{ ticket.fournisseur }}{% if ticket.cheminFichier is not empty %} - Duplicata : {{ app.request.getSchemeAndHttpHost() ~ asset('uploads/tickets/' ~ ticket.cheminFichier) }}{% endif %})
 {% endfor %}
 

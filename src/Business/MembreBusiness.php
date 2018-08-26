@@ -13,6 +13,7 @@ use App\DataTransfer\ContactDTO;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Repository\RemboursementRepository;
+use App\Service\EmailSender;
 use Stringy\Stringy;
 
 class MembreBusiness
@@ -23,12 +24,19 @@ class MembreBusiness
     private $rRemboursement;
 
     /**
+     * @var EmailSender
+     */
+    private $sender;
+
+    /**
      * MembreBusiness constructor.
      * @param RemboursementRepository $rRemboursement
+     * @param EmailSender $sender
      */
-    public function __construct(RemboursementRepository $rRemboursement)
+    public function __construct(RemboursementRepository $rRemboursement, EmailSender $sender)
     {
         $this->rRemboursement = $rRemboursement;
+        $this->sender = $sender;
     }
 
     /**
@@ -71,10 +79,41 @@ class MembreBusiness
 
     /**
      * @param Membre $membre
+     * @param ContactDTO $contact
      * @return ContactDTO
      */
     public function initialiserContact(Membre $membre, ContactDTO $contact):ContactDTO
     {
         return $contact->setMembre($this->getIdentiteEmail($membre))->setDestinataire($membre->getEmail());
+    }
+
+    /**
+     * @param Membre $membre
+     * @param ContactDTO $contact
+     * @return int
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function contacter(Membre $membre, ContactDTO $contact):int
+    {
+        return $this->envoyerEmail($membre, $contact->getTitre(), $contact->getEmetteur(), 'contact', ['message' => $contact->getMessage()]);
+    }
+
+    /**
+     * @param Membre $membre
+     * @param string $titre
+     * @param string $emetteur
+     * @param string $template
+     * @param array $templateVars
+     * @return int
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function envoyerEmail(Membre $membre, string $titre, string $emetteur, string $template, array $templateVars = []):int
+    {
+        $contact = $this->initialiserContact($membre, new ContactDTO())->setTitre($titre)->setEmetteur($emetteur);
+        return $this->sender->setTemplate($template)->setTemplateVars($templateVars)->envoyer($contact);
     }
 }

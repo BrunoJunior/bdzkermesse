@@ -34,10 +34,11 @@ class TicketRowGenerator
     /**
      * @param Ticket $ticket
      * @param int $montantAffecte
-     * @param string $activitesLiees
+     * @param array $activitesLiees
      * @return TicketRow
+     * @throws \SimpleEnum\Exception\UnknownEumException
      */
-    public function generate(Ticket $ticket, int $montantAffecte, string $activitesLiees): TicketRow
+    public function generate(Ticket $ticket, int $montantAffecte, array $activitesLiees): TicketRow
     {
         $row = new TicketRow($ticket);
         $row->setActivitesLiees($activitesLiees);
@@ -49,6 +50,7 @@ class TicketRowGenerator
      * @param Kermesse $kermesse
      * @return ArrayCollection|TicketRow[]
      * @throws \Doctrine\DBAL\DBALException
+     * @throws \SimpleEnum\Exception\UnknownEumException
      */
     public function generateList(Kermesse $kermesse): ArrayCollection
     {
@@ -56,8 +58,8 @@ class TicketRowGenerator
         $totaux = $this->rTicket->getTotauxParTicketByKermesse($kermesse);
         $rows = new ArrayCollection();
         foreach ($tickets as $ticket) {
-            $details = $totaux->get("".$ticket->getId()) ?? ['depense' => 0, 'activites_liees' => string];
-            $rows->add($this->generate($ticket, $details['depense'], $details['activites_liees']));
+            $details = $totaux->get("".$ticket->getId()) ?? ['depense' => 0, 'activites_liees' => ''];
+            $rows->add($this->generate($ticket, $details['depense'], explode(', ', $details['activites_liees'])));
         }
         return $rows;
     }

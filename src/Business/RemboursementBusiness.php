@@ -10,11 +10,12 @@ namespace App\Business;
 
 
 use App\DataTransfer\ContactDemandeRbstDTO;
+use App\DataTransfer\ContactDTO;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
 use App\Exception\BusinessException;
-use App\Service\DemandeRemboursementSender;
+use App\Service\EmailSender;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RemboursementBusiness
@@ -32,15 +33,18 @@ class RemboursementBusiness
      */
     private $em;
     /**
-     * @var DemandeRemboursementSender
+     * @var EmailSender
      */
     private $sender;
 
     /**
      * RemboursementBusiness constructor.
+     * @param TicketBusiness $bTicket
      * @param MembreBusiness $bMembre
+     * @param EntityManagerInterface $entityManager
+     * @param EmailSender $sender
      */
-    public function __construct(TicketBusiness $bTicket, MembreBusiness $bMembre, EntityManagerInterface $entityManager, DemandeRemboursementSender $sender)
+    public function __construct(TicketBusiness $bTicket, MembreBusiness $bMembre, EntityManagerInterface $entityManager, EmailSender $sender)
     {
         $this->bMembre = $bMembre;
         $this->bTicket = $bTicket;
@@ -112,10 +116,21 @@ class RemboursementBusiness
         if ($remboursement->getEtat() === RemboursementEtatEnum::VALIDE) {
             throw new BusinessException("Le remboursement a déjà été validé !");
         }
-        $contact = $this->bMembre->initialiserContact($remboursement->getMembre(), (new ContactDemandeRbstDTO($this->bTicket))->setRemboursement($remboursement))
+        $contact = $this->bMembre
+            ->initialiserContact($remboursement->getMembre(), new ContactDTO())
             ->setTitre("BdzKermesse - Demande de remboursement")
             ->setEmetteur('bdzkermesse@bdesprez.com');
-        $retour = $this->sender->envoyer($contact);
+        $retour = $this->sender
+            ->setTemplate('remboursement_demande')
+            ->setTemplateVars(['demande' => (new ContactDemandeRbstDTO())->setRemboursement($remboursement)])
+            ->envoyer($contact, function (\Swift_Message $message) use ($remboursement) {
+                foreach ($remboursement->getTickets() as $ticket) {
+                    if ($ticket->getDuplicata()) {
+                        $filepath = $this->bTicket->getDuplicataPath($ticket);
+                        $message->attach(\Swift_Attachment::fromPath($filepath)->setFilename($ticket->getNumero() . '.' . pathinfo($filepath,PATHINFO_EXTENSION)));
+                    }
+                }
+            });
         if ($retour < 1) {
             throw new BusinessException("Erreur lors de l'envoi du message !");
         }

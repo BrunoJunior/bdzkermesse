@@ -10,7 +10,6 @@ use App\Form\ContactType;
 use App\Form\MembreType;
 use App\Repository\MembreRepository;
 use App\Repository\RemboursementRepository;
-use App\Service\ContactSender;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -63,7 +62,6 @@ class MembreController extends MyController
     /**
      * @Route("/membres/new", name="nouveau_membre")
      * @param Request $request
-     * @param MembreBusiness $tMembre
      * @return Response
      */
     public function nouveauMembre(Request $request):Response
@@ -92,7 +90,6 @@ class MembreController extends MyController
      * @Security("membre.isProprietaire(user)")
      * @param Membre $membre
      * @param Request $request
-     * @param MembreBusiness $tMembre
      * @return Response
      */
     public function editerMembre(Membre $membre, Request $request):Response
@@ -119,20 +116,18 @@ class MembreController extends MyController
      * @Security("membre.isProprietaire(user)")
      * @param Membre $membre
      * @param Request $request
-     * @param MembreBusiness $bMembre
-     * @param ContactSender $sender
      * @return Response
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function contacterMembre(Membre $membre, Request $request, ContactSender $sender): Response
+    public function contacterMembre(Membre $membre, Request $request): Response
     {
         $contact = $this->business->initialiserContact($membre, new ContactDTO());
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($sender->envoyer($contact) > 0) {
+            if ($this->business->contacter($membre, $contact) > 0) {
                 $this->addFlash("success", "E-mail envoyé !");
             } else {
                 $this->addFlash("danger", "Erreur lors de l'envoi du message !");

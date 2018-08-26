@@ -1,0 +1,20 @@
+Nouvelle dépense sur le site BdzKermesse
+
+Vous recevez cet e-mail suite à la création de votre ticket sur le site BdzKermesse.
+Voici son récapitulatif :
+    * Numéro : {{ ticket.numero }}
+    * Date : {{ ticket.date }}
+    * Montant : {{ ticket.montant }}
+    * Fournisseur : {{ ticket.fournisseur }}
+    {% if ticket.cheminFichier is not empty %}
+    * Duplicata : {{ app.request.getSchemeAndHttpHost() ~ asset('uploads/tickets/' ~ ticket.cheminFichier) }}
+    {% endif %}
+    * Activités liées :
+    {% for activite in ticket.activites %}
+        * {{ activite }}
+    {% endfor %}
+
+Vous pouvez dès à présent faire une demande de remboursement via le lien suivant : {{ app.request.getSchemeAndHttpHost() ~ path('demande_remboursement', {'id': ticket.idAcheteur}) }}
+
+Cordialement,
+L'équipe de BdzKermesse
