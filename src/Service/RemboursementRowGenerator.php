@@ -8,6 +8,7 @@
 
 namespace App\Service;
 
+use App\Business\TicketBusiness;
 use App\DataTransfer\RemboursementRow;
 use App\Entity\Kermesse;
 use App\Entity\Remboursement;
@@ -22,12 +23,18 @@ class RemboursementRowGenerator
     private $rRemboursement;
 
     /**
+     * @var TicketBusiness
+     */
+    private $bTicket;
+
+    /**
      * RemboursementRowGenerator constructor.
      * @param RemboursementRepository $rRemboursement
      */
-    public function __construct(RemboursementRepository $rRemboursement)
+    public function __construct(RemboursementRepository $rRemboursement, TicketBusiness $bTicket)
     {
         $this->rRemboursement = $rRemboursement;
+        $this->bTicket = $bTicket;
     }
 
     /**
@@ -37,7 +44,7 @@ class RemboursementRowGenerator
      */
     public function generate(Remboursement $remboursement): RemboursementRow
     {
-        $row = new RemboursementRow($remboursement);
+        $row = new RemboursementRow($remboursement, $this->bTicket);
         return $row;
     }
 

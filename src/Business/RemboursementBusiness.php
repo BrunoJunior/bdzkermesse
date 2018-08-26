@@ -9,8 +9,10 @@
 namespace App\Business;
 
 
-use App\DataTransfer\ContactDemandeRbstDTO;
+use App\DataTransfer\RemboursementDTO;
 use App\DataTransfer\ContactDTO;
+use App\DataTransfer\RemboursementRow;
+use App\Entity\Kermesse;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
@@ -107,6 +109,7 @@ class RemboursementBusiness
     /**
      * @param Remboursement $remboursement
      * @throws BusinessException
+     * @throws \SimpleEnum\Exception\UnknownEumException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
@@ -122,7 +125,7 @@ class RemboursementBusiness
             ->setEmetteur('bdzkermesse@bdesprez.com');
         $retour = $this->sender
             ->setTemplate('remboursement_demande')
-            ->setTemplateVars(['demande' => (new ContactDemandeRbstDTO())->setRemboursement($remboursement)])
+            ->setTemplateVars(['demande' => new RemboursementRow($remboursement, $this->bTicket)])
             ->envoyer($contact, function (\Swift_Message $message) use ($remboursement) {
                 foreach ($remboursement->getTickets() as $ticket) {
                     if ($ticket->getDuplicata()) {
@@ -134,5 +137,18 @@ class RemboursementBusiness
         if ($retour < 1) {
             throw new BusinessException("Erreur lors de l'envoi du message !");
         }
+    }
+
+    /**
+     * @param Remboursement $remboursement
+     * @return Kermesse|null
+     */
+    public function getKermesse(Remboursement $remboursement):?Kermesse
+    {
+        $tickets = $remboursement->getTickets();
+        if ($tickets->isEmpty()) {
+            return null;
+        }
+        return $tickets->first()->getKermesse();
     }
 }

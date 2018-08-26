@@ -33,4 +33,14 @@
         <tr><td colspan="8">Aucune dépense</td></tr>
     {% endfor %}
     </tbody>
+    {% if total is defined %}
+        <tfoot>
+            <tr>
+                <th scope="row" colspan="6">Total</th>
+                <td>{{ total }}</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    {% endif %}
 </table>

@@ -36,11 +36,17 @@ class TicketRowGenerator
      * @param int $montantAffecte
      * @param array $activitesLiees
      * @return TicketRow
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \SimpleEnum\Exception\UnknownEumException
      */
-    public function generate(Ticket $ticket, int $montantAffecte, array $activitesLiees): TicketRow
+    public function generate(Ticket $ticket, int $montantAffecte = null, array $activitesLiees = null): TicketRow
     {
         $row = new TicketRow($ticket);
+        if ($montantAffecte === null && $activitesLiees === null) {
+            $totaux = $this->rTicket->getTotauxByTicket($ticket);
+            $activitesLiees = explode(', ', $totaux['activites_liees']);
+            $montantAffecte = $totaux['depense'];
+        }
         $row->setActivitesLiees($activitesLiees);
         $row->setMontantAffecte($montantAffecte);
         return $row;

@@ -80,6 +80,27 @@ class TicketRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param Ticket $ticket
+     * @return array
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getTotauxByTicket(Ticket $ticket):array
+    {
+        $connection = $this->getEntityManager()->getConnection();
+        $sql = '
+            SELECT COALESCE(SUM(d.montant),0) AS depense, GROUP_CONCAT(a.nom SEPARATOR \', \') AS activites_liees
+            FROM ticket AS t 
+            LEFT JOIN depense AS d ON (d.ticket_id = t.id)
+            INNER JOIN activite AS a ON (d.activite_id = a.id)
+            WHERE t.id = :id
+        ';
+        $stmt = $connection->prepare($sql);
+        $stmt->execute(array('id' => $ticket->getId()));
+        $resultat = $stmt->fetchAll();
+        return empty($resultat) ? ['depense' => 0, 'activites_liees' => ''] : $resultat[0];
+    }
+
+    /**
      * Les tickets non remboursés d'un membre
      * @param Membre $membre
      * @return array|Ticket[]

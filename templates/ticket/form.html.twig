@@ -30,8 +30,9 @@
             <div class="col-sm-10 col-md-8 col-xl-5">
                 <div class="well">
                     <fieldset>
-                        <legend><i class="fas fa-file-image"></i> Duplicata</legend>
+                        <legend><i class="fas fa-file-image"></i> Duplicata <a href="{{ path('supprimer_duplicata', {'id': id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer duplicata"><i class="fas fa-trash-alt"></i></a></legend>
                         <img src="{{ asset('uploads/tickets/' ~ duplicata) }}" class="img-fluid" alt="Duplicata" />
+
                     </fieldset>
                 </div>
             </div>

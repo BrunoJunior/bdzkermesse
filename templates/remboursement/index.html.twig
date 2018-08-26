@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Remboursement{% endblock %}
+
+{% block body %}
+    <h3><span data-toggle="tooltip" title="{{ remboursement.etat }}">{{ remboursement.pastilleEtat|raw }}</span> Remboursement {{ remboursement.numeroSuivi }} du {{ remboursement.date }}</h3>
+    <div class="row pt-3">
+        <div class="col">
+            <fieldset>
+                <legend>Tickets associés</legend>
+                <div class="row">
+                    {% include "ticket/table.html.twig" with {'rows': remboursement.tickets, 'total': remboursement.montant} only %}
+                </div>
+            </fieldset>
+        </div>
+    </div>
+{% endblock %}

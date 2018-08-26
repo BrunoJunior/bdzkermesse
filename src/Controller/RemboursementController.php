@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Business\RemboursementBusiness;
+use App\Business\TicketBusiness;
+use App\DataTransfer\RemboursementDTO;
+use App\DataTransfer\RemboursementRow;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Form\DemandeRemboursementType;
@@ -30,6 +33,25 @@ class RemboursementController extends MyController
     {
         parent::__construct($logger);
         $this->business = $business;
+    }
+
+    /**
+     * @Route("/remboursements/{id}", name="remboursement", requirements={"id"="\d+"})
+     * @Security("remboursement.isProprietaire(user)")
+     * @param Remboursement $remboursement
+     * @param TicketBusiness $bTicket
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \SimpleEnum\Exception\UnknownEumException
+     */
+    public function details(Remboursement $remboursement, TicketBusiness $bTicket): Response
+    {
+        return $this->render(
+            'remboursement/index.html.twig',
+            [
+                'remboursement' => new RemboursementRow($remboursement, $bTicket),
+                'menu' => $this->getMenu($this->business->getKermesse($remboursement), static::MENU_REMBOURSEMENTS)
+            ]
+        );
     }
 
     /**

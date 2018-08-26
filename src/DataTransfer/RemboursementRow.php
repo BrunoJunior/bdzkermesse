@@ -9,12 +9,10 @@
 namespace App\DataTransfer;
 
 
-use App\Entity\Depense;
+use App\Business\TicketBusiness;
 use App\Entity\Remboursement;
-use App\Entity\Ticket;
 use App\Enum\RemboursementEtatEnum;
 use App\Enum\RemboursementModeEnum;
-use App\Enum\TicketEtatEnum;
 use App\Helper\HFloat;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -41,12 +39,24 @@ class RemboursementRow
     private $mode;
 
     /**
+     * @var ArrayCollection
+     */
+    private $tickets;
+
+    /**
+     * @var TicketBusiness
+     */
+    private $bTicket;
+
+    /**
      * RemboursementRow constructor.
      * @param Remboursement $remboursement
+     * @param TicketBusiness $bTicket
      * @throws \SimpleEnum\Exception\UnknownEumException
      */
-    public function __construct(Remboursement $remboursement)
+    public function __construct(Remboursement $remboursement, TicketBusiness $bTicket)
     {
+        $this->bTicket = $bTicket;
         $this->remboursement = $remboursement;
         $this->montant = $this->remboursement->getMontant() ?? 0;
         $this->etat = RemboursementEtatEnum::getInstance($this->remboursement->getEtat());
@@ -126,5 +136,21 @@ class RemboursementRow
     public function isEnAttente():bool
     {
         return $this->etat->is(RemboursementEtatEnum::EN_ATTENTE);
+    }
+
+    /**
+     * @return ArrayCollection|TicketRow[]
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \SimpleEnum\Exception\UnknownEumException
+     */
+    public function getTickets():ArrayCollection
+    {
+        if ($this->tickets === null) {
+            $this->tickets = new ArrayCollection();
+            foreach ($this->remboursement->getTickets() as $ticket) {
+                $this->tickets->add($this->bTicket->getRow($ticket));
+            }
+        }
+        return $this->tickets;
     }
 }

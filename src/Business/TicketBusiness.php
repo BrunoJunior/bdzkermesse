@@ -89,6 +89,7 @@ class TicketBusiness
     /**
      * Créer ticket
      * @param Ticket $ticket
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \SimpleEnum\Exception\UnknownEumException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
@@ -139,11 +140,26 @@ class TicketBusiness
      */
     public function supprimer(Ticket $ticket)
     {
-        if ($ticket->getDuplicata()) {
-            unlink($this->getDuplicataDir($ticket->getKermesse()) . '/' . $ticket->getDuplicata());
-        }
+        $this->supprimerDuplicata($ticket);
         $this->em->remove($ticket);
         $this->em->flush();
+    }
+
+    /**
+     * Suppression d'un duplicata
+     * @param Ticket $ticket
+     */
+    public function supprimerDuplicata(Ticket $ticket)
+    {
+        if ($ticket->getDuplicata()) {
+            $path = $this->getDuplicataPath($ticket);
+            if (file_exists($path)) {
+                unlink($this->getDuplicataPath($ticket));
+            }
+            $ticket->setDuplicata(null);
+            $this->em->persist($ticket);
+            $this->em->flush();
+        }
     }
 
     /**
@@ -152,6 +168,10 @@ class TicketBusiness
      */
     public function getDuplicataPath(Ticket $ticket)
     {
+        $duplicata = $ticket->getDuplicata();
+        if ($duplicata instanceof File) {
+            return $duplicata->getRealPath();
+        }
         return $this->getDuplicataDir($ticket->getKermesse()) . '/' . $ticket->getDuplicata();
     }
 
@@ -161,10 +181,24 @@ class TicketBusiness
      */
     public function isDuplicataImage(Ticket $ticket)
     {
-        if (!$ticket->getDuplicata())
-        {
+        $duplicata = $ticket->getDuplicata();
+        if (!$duplicata) {
             return false;
         }
-        return Stringy::create((new File($this->getDuplicataPath($ticket)))->getMimeType())->startsWith('image/');
+        if (!$duplicata instanceof File) {
+            $duplicata = new File($this->getDuplicataPath($ticket));
+        }
+        return Stringy::create($duplicata->getMimeType())->startsWith('image/');
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @return \App\DataTransfer\TicketRow
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \SimpleEnum\Exception\UnknownEumException
+     */
+    public function getRow(Ticket $ticket)
+    {
+        return $this->generator->generate($ticket);
     }
 }
