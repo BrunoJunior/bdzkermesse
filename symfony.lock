@@ -2,6 +2,9 @@
     "brunojunior/simple-enum": {
         "version": "dev-master"
     },
+    "clue/stream-filter": {
+        "version": "v1.4.0"
+    },
     "danielstjules/stringy": {
         "version": "3.1.0"
     },
@@ -98,8 +101,20 @@
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "guzzlehttp/psr7": {
+        "version": "1.4.2"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "mailgun/mailgun-php": {
+        "version": "2.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "2.3",
+            "ref": "d3188b6cdc58f877ef2884b55ac4798640b4b9be"
+        }
     },
     "monolog/monolog": {
         "version": "1.23.0"
@@ -109,6 +124,30 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "php-http/client-common": {
+        "version": "1.7.0"
+    },
+    "php-http/curl-client": {
+        "version": "v1.7.1"
+    },
+    "php-http/discovery": {
+        "version": "1.4.0"
+    },
+    "php-http/httplug": {
+        "version": "v1.1.0"
+    },
+    "php-http/message": {
+        "version": "1.7.0"
+    },
+    "php-http/message-factory": {
+        "version": "v1.0.2"
+    },
+    "php-http/multipart-stream-builder": {
+        "version": "1.0.0"
+    },
+    "php-http/promise": {
+        "version": "v1.0.0"
     },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
@@ -124,6 +163,9 @@
     },
     "psr/container": {
         "version": "1.0.0"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
     },
     "psr/link": {
         "version": "1.0.0"
