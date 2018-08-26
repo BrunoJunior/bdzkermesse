@@ -39,6 +39,7 @@ class MailgunSender extends AbstractEmailSender
      */
     public function envoyer(ContactDTO $contact, callable $completer = null): int
     {
+        $this->templateVars['emetteur'] = $contact->getEmetteur();
         $retour = $this->mailgun->messages()->send('mb.bdesprez.com', [
             'from' => 'BdzKermesse <mailgun@bdesprez.com>',
             'to' => $contact->getDestinataire(),

@@ -26,7 +26,7 @@ abstract class AbstractEmailSender
     /**
      * @var array
      */
-    private $templateVars = [];
+    protected $templateVars = [];
 
     /**
      * ContactSender constructor.
