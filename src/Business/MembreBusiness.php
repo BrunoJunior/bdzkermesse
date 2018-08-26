@@ -12,7 +12,7 @@ namespace App\Business;
 use App\DataTransfer\ContactDTO;
 use App\Entity\Membre;
 use App\Repository\RemboursementRepository;
-use App\Service\EmailSender;
+use App\Service\MailgunSender;
 use Stringy\Stringy;
 
 class MembreBusiness
@@ -23,16 +23,16 @@ class MembreBusiness
     private $rRemboursement;
 
     /**
-     * @var EmailSender
+     * @var MailgunSender
      */
     private $sender;
 
     /**
      * MembreBusiness constructor.
      * @param RemboursementRepository $rRemboursement
-     * @param EmailSender $sender
+     * @param MailgunSender $sender
      */
-    public function __construct(RemboursementRepository $rRemboursement, EmailSender $sender)
+    public function __construct(RemboursementRepository $rRemboursement, MailgunSender $sender)
     {
         $this->rRemboursement = $rRemboursement;
         $this->sender = $sender;

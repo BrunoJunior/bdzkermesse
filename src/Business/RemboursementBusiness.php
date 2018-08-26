@@ -17,7 +17,7 @@ use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
 use App\Exception\BusinessException;
-use App\Service\EmailSender;
+use App\Service\MailgunSender;
 use Doctrine\ORM\EntityManagerInterface;
 
 class RemboursementBusiness
@@ -35,7 +35,7 @@ class RemboursementBusiness
      */
     private $em;
     /**
-     * @var EmailSender
+     * @var MailgunSender
      */
     private $sender;
 
@@ -44,9 +44,9 @@ class RemboursementBusiness
      * @param TicketBusiness $bTicket
      * @param MembreBusiness $bMembre
      * @param EntityManagerInterface $entityManager
-     * @param EmailSender $sender
+     * @param MailgunSender $sender
      */
-    public function __construct(TicketBusiness $bTicket, MembreBusiness $bMembre, EntityManagerInterface $entityManager, EmailSender $sender)
+    public function __construct(TicketBusiness $bTicket, MembreBusiness $bMembre, EntityManagerInterface $entityManager, MailgunSender $sender)
     {
         $this->bMembre = $bMembre;
         $this->bTicket = $bTicket;
