@@ -26,7 +26,9 @@ class RecetteType extends AbstractType
                 ]);
         }
         $builder
-            ->add('report_stock', CheckboxType::class)
+            ->add('report_stock', CheckboxType::class , [
+                'required' => false
+            ])
             ->add('libelle')
             ->add('date', DateType::class, [
                 'widget' => 'single_text',
