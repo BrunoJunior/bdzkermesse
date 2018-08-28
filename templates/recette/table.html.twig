@@ -7,7 +7,7 @@
         <th scope="col"><i class="fas fa-tag"></i> Libelle</th>
         <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
         <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
-        {% if activite is not defined %}<th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>{% endif %}
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -19,15 +19,13 @@
             <td>{{ recette.libelle }}</td>
             <td>{{ recette.nombreTickets }}</td>
             <td>{{ recette.montant }}</td>
-            {% if activite is not defined %}
-                <td>
-                    <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                    <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
-                </td>
-            {% endif %}
+            <td>
+                <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
+                <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Supprimer</a>
+            </td>
         </tr>
     {% else %}
-        <tr><td colspan="{% if activite is not defined %}7{% else %}5{% endif %}">Aucune recette</td></tr>
+        <tr><td colspan="{% if activite is not defined %}7{% else %}6{% endif %}">Aucune recette</td></tr>
     {% endfor %}
     </tbody>
     {% if recettes is not empty %}
@@ -36,7 +34,7 @@
                 <th scope="row" colspan="{% if activite is not defined %}4{% else %}3{% endif %}">Total</th>
                 <td>{{ total.nombre_ticket }}</td>
                 <td>{{ total.montant }}</td>
-                {% if activite is not defined %}<td></td>{% endif %}
+                <td></td>
             </tr>
         </tfoot>
     {% endif %}

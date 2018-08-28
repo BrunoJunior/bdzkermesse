@@ -180,6 +180,7 @@ class KermesseController extends MyController
      * @param TicketRowGenerator $ticketGenerator
      * @return Response
      * @throws \Doctrine\DBAL\DBALException
+     * @throws \SimpleEnum\Exception\UnknownEumException
      */
     public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator): Response
     {

@@ -7,7 +7,7 @@
         {% include "activite/card.html.twig" with {'card': card} only %}
     </div>
     <fieldset>
-        <legend>Recettes</legend>
+        <legend>Recettes <a href="{{ path('nouvelle_recette_activite', {'id': activite.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
             {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite} only %}
         </div>

@@ -18,14 +18,12 @@ class RecetteType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $kermesse = $options['kermesse'];
-        if (!$options['activite'] instanceof Activite) {
-            $builder->add('activite', EntityType::class, [
-                    'class' => Activite::class,
-                    'choices' => $kermesse->getActivites(),
-                    'choice_label' => 'nom'
-                ]);
-        }
-        $builder
+        $builder->add('activite', EntityType::class, [
+                'class' => Activite::class,
+                'choices' => $kermesse->getActivites(),
+                'choice_label' => 'nom',
+                'disabled' => $options['activite'] instanceof Activite
+            ])
             ->add('report_stock', CheckboxType::class , [
                 'required' => false
             ])
