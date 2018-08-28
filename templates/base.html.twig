@@ -12,8 +12,11 @@
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-    <header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar fixed-top">
+    <header class="navbar navbar-expand navbar-dark flex-row bd-navbar fixed-top justify-content-between">
         <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="BdzKermesse">BdzKermesse</a>
+        {% if menu is defined %}
+            {% include "menu_slim.html.twig" with {'menu': menu} only %}
+        {% endif %}
         {% if app.user is not empty %}
             <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
                 <li class="nav-item dropdown">
