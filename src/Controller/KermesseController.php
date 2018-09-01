@@ -9,6 +9,7 @@ use App\Helper\HFloat;
 use App\Repository\ActiviteRepository;
 use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
+use App\Service\KermesseCardGenerator;
 use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
 use App\Service\RemboursementRowGenerator;
@@ -237,5 +238,21 @@ class KermesseController extends MyController
                 'menu' => $this->getMenu($kermesse, static::MENU_REMBOURSEMENTS)
             ]
         );
+    }
+
+    /**
+     * @Route("/kermesses/{id}/card", name="carte_kermesse")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param KermesseCardGenerator $cardGenerator
+     * @return Response
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function afficherCard(Kermesse $kermesse, KermesseCardGenerator $cardGenerator):Response
+    {
+        return $this->render('kermesse/card.html.twig', [
+            'card' => $cardGenerator->generate($kermesse)
+        ]);
     }
 }

@@ -6,7 +6,7 @@
     <fieldset>
         <legend>Nos kermesses <a href="{{ path('nouvelle_kermesse') }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle kermesse"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
-            {% if cards is empty %}
+            {% if kermesses is empty %}
                 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                     <div class="card text-center">
                         <div class="card-body">
@@ -15,8 +15,10 @@
                     </div>
                 </div>
             {% endif %}
-            {% for card in cards %}
-                {% include "kermesse/card.html.twig" with {'card': card} only %}
+            {% for kermesse in kermesses %}
+                <div class="col-sm-6 col-md-4 col-lg-3 mb-3 ajax" data-ajax-url="{{ path('carte_kermesse', {'id': kermesse.id}) }}">
+                    <i class="fab fa-yelp fa-pulse fa-4x"></i>
+                </div>
             {% endfor %}
         </div>
     </fieldset>

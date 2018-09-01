@@ -39,12 +39,28 @@ $(function() {
         addRemoveLinkCollectionWidget(element);
     });
 
+    // Date picker
     $('.js-datepicker').datepicker({
         language: 'fr',
         format: 'yyyy-mm-dd'
     });
 
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
+    // Tooltip
+    $('[data-toggle="tooltip"]').tooltip();
+
+    // Ajax simple
+    $('.ajax').each(function () {
+        var element = $(this);
+        var url = element.data('ajax-url');
+        if (url === undefined) {
+            return;
+        }
+        $.ajax({
+            url: url,
+            context: element[0]
+        }).done(function(html) {
+            $(this).html(html);
+        })
+    });
+
 });
