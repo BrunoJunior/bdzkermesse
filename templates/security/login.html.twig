@@ -21,10 +21,12 @@
                             <input type="password" id="password" name="_password" class="form-control" />
                         </div>
                         <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
-                        <a class="btn btn-secondary" href="{{ path('registration') }}" role="button">S'inscrire</a>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fa fa-sign-in" aria-hidden="true"></i> On entre
-                        </button>
+                        <div class="d-flex justify-content-between">
+                            <a class="btn btn-secondary" href="{{ path('registration') }}" role="button">S'inscrire</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-sign-in" aria-hidden="true"></i> On entre
+                            </button>
+                        </div>
                     </fieldset>
                 </form>
             </div>
