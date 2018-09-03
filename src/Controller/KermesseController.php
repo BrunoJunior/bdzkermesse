@@ -129,18 +129,15 @@ class KermesseController extends MyController
      * @Route("/kermesses/{id}", name="kermesse", requirements={"id"="\d+"})
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
-     * @param ActiviteRepository $rActivite
-     * @param ActiviteCardGenerator $activiteCardGenerator
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function index(Kermesse $kermesse, ActiviteRepository $rActivite, ActiviteCardGenerator $activiteCardGenerator): Response
+    public function index(Kermesse $kermesse): Response
     {
-        $activiteCards = $activiteCardGenerator->generateList($kermesse);
         return $this->render(
             'kermesse/index.html.twig',
             [
                 'kermesse' => $kermesse,
-                'activiteCards' => $activiteCards,
+                'activites' => $kermesse->getActivites(),
                 'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
             ]
         );

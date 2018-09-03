@@ -6,15 +6,17 @@
     <fieldset>
         <legend>Activités <a href="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle activité"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
-            {% if activiteCards is empty %}
+            {% if activites is empty %}
             <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
                 <div class="card text-center">
                     <h5 class="card-title">Aucune activité</h5>
                 </div>
             </div>
             {% endif %}
-            {% for card in activiteCards %}
-                {% include "activite/card.html.twig" with {'card': card} only %}
+            {% for activite in activites %}
+                <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 mb-3 ajax" data-ajax-url="{{ path('carte_activite', {'id': activite.id}) }}">
+                    <i class="fab fa-yelp fa-pulse fa-4x"></i>
+                </div>
             {% endfor %}
         </div>
     </fieldset>

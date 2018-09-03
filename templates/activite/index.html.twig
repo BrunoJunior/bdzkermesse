@@ -4,7 +4,9 @@
 
 {% block body %}
     <div class="row justify-content-center">
-        {% include "activite/card.html.twig" with {'card': card} only %}
+        <div class="col-sm-6 mb-3 ajax" data-ajax-url="{{ path('carte_activite', {'id': activite.id}) }}">
+            <i class="fab fa-yelp fa-pulse fa-4x"></i>
+        </div>
     </div>
     <fieldset>
         <legend>Recettes <a href="{{ path('nouvelle_recette_activite', {'id': activite.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>

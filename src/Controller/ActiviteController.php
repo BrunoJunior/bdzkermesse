@@ -112,11 +112,9 @@ class ActiviteController extends MyController
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator, ActiviteCardGenerator $actCardGenerator): Response
+    public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator): Response
     {
         $totaux = $rRecette->getTotauxPourActivite($activite);
-        $recette = $totaux['montant'];
-        $nbTickets = $totaux['nombre_ticket'];
         $depense = $rDepense->getTotalPourActivite($activite);
         $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
         return $this->render(
@@ -125,11 +123,35 @@ class ActiviteController extends MyController
                 'activite' => $activite,
                 'recettes' => $rowGenerator->generateListPourActivite($activite),
                 'depenses' => $dRowGenerator->generateList($activite),
-                'card' => $actCardGenerator->generate($activite, $depense, $recette, $nbTickets),
                 'total_recettes' => $totaux,
                 'total_depenses' => HFloat::getInstance($depense / 100.0)->getMontantFormatFrancais(),
                 'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
             ]
         );
+    }
+
+    /**
+     * @Route("/activites/{id}/card", name="carte_activite")
+     * @Security("activite.isProprietaire(user)")
+     * @param Activite $activite
+     * @param RecetteRepository $rRecette
+     * @param DepenseRepository $rDepense
+     * @param ActiviteCardGenerator $actCardGenerator
+     * @return Response
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function card(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, ActiviteCardGenerator $actCardGenerator):Response
+    {
+        $totaux = $rRecette->getTotauxPourActivite($activite);
+        $recette = $totaux['montant'];
+        $nbTickets = $totaux['nombre_ticket'];
+        $depense = $rDepense->getTotalPourActivite($activite);
+        $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
+        return $this->render(
+            'activite/card.html.twig',
+            [
+                'card' => $actCardGenerator->generate($activite, $depense, $recette, $nbTickets)
+            ]);
     }
 }
