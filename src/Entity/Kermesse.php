@@ -57,6 +57,11 @@ class Kermesse extends MyEntity
      */
     private $montant_ticket;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" : false})
+     */
+    private $dupliquee = false;
+
     public function __construct()
     {
         $this->activites = new ArrayCollection();
@@ -202,6 +207,24 @@ class Kermesse extends MyEntity
     public function setMontantTicket(int $montant_ticket)
     {
         $this->montant_ticket = $montant_ticket;
+        return $this;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isDupliquee(): bool
+    {
+        return $this->dupliquee;
+    }
+
+    /**
+     * @param bool $dupliquee
+     * @return Kermesse
+     */
+    public function setDupliquee(bool $dupliquee): self
+    {
+        $this->dupliquee = $dupliquee;
         return $this;
     }
 }

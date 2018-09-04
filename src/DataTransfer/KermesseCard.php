@@ -33,11 +33,6 @@ class KermesseCard
     private $depense;
 
     /**
-     * @var bool
-     */
-    private $derniere = false;
-
-    /**
      * KermesseCard constructor.
      * @param Kermesse $kermesse
      */
@@ -51,17 +46,7 @@ class KermesseCard
      */
     public function isDerniere(): bool
     {
-        return $this->derniere;
-    }
-
-    /**
-     * @param bool $derniere
-     * @return KermesseCard
-     */
-    public function setDerniere(bool $derniere): KermesseCard
-    {
-        $this->derniere = $derniere;
-        return $this;
+        return !$this->kermesse->isDupliquee();
     }
 
     /**

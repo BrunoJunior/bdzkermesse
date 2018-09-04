@@ -159,7 +159,11 @@ class KermesseService
             $this->kermesse->addMembre($membreActif);
         }
         $this->entityManager->persist($this->kermesse);
-        return $this->dupliquerActivites($origine) // Init des mêmes activités (sauf caisse centrale, gérée précédemment)
+        $this->dupliquerActivites($origine) // Init des mêmes activités (sauf caisse centrale, gérée précédemment)
             ->transfererStockNMoinsUn($origine);   // Récupération des recettes à reporter en dépense N-1
+        $origine->setDupliquee(true);
+        $this->entityManager->persist($origine);
+        $this->entityManager->flush();
+        return $this;
     }
 }
