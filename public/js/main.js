@@ -63,4 +63,9 @@ $(function() {
         })
     });
 
+    // Afficher / Cacher le menu slim
+    $('#show-menu-slim').on('click', function () {
+        $('#menu-slim').toggleClass('d-none');
+    });
+
 });
