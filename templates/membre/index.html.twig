@@ -5,8 +5,24 @@
 {% block body %}
     <fieldset>
         <legend>Nos membres <a href="{{ path('nouveau_membre') }}" class="btn btn-primary" data-toggle="tooltip" title="Nouveau membre"><i class="fas fa-plus"></i></a></legend>
-        <div class="row">
+        <div class="row d-none d-lg-block">
             {% include "membre/table.html.twig" with {'membres': membres} only %}
+        </div>
+        <div class="row d-lg-none">
+            {% if membres is empty %}
+                <div class="col-sm-6 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Aucune membre</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% for membre in membres %}
+                <div class="col-sm-6 mb-3">
+                    {% include "membre/card.html.twig" with {'membre': membre} only %}
+                </div>
+            {% endfor %}
         </div>
     </fieldset>
 {% endblock %}
