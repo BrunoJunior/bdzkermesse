@@ -1,0 +1,15 @@
+<div class="card text-center">
+    <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-barcode"></i> {{ ticket.numero }} <span  data-toggle="tooltip" title="{{ ticket.etat }}">{{ ticket.pastilleEtat|raw }}</h5>
+        <p class="card-text" data-toggle="tooltip" title="Date"><i class="fas fa-calendar"></i> {{ ticket.date }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Acheteur"><i class="fas fa-user"></i> {{ ticket.acheteur }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Fournisseur"><i class="fas fa-truck"></i> {{ ticket.fournisseur }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Montant"><i class="fas fa-receipt"></i> {{ ticket.montant }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Activités liées"><i class="fas fa-link"></i> {{ ticket.activitesLiees }}</p>
+    </div>
+    <div class="card-footer">
+        <a href="{{ path('editer_ticket', {'id': ticket.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+        {% if ticket.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ ticket.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
+        <a href="{{ path('supprimer_ticket', {'id': ticket.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div class="card text-center">
+    <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-eye"></i> {{ remboursement.numeroSuivi }} <span data-toggle="tooltip" title="{{ remboursement.etat }}">{{ remboursement.pastilleEtat|raw }}</span></h5>
+        <p class="card-text" data-toggle="tooltip" title="Date"><i class="fas fa-calendar"></i> {{ remboursement.date }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Membre"><i class="fas fa-user"></i> {{ remboursement.membre }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Montant"><i class="fas fa-euro-sign"></i> {{ remboursement.montant }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Mode"><i class="fas fa-info-circle"></i> {{ remboursement.mode }}</p>
+    </div>
+    <div class="card-footer">
+        <a href="{{ path('remboursement', {'id': remboursement.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Détails"><i class="fas fa-eye"></i></a>
+        {% if remboursement.enAttente %}
+            <a href="{{ path('renvoyer_demande', {'id': remboursement.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
+            <a href="{{ path('valider_remboursement', {'id': remboursement.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer"><i class="fas fa-clipboard-check"></i></a>
+        {% endif %}
+    </div>
+</div>

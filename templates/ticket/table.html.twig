@@ -1,46 +1,46 @@
-<table class="table">
-    <thead class="thead-dark">
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col"><i class="fas fa-question-circle"></i> État</th>
-        <th scope="col"><i class="fas fa-calendar"></i> Date</th>
-        <th scope="col"><i class="fas fa-user"></i> Acheteur</th>
-        <th scope="col"><i class="fas fa-barcode"></i> N°</th>
-        <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
-        <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
-        <th scope="col"><i class="fas fa-link"></i> Activités liées</th>
-        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for row in rows %}
-        <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>
-            <th scope="row">{{ row.id }}</th>
-            <td><span  data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
-            <td>{{ row.date }}</td>
-            <td>{{ row.acheteur }}</td>
-            <td>{{ row.numero }}</td>
-            <td>{{ row.fournisseur }}</td>
-            <td>{{ row.montant }}</td>
-            <td>{{ row.activitesLiees }}</td>
-            <td>
-                <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
-                {% if row.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ row.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
-                <a href="{{ path('supprimer_ticket', {'id': row.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
-            </td>
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col"><i class="fas fa-question-circle"></i> État</th>
+            <th scope="col"><i class="fas fa-calendar"></i> Date</th>
+            <th scope="col"><i class="fas fa-user"></i> Acheteur</th>
+            <th scope="col"><i class="fas fa-barcode"></i> N°</th>
+            <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
+            <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
+            <th scope="col"><i class="fas fa-link"></i> Activités liées</th>
+            <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
         </tr>
-    {% else %}
-        <tr><td colspan="8">Aucune dépense</td></tr>
-    {% endfor %}
-    </tbody>
-    {% if total is defined %}
-        <tfoot>
-            <tr>
-                <th scope="row" colspan="6">Total</th>
-                <td>{{ total }}</td>
-                <td></td>
-                <td></td>
+        </thead>
+        <tbody>
+        {% for row in rows %}
+            <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>
+                <th scope="row">{{ row.id }}</th>
+                <td><span  data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
+                <td>{{ row.date }}</td>
+                <td>{{ row.acheteur }}</td>
+                <td>{{ row.numero }}</td>
+                <td>{{ row.fournisseur }}</td>
+                <td>{{ row.montant }}</td>
+                <td>{{ row.activitesLiees }}</td>
+                <td>
+                    <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+                    {% if row.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ row.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
+                    <a href="{{ path('supprimer_ticket', {'id': row.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
+                </td>
             </tr>
-        </tfoot>
-    {% endif %}
-</table>
+        {% else %}
+            <tr><td colspan="8">Aucune dépense</td></tr>
+        {% endfor %}
+        </tbody>
+        {% if total is defined %}
+            <tfoot>
+                <tr>
+                    <th scope="row" colspan="6">Total</th>
+                    <td>{{ total }}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        {% endif %}
+    </table>

@@ -10,14 +10,46 @@
     </div>
     <fieldset>
         <legend>Recettes <a href="{{ path('nouvelle_recette_activite', {'id': activite.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
-        <div class="row">
+        <div class="row d-none d-lg-block">
             {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite} only %}
+        </div>
+        <div class="row d-lg-none">
+            {% if recettes is empty %}
+                <div class="col-sm-6 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Aucune recette</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% for recette in recettes %}
+                <div class="col-sm-6 mb-3">
+                    {% include "recette/card.html.twig" with {'recette': recette} only %}
+                </div>
+            {% endfor %}
         </div>
     </fieldset>
     <fieldset>
-        <legend>Dépenses</legend>
-        <div class="row">
+        <legend>Dépenses <span class="d-lg-none">(Total : {{ total_depenses }}) </span></legend>
+        <div class="row d-none d-lg-block">
             {% include "depense/table.html.twig" with {'depenses': depenses, 'total': total_depenses} only %}
+        </div>
+        <div class="row d-lg-none">
+            {% if depenses is empty %}
+                <div class="col-sm-6 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Aucune dépense</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% for depense in depenses %}
+                <div class="col-sm-6 mb-3">
+                    {% include "depense/card.html.twig" with {'depense': depense} only %}
+                </div>
+            {% endfor %}
         </div>
     </fieldset>
 {% endblock %}

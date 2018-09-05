@@ -15,10 +15,10 @@
     <header class="navbar navbar-expand navbar-dark flex-row bd-navbar fixed-top justify-content-between">
         <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="BdzKermesse">BdzKermesse</a>
         {% if menu is defined %}
-            <a class="btn btn-secondary d-md-none" href="#" id="show-menu-slim"><i class="fas fa-bars"></i></a>
+            <a class="btn btn-secondary d-lg-none" href="#" id="show-menu-slim"><i class="fas fa-bars"></i></a>
         {% endif %}
         {% if app.user is not empty %}
-            <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+            <ul class="navbar-nav flex-row ml-md-auto d-none d-lg-flex">
                 <li class="nav-item dropdown">
                     <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="user-infos" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {% include "icon.html.twig" with {'icon': 'user'} only %} {{ app.user.nom }}
@@ -32,7 +32,7 @@
         {% endif %}
     </header>
     {% if menu is defined %}
-        <aside class="col-md-2 d-none d-md-block px-0 sidebar-sticky fixed-top">
+        <aside class="col-md-2 d-none d-lg-block px-0 sidebar-sticky fixed-top">
             <nav class="sidebar-nav">
                 {% include "menu.html.twig" with {'menu': menu, 'menu_main': true} only %}
             </nav>
@@ -60,7 +60,7 @@
                 </div>
             {% endif %}
             <div class="row justify-content-end">
-                <div class="col-md-{% if menu is defined %}10{% else %}12{% endif %}">
+                <div class="col-lg-{% if menu is defined %}10{% else %}12{% endif %}">
                     <div class="container-fluid pt-3">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
