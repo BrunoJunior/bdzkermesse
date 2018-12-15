@@ -54,13 +54,14 @@ class TicketRowGenerator
 
     /**
      * @param Kermesse $kermesse
+     * @param string $order
      * @return ArrayCollection|TicketRow[]
      * @throws \Doctrine\DBAL\DBALException
      * @throws \SimpleEnum\Exception\UnknownEumException
      */
-    public function generateList(Kermesse $kermesse): ArrayCollection
+    public function generateList(Kermesse $kermesse, string $order): ArrayCollection
     {
-        $tickets = $this->rTicket->findByKermesse($kermesse);
+        $tickets = $this->rTicket->findByKermesse($kermesse, $order);
         $totaux = $this->rTicket->getTotauxParTicketByKermesse($kermesse);
         $rows = new ArrayCollection();
         foreach ($tickets as $ticket) {

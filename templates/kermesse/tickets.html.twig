@@ -6,7 +6,7 @@
     <fieldset>
         <legend>Dépenses <a href="{{ path('nouveau_ticket', {'id': kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
-            {% include "ticket/table.html.twig" with {'rows': rows} only %}
+            {% include "ticket/table.html.twig" with {'colonnes': colonnes, 'rows': rows, 'order': order} only %}
         </div>
         <div class="row d-lg-none">
             {% if rows is empty %}

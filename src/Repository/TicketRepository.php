@@ -40,14 +40,20 @@ class TicketRepository extends ServiceEntityRepository
 
     /**
      * @param Kermesse $kermesse
+     * @param string $order
      * @return array|Ticket[]
      */
-    public function findByKermesse(Kermesse $kermesse):array
+    public function findByKermesse(Kermesse $kermesse, string $order):array
     {
+        $sens = 'ASC';
+        if ($order[0] === '-') {
+            $sens = 'DESC';
+            $order = mb_substr($order, 1);
+        }
         return $this->createQueryBuilder('t')
             ->innerJoin('t.membre', 'm')
             ->andWhere('t.kermesse = :kermesse')
-            ->orderBy('t.date')
+            ->orderBy('t.' . $order, $sens)
             ->setParameter('kermesse', $kermesse)
             ->getQuery()
             ->getResult();

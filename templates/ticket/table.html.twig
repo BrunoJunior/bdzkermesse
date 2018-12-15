@@ -1,17 +1,5 @@
     <table class="table">
-        <thead class="thead-dark">
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col"><i class="fas fa-question-circle"></i> État</th>
-            <th scope="col"><i class="fas fa-calendar"></i> Date</th>
-            <th scope="col"><i class="fas fa-user"></i> Acheteur</th>
-            <th scope="col"><i class="fas fa-barcode"></i> N°</th>
-            <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
-            <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
-            <th scope="col"><i class="fas fa-link"></i> Activités liées</th>
-            <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
-        </tr>
-        </thead>
+        {% include "header.html.twig" with {'colonnes': colonnes, 'rows': rows, 'order': order, 'search': true} only %}
         <tbody>
         {% for row in rows %}
             <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>

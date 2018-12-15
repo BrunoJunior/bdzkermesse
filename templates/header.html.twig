@@ -1,0 +1,29 @@
+<thead class="thead-dark">
+<tr>
+    {% for colonne in colonnes %}
+        <th scope="col">
+            {% if search %}
+                {% if colonne.recherchable %}
+                    <input type="text" name="searh-{{ colonne.nom }}" id="searh-{{ colonne.nom }}" class="head-search" />
+                {% elseif colonne.nom is same as('actions') %}
+                    <button type="button" id="btn-filter" class="btn btn-secondary"><i class="fas fa-filter"></i></button>
+                {% endif %}
+                <br />
+            {% endif %}
+            {% if colonne.icone %}<i class="{{ colonne.icone }}"></i>{% endif %}
+            {% if colonne.ordonnable %}
+            <a href="?order={% if order is same as(colonne.nom) %}-{% endif %}{{ colonne.nom }}">
+                {% endif %}
+                {{ colonne.libelle }}
+                {% if colonne.ordonnable %}
+            </a>
+            {% if order is same as(colonne.nom) %}
+                <i class="fa fa-caret-up" aria-hidden="true"></i>
+            {% elseif order is same as('-' ~ colonne.nom) %}
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+            {% endif %}
+            {% endif %}
+        </th>
+    {% endfor %}
+</tr>
+</thead>

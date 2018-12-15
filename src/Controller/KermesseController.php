@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\Colonne;
 use App\Entity\Kermesse;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
@@ -171,23 +172,47 @@ class KermesseController extends MyController
         );
     }
 
+    /*
+     * <tr>
+            <th scope="col">
+                <i class="fas fa-link"></i> Activités liées</th>
+            <th scope="col">
+                <i class="fab fa-telegram-plane"></i> Actions</th>
+        </tr>
+     */
+
     /**
      * @Route("/kermesses/{id}/tickets", name="liste_tickets")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param TicketRowGenerator $ticketGenerator
+     * @param Request $request
      * @return Response
      * @throws \Doctrine\DBAL\DBALException
      * @throws \SimpleEnum\Exception\UnknownEumException
      */
-    public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator): Response
+    public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator, Request $request): Response
     {
+        $order = $request->get('order', 'date');
+        $colonnes = [
+            new Colonne('id', '#'),
+            new Colonne('etat', 'État', 'fas fa-question-circle', true),
+            new Colonne('date', 'Date', 'fas fa-calendar', true),
+            new Colonne('membre', 'Acheteur', 'fas fa-user', true, true),
+            new Colonne('numero', 'N°', 'fas fa-barcode', true, true),
+            new Colonne('fournisseur', 'Fournisseur', 'fas fa-truck', true, true),
+            new Colonne('montant', 'Montant', 'fas fa-receipt', true, true),
+            new Colonne('activites', 'Activités liées', 'fas fa-link'),
+            new Colonne('actions', 'Actions', 'fab fa-telegram-plane'),
+        ];
         return $this->render(
             'kermesse/tickets.html.twig',
             [
                 'kermesse' => $kermesse,
-                'rows' => $ticketGenerator->generateList($kermesse),
-                'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
+                'colonnes' => $colonnes,
+                'rows' => $ticketGenerator->generateList($kermesse, $order),
+                'menu' => $this->getMenu($kermesse, static::MENU_TICKETS),
+                'order' => $order
             ]
         );
     }

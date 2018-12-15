@@ -8,6 +8,9 @@ function addRemoveLinkCollectionWidget(element) {
     });
 };
 
+function searchInTable(table) {
+}
+
 $(function() {
     $("#menu").metisMenu();
 

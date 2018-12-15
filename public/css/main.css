@@ -82,3 +82,11 @@ aside.fixed-top {
     height: 100%;
     z-index: 1029;
 }
+
+table thead th a {
+    color: white;
+}
+
+table thead th input {
+    max-width: 100px;
+}
