@@ -195,7 +195,7 @@ class KermesseController extends MyController
     {
         $order = $request->get('order', 'date');
         $colonnes = [
-            new Colonne('id', '#'),
+            new Colonne('id', '#', '', true),
             new Colonne('etat', 'État', 'fas fa-question-circle', true),
             new Colonne('date', 'Date', 'fas fa-calendar', true),
             new Colonne('membre', 'Acheteur', 'fas fa-user', true, true),

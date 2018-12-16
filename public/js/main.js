@@ -8,7 +8,34 @@ function addRemoveLinkCollectionWidget(element) {
     });
 };
 
+function getSearchValue(table, index) {
+    var value = '';
+    var th = table.find('thead tr th').get(index);
+    var input = $(th).find('input');
+    if (input.length === 1) {
+        value = input.val().toLowerCase();
+    }
+    return value;
+}
+
 function searchInTable(table) {
+    var lignes = table.find('tbody tr');
+    lignes.each(function () {
+        var ligne = $(this);
+        var colonnes = ligne.find('td');
+        var display = true;
+        colonnes.each(function () {
+            debugger;
+            var colonne = $(this);
+            var index = colonnes.index(colonne);
+            var search = getSearchValue(table, index + 1);
+            var valeur = colonne.text().toLowerCase();
+            if (search !== '' && valeur.indexOf(search) === -1) {
+                display = false;
+            }
+        });
+        ligne.toggle(display);
+    });
 }
 
 $(function() {
@@ -69,6 +96,18 @@ $(function() {
     // Afficher / Cacher le menu slim
     $('#show-menu-slim').on('click', function () {
         $('#menu-slim').toggleClass('d-none');
+    });
+
+    // Recherche dans tableau
+    $('table thead .btn-filter').on('click', function () {
+        searchInTable($(this).closest('table'));
+    });
+
+    $('table thead input').on('keyup', function (e) {
+        var code = e.which;
+        if(code == 13 || code == 9) {
+            searchInTable($(this).closest('table'));
+        };
     });
 
 });

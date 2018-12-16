@@ -6,7 +6,7 @@
                 {% if colonne.recherchable %}
                     <input type="text" name="searh-{{ colonne.nom }}" id="searh-{{ colonne.nom }}" class="head-search" />
                 {% elseif colonne.nom is same as('actions') %}
-                    <button type="button" id="btn-filter" class="btn btn-secondary"><i class="fas fa-filter"></i></button>
+                    <button type="button" class="btn btn-secondary btn-filter"><i class="fas fa-filter"></i></button>
                 {% endif %}
                 <br />
             {% endif %}
