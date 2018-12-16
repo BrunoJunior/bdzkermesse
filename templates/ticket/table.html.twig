@@ -1,5 +1,5 @@
     <table class="table">
-        {% include "header.html.twig" with {'colonnes': colonnes, 'rows': rows, 'order': order, 'search': true} only %}
+        {% include "header.html.twig" with {'colonnes': colonnes, 'order': order, 'search': true} only %}
         <tbody>
         {% for row in rows %}
             <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>

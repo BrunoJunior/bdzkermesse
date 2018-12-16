@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\Colonne;
 use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
@@ -112,8 +113,17 @@ class ActiviteController extends MyController
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator): Response
+    public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator, Request $request): Response
     {
+        $order = $request->get('order', 'date');
+        $colonnes = [
+            new Colonne('id', '#'),
+            new Colonne('date', 'Date', 'fas fa-calendar'),
+            new Colonne('libelle', 'Libellé', 'fas fa-tag'),
+            new Colonne('nombre_ticket', 'Nombre de tickets', 'fas ticket-alt'),
+            new Colonne('montant', 'Montant', 'fas fa-euro-sign'),
+            new Colonne('actions', 'Actions', 'fab fa-telegram-plane')
+        ];
         $totaux = $rRecette->getTotauxPourActivite($activite);
         $depense = $rDepense->getTotalPourActivite($activite);
         $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
@@ -121,11 +131,13 @@ class ActiviteController extends MyController
             'activite/index.html.twig',
             [
                 'activite' => $activite,
-                'recettes' => $rowGenerator->generateListPourActivite($activite),
+                'recettes' => $rowGenerator->generateListPourActivite($activite, $order),
                 'depenses' => $dRowGenerator->generateList($activite),
                 'total_recettes' => $totaux,
                 'total_depenses' => HFloat::getInstance($depense / 100.0)->getMontantFormatFrancais(),
-                'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
+                'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES),
+                'colonnes' => $colonnes,
+                'order' => $order
             ]
         );
     }

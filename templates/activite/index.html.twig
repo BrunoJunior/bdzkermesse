@@ -11,7 +11,7 @@
     <fieldset>
         <legend>Recettes <a href="{{ path('nouvelle_recette_activite', {'id': activite.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
-            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite} only %}
+            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite, 'colonnes': colonnes, 'order': order, 'search': false} only %}
         </div>
         <div class="row d-lg-none">
             {% if recettes is empty %}

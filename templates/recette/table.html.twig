@@ -1,15 +1,5 @@
 <table class="table">
-    <thead class="thead-dark">
-    <tr>
-        <th scope="col">#</th>
-        <th scope="col"><i class="fas fa-calendar"></i> Date</th>
-        {% if activite is not defined %}<th scope="col"><i class="fas fa-cubes"></i> Activité</th>{% endif %}
-        <th scope="col"><i class="fas fa-tag"></i> Libelle</th>
-        <th scope="col"><i class="fas fa-ticket-alt"></i> Nombre de tickets</th>
-        <th scope="col"><i class="fas fa-euro-sign"></i> Montant</th>
-        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
-    </tr>
-    </thead>
+    {% include "header.html.twig" with {'colonnes': colonnes, 'order': order, 'search': search} only %}
     <tbody>
     {% for recette in recettes %}
         <tr>

@@ -209,9 +209,9 @@ class KermesseController extends MyController
             'kermesse/tickets.html.twig',
             [
                 'kermesse' => $kermesse,
-                'colonnes' => $colonnes,
                 'rows' => $ticketGenerator->generateList($kermesse, $order),
                 'menu' => $this->getMenu($kermesse, static::MENU_TICKETS),
+                'colonnes' => $colonnes,
                 'order' => $order
             ]
         );
@@ -227,17 +227,29 @@ class KermesseController extends MyController
      * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function listeRecettes(Kermesse $kermesse, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator): Response
+    public function listeRecettes(Kermesse $kermesse, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator, Request $request): Response
     {
+        $order = $request->get('order', 'date');
+        $colonnes = [
+            new Colonne('id', '#', '', true),
+            new Colonne('date', 'Date', 'fas fa-calendar', true),
+            new Colonne('activite', 'Activité', 'fas fa-cubes', true, true),
+            new Colonne('libelle', 'Libellé', 'fas fa-tag', true, true),
+            new Colonne('nombre_ticket', 'Nombre de tickets', 'fas ticket-alt', true, true),
+            new Colonne('montant', 'Montant', 'fas fa-euro-sign', true, true),
+            new Colonne('actions', 'Actions', 'fab fa-telegram-plane')
+        ];
         $totaux = $rRecette->getTotauxPourKermesse($kermesse);
         $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
         return $this->render(
             'kermesse/recettes.html.twig',
             [
                 'kermesse' => $kermesse,
-                'recettes' => $rowGenerator->generateListPourKermesse($kermesse),
+                'recettes' => $rowGenerator->generateListPourKermesse($kermesse, $order),
                 'total' => $totaux,
-                'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
+                'menu' => $this->getMenu($kermesse, static::MENU_RECETTES),
+                'colonnes' => $colonnes,
+                'order' => $order
             ]
         );
     }

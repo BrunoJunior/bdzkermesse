@@ -43,12 +43,13 @@ class RecetteRowGenerator
 
     /**
      * @param Kermesse $kermesse
+     * @param string $order
      * @return ArrayCollection|RecetteRow[]
      */
-    public function generateListPourKermesse(Kermesse $kermesse): ArrayCollection
+    public function generateListPourKermesse(Kermesse $kermesse, string $order): ArrayCollection
     {
         $rows = new ArrayCollection();
-        foreach ($this->rRecette->findByKermesse($kermesse) as $recette) {
+        foreach ($this->rRecette->findByKermesse($kermesse, $order) as $recette) {
             $rows->add($this->generate($recette));
         }
         return $rows;
@@ -56,12 +57,13 @@ class RecetteRowGenerator
 
     /**
      * @param Activite $activite
+     * @param string $order
      * @return ArrayCollection|RecetteRow[]
      */
-    public function generateListPourActivite(Activite $activite): ArrayCollection
+    public function generateListPourActivite(Activite $activite, string $order): ArrayCollection
     {
         $rows = new ArrayCollection();
-        foreach ($this->rRecette->findByActivite($activite) as $recette) {
+        foreach ($this->rRecette->findByActivite($activite, $order) as $recette) {
             $rows->add($this->generate($recette));
         }
         return $rows;

@@ -6,7 +6,7 @@
     <fieldset>
         <legend>Recettes <span class="d-lg-none">(Total : {{ total.montant }} / {{ total.nombre_ticket }} tickets) </span><a href="{{ path('nouvelle_recette', {'id': kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
-            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total} only %}
+            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total, 'colonnes': colonnes, 'order': order, 'search': true} only %}
         </div>
         <div class="row d-lg-none">
             {% if recettes is empty %}

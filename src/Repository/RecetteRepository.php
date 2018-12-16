@@ -69,14 +69,20 @@ class RecetteRepository extends ServiceEntityRepository
 
     /**
      * @param Kermesse $kermesse
+     * @param string $order
      * @return array|Recette[]
      */
-    public function findByKermesse(Kermesse $kermesse):array
+    public function findByKermesse(Kermesse $kermesse, string $order):array
     {
+        $sens = 'ASC';
+        if ($order[0] === '-') {
+            $sens = 'DESC';
+            $order = mb_substr($order, 1);
+        }
         return $this->createQueryBuilder('r')
             ->innerJoin('r.activite', 'a')
             ->andWhere('a.kermesse = :kermesse')
-            ->orderBy('r.date')
+            ->orderBy('r.' . $order, $sens)
             ->setParameter('kermesse', $kermesse)
             ->getQuery()
             ->getResult();
@@ -84,13 +90,19 @@ class RecetteRepository extends ServiceEntityRepository
 
     /**
      * @param Activite $activite
+     * @param string $order
      * @return array|Recette[]
      */
-    public function findByActivite(Activite $activite):array
+    public function findByActivite(Activite $activite, string $order):array
     {
+        $sens = 'ASC';
+        if ($order[0] === '-') {
+            $sens = 'DESC';
+            $order = mb_substr($order, 1);
+        }
         return $this->createQueryBuilder('r')
             ->andWhere('r.activite = :activite')
-            ->orderBy('r.date')
+            ->orderBy('r.' . $order, $sens)
             ->setParameter('activite', $activite)
             ->getQuery()
             ->getResult();
