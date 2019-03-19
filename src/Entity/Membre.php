@@ -63,7 +63,7 @@ class Membre extends MyEntity
     /**
      * @ORM\Column(type="boolean", options={"default" : false})
      */
-    private $gestionnaire;
+    private $gestionnaire = false;
 
     public function __construct()
     {
