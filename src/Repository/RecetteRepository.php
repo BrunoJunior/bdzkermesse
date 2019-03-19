@@ -70,22 +70,25 @@ class RecetteRepository extends ServiceEntityRepository
     /**
      * @param Kermesse $kermesse
      * @param string $order
+     * @param bool $montantNonNull
      * @return array|Recette[]
      */
-    public function findByKermesse(Kermesse $kermesse, string $order):array
+    public function findByKermesse(Kermesse $kermesse, string $order, bool $montantNonNull = false):array
     {
         $sens = 'ASC';
         if ($order[0] === '-') {
             $sens = 'DESC';
             $order = mb_substr($order, 1);
         }
-        return $this->createQueryBuilder('r')
+        $builder = $this->createQueryBuilder('r')
             ->innerJoin('r.activite', 'a')
             ->andWhere('a.kermesse = :kermesse')
             ->orderBy('r.' . $order, $sens)
-            ->setParameter('kermesse', $kermesse)
-            ->getQuery()
-            ->getResult();
+            ->setParameter('kermesse', $kermesse);
+        if ($montantNonNull) {
+            $builder->andWhere('r.montant > 0');
+        }
+        return $builder->getQuery()->getResult();
     }
 
     /**
