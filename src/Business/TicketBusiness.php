@@ -14,7 +14,6 @@ use App\Entity\Kermesse;
 use App\Entity\Remboursement;
 use App\Entity\Ticket;
 use App\Enum\RemboursementEtatEnum;
-use App\Repository\MembreRepository;
 use App\Service\FileUploader;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
