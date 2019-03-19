@@ -40,14 +40,17 @@ class MailgunSender extends AbstractEmailSender
     public function envoyer(ContactDTO $contact, callable $completer = null): int
     {
         $this->templateVars['emetteur'] = $contact->getEmetteur();
-        $retour = $this->mailgun->messages()->send('mb.bdesprez.com', [
+        $params = [
             'from' => 'BdzKermesse <mailgun@bdesprez.com>',
             'to' => $contact->getDestinataire(),
-            'cc' => implode(',', $contact->getCopies()),
             'subject' => $contact->getTitre(),
             'html' => $this->render(),
             'text' => $this->render('plain')
-        ]);
+        ];
+        if (!empty($contact->getCopies())) {
+            $params['cc'] = implode(',', $contact->getCopies());
+        }
+        $retour = $this->mailgun->messages()->send('mb.bdesprez.com', $params);
         return $retour->getId() == '' ? 0 : 1;
     }
 }
