@@ -14,6 +14,7 @@ use App\Entity\Kermesse;
 use App\Entity\Remboursement;
 use App\Entity\Ticket;
 use App\Enum\RemboursementEtatEnum;
+use App\Repository\MembreRepository;
 use App\Service\FileUploader;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -109,7 +110,7 @@ class TicketBusiness
             'ticket' => $this->generator->generate($ticket, 0, array_map(function (Depense $depense) {
                 return $depense->getActivite()->getNom();
             }, $ticket->getDepenses()->toArray()))
-        ]);
+        ], $this->bMembre->getGestionnaires($ticket->getEtablissement()));
     }
 
     /**
