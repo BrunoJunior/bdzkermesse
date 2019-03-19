@@ -60,6 +60,11 @@ class Membre extends MyEntity
      */
     private $defaut = false;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" : false})
+     */
+    private $gestionnaire = false;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
@@ -222,6 +227,18 @@ class Membre extends MyEntity
     public function setDefaut(bool $defaut): self
     {
         $this->defaut = $defaut;
+
+        return $this;
+    }
+
+    public function getGestionnaire(): ?bool
+    {
+        return $this->gestionnaire;
+    }
+
+    public function setGestionnaire(bool $gestionnaire): self
+    {
+        $this->gestionnaire = $gestionnaire;
 
         return $this;
     }

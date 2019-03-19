@@ -18,16 +18,16 @@ $(function() {
 
     // Calcul du montant restant à allouer pour faciliter la saisie
     $('form').on('collection-widget-added', function (event) {
-        var left = parseFloat($('#ticket_montant').val());
+        var left = parseFloat($('#ticket_montant').val().replace(/,/g, '.'));
         var montants = $(event.target).find('input[name $= "[montant]"]');
         montants.each(function () {
-            var montant = parseFloat($(this).val());
+            var montant = parseFloat($(this).val().replace(/,/g, '.'));
             if (montant) {
                 left = left - montant;
             }
         });
         if (left > 0.0) {
-            montants.last().val(left);
+            montants.last().val(left.toString(10).replace(/[.]/g, ','));
         }
         affichageAucuneActivite();
     });

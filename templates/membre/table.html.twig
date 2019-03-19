@@ -13,7 +13,7 @@
     {% for membre in membres %}
         <tr>
             <th scope="row">{{ membre.id }}</th>
-            <td>{{ membre.identite }}</td>
+            <td>{% if membre.gestionnaire %}<i class="fas fa-user-tie"></i> {% endif %}{{ membre.identite }}</td>
             <td>{{ membre.email }}</td>
             <td>{{ membre.montantNonRembourse }}</td>
             <td>{{ membre.montantAttenteRemboursement }}</td>

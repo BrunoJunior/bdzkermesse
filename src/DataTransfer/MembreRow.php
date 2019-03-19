@@ -154,4 +154,12 @@ class MembreRow
     {
         return $this->membre->getDefaut() ?? false;
     }
+
+    /**
+     * @return bool
+     */
+    public function isGestionnaire(): bool
+    {
+        return $this->membre->getGestionnaire() ?? false;
+    }
 }

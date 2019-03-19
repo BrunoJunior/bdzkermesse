@@ -109,7 +109,7 @@ class TicketBusiness
             'ticket' => $this->generator->generate($ticket, 0, array_map(function (Depense $depense) {
                 return $depense->getActivite()->getNom();
             }, $ticket->getDepenses()->toArray()))
-        ]);
+        ], $this->bMembre->getGestionnaires($ticket->getEtablissement()));
     }
 
     /**

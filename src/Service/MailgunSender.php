@@ -43,6 +43,7 @@ class MailgunSender extends AbstractEmailSender
         $retour = $this->mailgun->messages()->send('mb.bdesprez.com', [
             'from' => 'BdzKermesse <mailgun@bdesprez.com>',
             'to' => $contact->getDestinataire(),
+            'cc' => implode(',', $contact->getCopies()),
             'subject' => $contact->getTitre(),
             'html' => $this->render(),
             'text' => $this->render('plain')

@@ -2,14 +2,13 @@
 
 namespace App\Controller;
 
+use App\Business\KermesseBusiness;
 use App\DataTransfer\Colonne;
 use App\Entity\Kermesse;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
-use App\Repository\ActiviteRepository;
 use App\Repository\RecetteRepository;
-use App\Service\ActiviteCardGenerator;
 use App\Service\KermesseCardGenerator;
 use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
@@ -17,13 +16,30 @@ use App\Service\RemboursementRowGenerator;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class KermesseController extends MyController
 {
+    /**
+     * @var KermesseBusiness
+     */
+    private $business;
+
+    /**
+     * KermesseController constructor.
+     * @param KermesseBusiness $business
+     * @param LoggerInterface $logger
+     */
+    public function __construct(KermesseBusiness $business, LoggerInterface $logger)
+    {
+        parent::__construct($logger);
+        $this->business = $business;
+    }
     /**
      * @Route("/kermesses/new", name="nouvelle_kermesse")
      * @param Request $request
@@ -288,5 +304,24 @@ class KermesseController extends MyController
         return $this->render('kermesse/card.html.twig', [
             'card' => $cardGenerator->generate($kermesse)
         ]);
+    }
+
+    /**
+     * Génération de l'export comptable pour téléchargement
+     * @Route("/kermesses/{id}/export", name="export_comptable")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @return Response
+     * @throws \App\Exception\BusinessException
+     */
+    public function genererExportComptable(Kermesse $kermesse):Response
+    {
+        $response = new BinaryFileResponse($this->business->genererExportComptable($kermesse));
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            "Kermesse{$kermesse->getAnnee()}_ExportComptable.csv"
+        );
+        return $response;
     }
 }

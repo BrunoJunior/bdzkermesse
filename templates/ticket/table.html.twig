@@ -3,20 +3,25 @@
         <tbody>
         {% for row in rows %}
             <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>
-                <th scope="row">{{ row.id }}</th>
-                <td><span  data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
-                <td>{{ row.date }}</td>
-                <td>{{ row.acheteur }}</td>
-                <td>{{ row.numero }}</td>
-                <td>{{ row.fournisseur }}</td>
-                <td>{{ row.montant }}</td>
-                <td>{{ row.activitesLiees }}</td>
-                <td>
+                <th class="align-middle" scope="row" {% if row.commentaire %}rowspan="2"{% endif %}>{{ row.id }}</th>
+                <td class="align-middle"><span data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
+                <td class="align-middle">{{ row.date }}</td>
+                <td class="align-middle">{{ row.acheteur }}</td>
+                <td class="align-middle">{{ row.numero }}</td>
+                <td class="align-middle">{{ row.fournisseur }}</td>
+                <td class="align-middle">{{ row.montant }}</td>
+                <td class="align-middle">{{ row.activitesLiees }}</td>
+                <td class="align-middle" {% if row.commentaire %}rowspan="2"{% endif %}>
                     <a href="{{ path('editer_ticket', {'id': row.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
                     {% if row.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ row.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
                     <a href="{{ path('supprimer_ticket', {'id': row.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
                 </td>
             </tr>
+            {% if row.commentaire %}
+                <tr>
+                    <td colspan="7" class="font-italic border-top-0">{{ row.commentaire }}</td>
+                </tr>
+            {% endif %}
         {% else %}
             <tr><td colspan="8">Aucune dépense</td></tr>
         {% endfor %}

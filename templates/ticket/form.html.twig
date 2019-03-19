@@ -5,39 +5,41 @@
 {% block title %}Dépense{% endblock %}
 
 {% block body %}
+    {{ form_start(form) }}
     <div class="row justify-content-center">
         <div class="col-sm-10 col-md-8 col-xl-5">
             <div class="well">
                 <fieldset>
                     <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Dépense</legend>
-                    {{ form_start(form) }}
                     {{ form_row(form.date) }}
                     {{ form_row(form.fournisseur) }}
                     {{ form_row(form.numero) }}
                     {{ form_row(form.montant) }}
+                    {{ form_row(form.commentaire) }}
                     {{ form_row(form.membre) }}
-                    {{ form_row(form.duplicata) }}
-                    {{ form_row(form.depenses) }}
-                    <button type="button"
-                            class="add-another-collection-widget btn btn-secondary"
-                            data-list="#ticket_depenses">Lier le ticket à une autre activité</button>
-                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
-                    {{ form_end(form) }}
                 </fieldset>
             </div>
         </div>
-        {% if duplicata is defined and duplicata is not empty and is_image %}
-            <div class="col-sm-10 col-md-8 col-xl-5">
-                <div class="well">
-                    <fieldset>
+        <div class="col-sm-10 col-md-8 col-xl-5">
+            <div class="well">
+                <fieldset>
+                    {% if duplicata is defined and duplicata is not empty and is_image %}
                         <legend><i class="fas fa-file-image"></i> Duplicata <a href="{{ path('supprimer_duplicata', {'id': id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer duplicata"><i class="fas fa-trash-alt"></i></a></legend>
                         <img src="{{ asset('uploads/tickets/' ~ duplicata) }}" class="img-fluid" alt="Duplicata" />
-
-                    </fieldset>
-                </div>
+                    {% else %}
+                        <legend class="d-none d-xl-block">Duplicata et activités</legend>
+                    {% endif %}
+                    {{ form_row(form.duplicata) }}
+                    {{ form_row(form.depenses) }}
+                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
+                    <button type="button"
+                            class="add-another-collection-widget btn btn-secondary"
+                            data-list="#ticket_depenses">Lier le ticket à une autre activité</button>
+                </fieldset>
             </div>
-        {% endif %}
+        </div>
     </div>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}<script src="{{ asset('js/ticket_form.js') }}"></script>{% endblock %}

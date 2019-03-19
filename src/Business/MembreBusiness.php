@@ -10,7 +10,9 @@ namespace App\Business;
 
 
 use App\DataTransfer\ContactDTO;
+use App\Entity\Etablissement;
 use App\Entity\Membre;
+use App\Repository\MembreRepository;
 use App\Repository\RemboursementRepository;
 use App\Service\MailgunSender;
 use Stringy\Stringy;
@@ -21,6 +23,10 @@ class MembreBusiness
      * @var RemboursementRepository
      */
     private $rRemboursement;
+    /**
+     * @var MembreRepository
+     */
+    private $rMembre;
 
     /**
      * @var MailgunSender
@@ -32,10 +38,11 @@ class MembreBusiness
      * @param RemboursementRepository $rRemboursement
      * @param MailgunSender $sender
      */
-    public function __construct(RemboursementRepository $rRemboursement, MailgunSender $sender)
+    public function __construct(RemboursementRepository $rRemboursement, MailgunSender $sender, MembreRepository $rMembre)
     {
         $this->rRemboursement = $rRemboursement;
         $this->sender = $sender;
+        $this->rMembre = $rMembre;
     }
 
     /**
@@ -105,14 +112,25 @@ class MembreBusiness
      * @param string $emetteur
      * @param string $template
      * @param array $templateVars
+     * @param array $membresCopie
      * @return int
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function envoyerEmail(Membre $membre, string $titre, string $emetteur, string $template, array $templateVars = []):int
+    public function envoyerEmail(Membre $membre, string $titre, string $emetteur, string $template, array $templateVars = [], array $membresCopie = []):int
     {
-        $contact = $this->initialiserContact($membre, new ContactDTO())->setTitre($titre)->setEmetteur($emetteur);
+        $contact = $this->initialiserContact($membre, new ContactDTO($membresCopie))->setTitre($titre)->setEmetteur($emetteur);
         return $this->sender->setTemplate($template)->setTemplateVars($templateVars)->envoyer($contact);
+    }
+
+    /**
+     * La liste des gestionnaires de facture
+     * @param Etablissement $etablissement
+     * @return Membre[]
+     */
+    public function getGestionnaires(Etablissement $etablissement)
+    {
+        return $this->rMembre->findGestionnairesByEtablissement($etablissement);
     }
 }

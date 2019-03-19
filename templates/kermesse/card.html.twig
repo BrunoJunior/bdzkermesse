@@ -14,6 +14,7 @@
         <a href="{{ path('editer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
         <a href="{{ path('nouveau_ticket', {'id': card.kermesse.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-receipt"></i></a>
         <a href="{{ path('nouvelle_recette', {'id': card.kermesse.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-donate"></i></a>
+        <a href="{{ path('export_comptable', {'id': card.kermesse.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Export comptable"><i class="fas fa-file-download"></i></a>
         {% if card.derniere %}<a href="{{ path('dupliquer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Dupliquer"><i class="fas fa-clone"></i></a>{% endif %}
     </div>
 </div>

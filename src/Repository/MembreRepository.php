@@ -86,22 +86,20 @@ class MembreRepository extends ServiceEntityRepository
         return $final;
     }
 
-//    /**
-//     * @return Membre[] Returns an array of Membre objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Membre[] Returns an array of Membre objects
+     */
+    public function findGestionnairesByEtablissement(Etablissement $etablissement)
     {
         return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
+            ->andWhere('m.etablissement = :etablissement')
+            ->andWhere('m.gestionnaire = :gestionnaire')
+            ->setParameter('etablissement', $etablissement)
+            ->setParameter('gestionnaire', true)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Membre
