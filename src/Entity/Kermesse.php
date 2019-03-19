@@ -38,11 +38,13 @@ class Kermesse extends MyEntity
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Activite", mappedBy="kermesse")
+     * @ORM\OrderBy({"nom" = "ASC"})
      */
     private $activites;
 
     /**
      * @ORM\ManyToMany(targetEntity="App\Entity\Membre", inversedBy="kermesses")
+     * @ORM\OrderBy({"email" = "ASC"})
      */
     private $membres;
 
