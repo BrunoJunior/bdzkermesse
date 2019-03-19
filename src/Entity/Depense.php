@@ -40,11 +40,6 @@ class Depense extends MyEntity
      */
     private $etablissement;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $commentaire;
-
     public function getId()
     {
         return $this->id;
@@ -94,18 +89,6 @@ class Depense extends MyEntity
     public function setEtablissement(?Etablissement $etablissement): self
     {
         $this->etablissement = $etablissement;
-
-        return $this;
-    }
-
-    public function getCommentaire(): ?string
-    {
-        return $this->commentaire;
-    }
-
-    public function setCommentaire(?string $commentaire): self
-    {
-        $this->commentaire = $commentaire;
 
         return $this;
     }

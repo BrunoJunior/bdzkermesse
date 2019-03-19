@@ -79,6 +79,11 @@ class Ticket extends MyEntity
     private $duplicata;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $commentaire;
+
+    /**
      * @ORM\Column(type="smallint", options={"default" : 0})
      */
     private $etat = TicketEtatEnum::A_REMBOURSER;
@@ -242,6 +247,18 @@ class Ticket extends MyEntity
     public function setEtat(int $etat): self
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?string $commentaire): self
+    {
+        $this->commentaire = $commentaire;
 
         return $this;
     }

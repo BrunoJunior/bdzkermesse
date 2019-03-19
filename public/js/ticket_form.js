@@ -27,7 +27,7 @@ $(function() {
             }
         });
         if (left > 0.0) {
-            montants.last().val(left);
+            montants.last().val(left.toString(10).replace(/[.]/g, ','));
         }
         affichageAucuneActivite();
     });

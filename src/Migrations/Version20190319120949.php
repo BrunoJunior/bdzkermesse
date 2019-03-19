@@ -15,7 +15,7 @@ final class Version20190319120949 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE depense ADD commentaire VARCHAR(255) DEFAULT NULL');
+        $this->addSql('ALTER TABLE ticket ADD commentaire VARCHAR(255) DEFAULT NULL');
         $this->addSql('ALTER TABLE membre ADD gestionnaire TINYINT(1) DEFAULT \'0\' NOT NULL');
     }
 
@@ -24,7 +24,7 @@ final class Version20190319120949 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('ALTER TABLE depense DROP commentaire');
+        $this->addSql('ALTER TABLE ticket DROP commentaire');
         $this->addSql('ALTER TABLE membre DROP gestionnaire');
     }
 }
