@@ -39,6 +39,20 @@ class ContactDTO
     private $emetteur = '';
 
     /**
+     * @var Membre[]
+     */
+    private $membresCopie;
+
+    /**
+     * ContactDTO constructor.
+     * @param Membre[] $membresCopie
+     */
+    public function __construct(array $membresCopie = [])
+    {
+        $this->membresCopie = $membresCopie;
+    }
+
+    /**
      * @param string $membre
      * @return ContactDTO
      */
@@ -126,6 +140,17 @@ class ContactDTO
     {
         $this->emetteur = $emetteur;
         return $this;
+    }
+
+    /**
+     * Liste des emails en copie
+     * @return string[]
+     */
+    public function getCopies(): array
+    {
+        return array_filter(array_map(function (Membre $membre) {
+            return $membre->getEmail();
+        }, $this->membresCopie));
     }
 
     /**

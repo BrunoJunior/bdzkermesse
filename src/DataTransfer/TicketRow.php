@@ -188,4 +188,13 @@ class TicketRow
     {
         return $this->etat->getPastille();
     }
+
+    /**
+     * Le commentaire
+     * @return string
+     */
+    public function getCommentaire(): string
+    {
+        return $this->ticket->getCommentaire() ?? '';
+    }
 }

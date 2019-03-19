@@ -119,8 +119,9 @@ class RemboursementBusiness
         if ($remboursement->getEtat() === RemboursementEtatEnum::VALIDE) {
             throw new BusinessException("Le remboursement a déjà été validé !");
         }
+
         $contact = $this->bMembre
-            ->initialiserContact($remboursement->getMembre(), new ContactDTO())
+            ->initialiserContact($remboursement->getMembre(), new ContactDTO($this->bMembre->getGestionnaires($remboursement->getEtablissement())))
             ->setTitre("BdzKermesse - Demande de remboursement")
             ->setEmetteur('bdzkermesse@bdesprez.com');
         $retour = $this->sender

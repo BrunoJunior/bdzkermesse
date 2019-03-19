@@ -6,6 +6,7 @@
 parameters:
     locale: 'fr'
     duplicata_dir: '%kernel.project_dir%/public/uploads/tickets'
+    exports_dir: '%kernel.project_dir%/public/exports'
 
 services:
     # default configuration for services in *this* file
