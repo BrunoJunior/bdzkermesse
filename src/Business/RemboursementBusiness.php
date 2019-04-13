@@ -122,7 +122,7 @@ class RemboursementBusiness
 
         $contact = $this->bMembre
             ->initialiserContact($remboursement->getMembre(), new ContactDTO($this->bMembre->getGestionnaires($remboursement->getEtablissement())))
-            ->setTitre("BdzKermesse - Demande de remboursement")
+            ->setTitre("Kermesse - Demande de remboursement")
             ->setEmetteur('bdzkermesse@bdesprez.com');
         $retour = $this->sender
             ->setTemplate('remboursement_demande')
