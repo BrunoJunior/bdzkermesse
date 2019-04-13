@@ -69,7 +69,7 @@ class KermesseBusiness
             }, $kermesse->getTickets()->toArray()),
             array_map(function (Recette $recette) {
                 return $this->lcGenerator->fromRecette($recette);
-            }, $this->rRecette->findByKermesse($kermesse, 'date'))
+            }, $this->rRecette->findByKermesse($kermesse, 'date', true))
         );
         // Tri par date
         usort($lignesComptables, function (LigneComptable $ligne1, LigneComptable $ligne2) {
