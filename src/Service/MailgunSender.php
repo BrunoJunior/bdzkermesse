@@ -9,7 +9,9 @@
 namespace App\Service;
 
 use App\DataTransfer\ContactDTO;
+use App\Entity\Etablissement;
 use Mailgun\Mailgun;
+use Symfony\Component\Security\Core\Security;
 
 class MailgunSender extends AbstractEmailSender
 {
@@ -17,6 +19,11 @@ class MailgunSender extends AbstractEmailSender
      * @var Mailgun
      */
     private $mailgun;
+
+    /**
+     * @var Security
+     */
+    private $security;
 
     /**
      * EMailSender constructor.
@@ -30,6 +37,15 @@ class MailgunSender extends AbstractEmailSender
     }
 
     /**
+     * @required
+     * @param Security $security
+     */
+    public function setSecurity(Security $security)
+    {
+        $this->security = $security;
+    }
+
+    /**
      * @param ContactDTO $contact
      * @param callable|null $completer
      * @return int
@@ -39,11 +55,17 @@ class MailgunSender extends AbstractEmailSender
      */
     public function envoyer(ContactDTO $contact, callable $completer = null): int
     {
+        $utilisateur = $this->security->getUser();
+        $nom = $utilisateur->getUsername();
+        if ($utilisateur instanceof Etablissement) {
+            $nom = $utilisateur->getNom();
+        }
+
         $this->templateVars['emetteur'] = $contact->getEmetteur();
         $params = [
-            'from' => 'BdzKermesse <mailgun@bdesprez.com>',
+            'from' => "Kermesse - $nom <mailgun@bdesprez.com>",
             'to' => $contact->getDestinataire(),
-            'subject' => $contact->getTitre(),
+            'subject' => $nom . ' - ' . $contact->getTitre(),
             'html' => $this->render(),
             'text' => $this->render('plain')
         ];
