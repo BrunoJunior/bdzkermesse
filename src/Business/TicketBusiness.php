@@ -10,6 +10,7 @@ namespace App\Business;
 
 
 use App\Entity\Depense;
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Entity\Remboursement;
 use App\Entity\Ticket;
@@ -20,6 +21,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Stringy\Stringy;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Security\Core\Security;
 
 class TicketBusiness
 {
@@ -105,7 +107,7 @@ class TicketBusiness
         $this->em->persist($ticket);
         $this->em->flush();
 
-        $this->bMembre->envoyerEmail($ticket->getMembre(), 'BDZKermesse - Dépense créée', 'bdzkermesse@bdesprez.com', 'ticket_cree', [
+        $this->bMembre->envoyerEmail($ticket->getMembre(), "Kermesse - Dépense créée", 'bdzkermesse@bdesprez.com', 'ticket_cree', [
             'ticket' => $this->generator->generate($ticket, 0, array_map(function (Depense $depense) {
                 return $depense->getActivite()->getNom();
             }, $ticket->getDepenses()->toArray()))
