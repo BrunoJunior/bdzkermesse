@@ -62,14 +62,17 @@ class MailgunSender extends AbstractEmailSender
         }
 
         $this->templateVars['emetteur'] = $contact->getEmetteur();
-        $retour = $this->mailgun->messages()->send('mb.bdesprez.com', [
+        $params = [
             'from' => "Kermesse - $nom <mailgun@bdesprez.com>",
             'to' => $contact->getDestinataire(),
-            'cc' => implode(',', $contact->getCopies()),
             'subject' => $nom . ' - ' . $contact->getTitre(),
             'html' => $this->render(),
             'text' => $this->render('plain')
-        ]);
+        ];
+        if (!empty($contact->getCopies())) {
+            $params['cc'] = implode(',', $contact->getCopies());
+        }
+        $retour = $this->mailgun->messages()->send('mb.bdesprez.com', $params);
         return $retour->getId() == '' ? 0 : 1;
     }
 }
