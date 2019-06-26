@@ -197,4 +197,13 @@ class TicketRow
     {
         return $this->ticket->getCommentaire() ?? '';
     }
+
+    /**
+     * Entité liée
+     * @return Ticket
+     */
+    public function getEntity(): Ticket
+    {
+        return $this->ticket;
+    }
 }
