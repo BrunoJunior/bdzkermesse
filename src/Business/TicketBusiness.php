@@ -14,6 +14,8 @@ use App\Entity\Kermesse;
 use App\Entity\Remboursement;
 use App\Entity\Ticket;
 use App\Enum\RemboursementEtatEnum;
+use App\Enum\TicketEtatEnum;
+use App\Exception\BusinessException;
 use App\Service\FileUploader;
 use App\Service\TicketRowGenerator;
 use Doctrine\ORM\EntityManagerInterface;
@@ -137,9 +139,13 @@ class TicketBusiness
     /**
      * Suppression d'un ticket
      * @param Ticket $ticket
+     * @throws BusinessException
      */
     public function supprimer(Ticket $ticket)
     {
+        if ($ticket->getEtat() > TicketEtatEnum::A_REMBOURSER) {
+            throw new BusinessException('Suppression non autorisée');
+        }
         $this->supprimerDuplicata($ticket);
         $this->em->remove($ticket);
         $this->em->flush();

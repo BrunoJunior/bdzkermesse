@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Business\TicketBusiness;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
+use App\Exception\BusinessException;
 use App\Form\TicketType;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
@@ -108,8 +110,13 @@ class TicketController extends MyController
      */
     public function supprimerTicket(Ticket $ticket)
     {
-        $this->business->supprimer($ticket);
-        $this->addFlash("success", "Ticket supprimé !");
+        try {
+            $this->business->supprimer($ticket);
+            $this->addFlash("success", "Ticket supprimé !");
+        } catch (BusinessException $exc) {
+            $this->addFlash("danger", $exc->getMessage());
+        }
+
         return $this->redirectToRoute('liste_tickets', ['id' => $ticket->getKermesse()->getId()]);
     }
 
