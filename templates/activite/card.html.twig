@@ -16,7 +16,7 @@
         <a href="{{ path('nouvelle_recette_activite', {'id': card.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-donate"></i></a>
         {% if not card.activite.caisseCentrale %}
             <a href="{{ path('editer_activite', {'id': card.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
-            <a href="{{ path('supprimer_activite', {'id': card.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer"><i class="fas fa-trash-alt"></i></a>
+            {% if card.total == 0.0 %}<a href="{{ path('supprimer_activite', {'id': card.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>{% endif %}
         {% endif %}
     </div>
 </div>
