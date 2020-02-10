@@ -12,6 +12,9 @@ use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\DepenseRowGenerator;
 use App\Service\RecetteRowGenerator;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -108,10 +111,11 @@ class ActiviteController extends MyController
      * @param DepenseRepository $rDepense
      * @param RecetteRowGenerator $rowGenerator
      * @param DepenseRowGenerator $dRowGenerator
+     * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws DBALException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator, Request $request): Response
     {
@@ -150,8 +154,8 @@ class ActiviteController extends MyController
      * @param DepenseRepository $rDepense
      * @param ActiviteCardGenerator $actCardGenerator
      * @return Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function card(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, ActiviteCardGenerator $actCardGenerator):Response
     {

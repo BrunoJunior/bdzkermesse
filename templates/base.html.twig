@@ -8,12 +8,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.css">
         <link rel="stylesheet" href="{{ asset('bootstrap-datepicker/css/bootstrap-datepicker3.standalone.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-        <title>{% block title %}BdzKermesse{% endblock %}</title>
+        <title>{% block title %}Kermesse{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
     <header class="navbar navbar-expand navbar-dark flex-row bd-navbar fixed-top justify-content-between">
-        <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="BdzKermesse">BdzKermesse</a>
+        <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="Kermesse">{% block headertitle %}Kermesse{% endblock %}</a>
         {% if menu is defined %}
             <a class="btn btn-secondary d-lg-none" href="#" id="show-menu-slim"><i class="fas fa-bars"></i></a>
         {% endif %}

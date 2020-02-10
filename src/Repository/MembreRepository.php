@@ -3,13 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\Etablissement;
-use App\Entity\Kermesse;
 use App\Entity\Membre;
-use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Membre|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,7 +17,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class MembreRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Membre::class);
     }

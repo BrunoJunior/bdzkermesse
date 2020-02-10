@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block headertitle %}Kermesse - {{ etablissement.nom }} - {{ activite.titre }} - Inscription{% endblock %}
+
+{% block body %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">{{ activite.titre }} le {{ activite.activite.date|date("d/m/Y") }}</h1>
+            <p class="lead">
+                Nous avons encore besoin de {{ activite.nombreBenevolesRequis - activite.nombreBenevolesInscrits }} bénévole(s) sur cette activité !<br />
+                Encore merci pour votre implication !
+            </p>
+            <p>
+                {{ form_start(form) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.creneau) }}
+                {{ form_row(form.nom) }}
+                {{ form_row(form.portable) }}
+                <button class="btn btn-primary" type="submit">Je m'inscris !</button>
+                {{ form_end(form) }}
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}<script src="{{ asset('js/inscription_benevole.js') }}"></script>{% endblock %}

@@ -9,6 +9,10 @@
 namespace App\Business;
 
 use App\DataTransfer\LigneComptable;
+use App\Entity\Activite;
+use App\Entity\Creneau;
+use App\Entity\Etablissement;
+use App\Entity\InscriptionBenevole;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use App\Entity\Ticket;
@@ -97,5 +101,51 @@ class KermesseBusiness
             mkdir($repertoire, 0777, true);
         }
         return $repertoire;
+    }
+
+    /**
+     * Nombre de bénévoles requis pour une kermesse
+     * @param Kermesse $kermesse
+     * @return int
+     */
+    public function getNbBenevolesRequis(Kermesse $kermesse): int
+    {
+        return array_reduce($kermesse->getActivites()->getValues(), function (int $somme, Activite $activite) {
+            return $somme + array_reduce($activite->getCreneaux()->getValues(), function (int $sommeCreneaux, Creneau $creneau) {
+                return $sommeCreneaux + $creneau->getNbBenevolesRecquis();
+                }, 0);
+        }, 0);
+    }
+
+    /**
+     * Nombre de bénévoles inscrits validés pour une kermesse
+     * @param Kermesse $kermesse
+     * @return int
+     */
+    public function getNbBenevolesInscrits(Kermesse $kermesse): int
+    {
+        return array_reduce($kermesse->getActivites()->getValues(), function (int $somme, Activite $activite) {
+            return $somme + array_reduce($activite->getCreneaux()->getValues(), function (int $sommeCreneaux, Creneau $creneau) {
+                    return $sommeCreneaux + $creneau->getInscriptionBenevoles()->filter(function (InscriptionBenevole $inscriptionBenevole) {
+                            return $inscriptionBenevole->getValidee();
+                        })->count();
+                }, 0);
+        }, 0);
+    }
+
+    /**
+     * Nombre de bénévoles inscrits mais en attente pour une kermesse
+     * @param Kermesse $kermesse
+     * @return int
+     */
+    public function getNbBenevolesEnAttente(Kermesse $kermesse): int
+    {
+        return array_reduce($kermesse->getActivites()->getValues(), function (int $somme, Activite $activite) {
+            return $somme + array_reduce($activite->getCreneaux()->getValues(), function (int $sommeCreneaux, Creneau $creneau) {
+                    return $sommeCreneaux + $creneau->getInscriptionBenevoles()->filter(function (InscriptionBenevole $inscriptionBenevole) {
+                            return !$inscriptionBenevole->getValidee();
+                        })->count();
+                }, 0);
+        }, 0);
     }
 }

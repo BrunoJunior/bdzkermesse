@@ -9,12 +9,16 @@
 namespace App\Service;
 
 use App\DataTransfer\ContactDTO;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 abstract class AbstractEmailSender
 {
 
     /**
-     * @var \Twig_Environment
+     * @var Environment
      */
     protected $twig;
 
@@ -30,9 +34,9 @@ abstract class AbstractEmailSender
 
     /**
      * ContactSender constructor.
-     * @param \Twig_Environment $twig
+     * @param Environment $twig
      */
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(Environment $twig)
     {
         $this->twig = $twig;
     }
@@ -67,9 +71,9 @@ abstract class AbstractEmailSender
     /**
      * @param string $format
      * @return string
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     protected function render($format = 'html'): string
     {

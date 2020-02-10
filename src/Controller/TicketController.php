@@ -7,11 +7,14 @@ use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Exception\BusinessException;
 use App\Form\TicketType;
+use Doctrine\DBAL\DBALException;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -38,12 +41,9 @@ class TicketController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Request $request
      * @param Kermesse $kermesse
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \SimpleEnum\Exception\UnknownEumException
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @return RedirectResponse|Response
+     * @throws DBALException
+     * @throws UnknownEumException
      */
     public function nouveauTicket(Request $request, Kermesse $kermesse)
     {
@@ -70,7 +70,7 @@ class TicketController extends MyController
      * @Security("ticket.isProprietaire(user)")
      * @param Request $request
      * @param Ticket $ticket
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     public function editerTicket(Request $request, Ticket $ticket)
     {
@@ -106,7 +106,7 @@ class TicketController extends MyController
      * @Route("/tickets/{id}/supprimer", name="supprimer_ticket")
      * @Security("ticket.isProprietaire(user)")
      * @param Ticket $ticket
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function supprimerTicket(Ticket $ticket)
     {
@@ -124,7 +124,7 @@ class TicketController extends MyController
      * @Route("/tickets/{id}/supprimer_duplicata", name="supprimer_duplicata")
      * @Security("ticket.isProprietaire(user)")
      * @param Ticket $ticket
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function supprimerDuplicata(Ticket $ticket)
     {

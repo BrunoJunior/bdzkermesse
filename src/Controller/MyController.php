@@ -8,15 +8,13 @@
 
 namespace App\Controller;
 
-
 use App\Entity\Kermesse;
 use App\Helper\Breadcrumb;
 use App\Helper\MenuLink;
-use Doctrine\Common\Collections\Collection;
 use Psr\Log\LoggerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-abstract class MyController extends Controller
+abstract class MyController extends AbstractController
 {
     const MENU_ACTIVITES = 'Activités';
     const MENU_TICKETS = 'Dépenses';

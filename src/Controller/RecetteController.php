@@ -8,6 +8,7 @@ use App\Entity\Recette;
 use App\Form\RecetteType;
 use App\Repository\ActiviteRepository;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -37,7 +38,7 @@ class RecetteController extends MyController
      * @param Request $request
      * @param Kermesse $kermesse
      * @param Activite|null $activite
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     private function traiterNouvelleRecette(Recette $recette, Request $request, Kermesse $kermesse, Activite $activite = null):Response
     {
@@ -69,7 +70,7 @@ class RecetteController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @return RedirectResponse|Response
      */
     public function nouvelleRecette(Kermesse $kermesse, Request $request)
     {
@@ -96,7 +97,7 @@ class RecetteController extends MyController
      * @Security("recette.isProprietaire(user)")
      * @param Recette $recette
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     public function editerRecette(Recette $recette, Request $request)
     {
@@ -126,7 +127,7 @@ class RecetteController extends MyController
      * @Route("/recettes/{id}/supprimer", name="supprimer_recette")
      * @Security("recette.isProprietaire(user)")
      * @param Recette $recette
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function supprimerRecette(Recette $recette)
     {

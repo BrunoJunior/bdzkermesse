@@ -64,10 +64,21 @@ class Activite extends MyEntity
      */
     private $etablissement;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Creneau", mappedBy="activite", orphanRemoval=true, cascade={"persist"})
+     */
+    private $creneaux;
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $date;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
         $this->recettes = new ArrayCollection();
+        $this->creneaux = new ArrayCollection();
     }
 
     public function getId()
@@ -115,7 +126,7 @@ class Activite extends MyEntity
     {
         if (!$this->depenses->contains($depense)) {
             $this->depenses[] = $depense;
-            $depense->setActiviteId($this);
+            $depense->setActivite($this);
         }
         return $this;
     }
@@ -125,8 +136,8 @@ class Activite extends MyEntity
         if ($this->depenses->contains($depense)) {
             $this->depenses->removeElement($depense);
             // set the owning side to null (unless already changed)
-            if ($depense->getActiviteId() === $this) {
-                $depense->setActiviteId(null);
+            if ($depense->getActivite() === $this) {
+                $depense->setActivite(null);
             }
         }
         return $this;
@@ -224,6 +235,49 @@ class Activite extends MyEntity
     public function setEtablissement(?Etablissement $etablissement): self
     {
         $this->etablissement = $etablissement;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Creneau[]
+     */
+    public function getCreneaux(): Collection
+    {
+        return $this->creneaux;
+    }
+
+    public function addCreneau(Creneau $creneau): self
+    {
+        if (!$this->creneaux->contains($creneau)) {
+            $this->creneaux[] = $creneau;
+            $creneau->setActivite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreneau(Creneau $creneau): self
+    {
+        if ($this->creneaux->contains($creneau)) {
+            $this->creneaux->removeElement($creneau);
+            // set the owning side to null (unless already changed)
+            if ($creneau->getActivite() === $this) {
+                $creneau->setActivite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getDate(): ?\DateTimeInterface
+    {
+        return $this->date;
+    }
+
+    public function setDate(?\DateTimeInterface $date): self
+    {
+        $this->date = $date;
 
         return $this;
     }

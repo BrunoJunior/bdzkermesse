@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block headertitle %}Kermesse - {{ etablissement.nom }} - Accès bénévoles{% endblock %}
+
+{% block body %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Merci</h1>
+            <p class="lead">
+                Vous souhaitez donner un peu de votre temps pour la préparation ou le déroulement de la kermesse de votre école.<br />
+                Toute l'équipe souhaite déjà vous remercier pour cette intention !<br />
+                Sans vous, la kermesse, l'action la plus attendue de l'année par les enfants n'existerait tout simplement pas.<br />
+            </p>
+        </div>
+    </div>
+    {% if kermesse is null %}
+        <div class="alert alert-danger" role="alert">
+            Notre équipe met tout en oeuvre pour préparer l'accès bénévoles de la kermesse de cette année !
+        </div>
+    {% else %}
+        <fieldset class="border rounded p-3">
+            <label><h3>Taux d'inscription</h3></label>
+            <div class="row">
+                <div class="col-2"><h4>Global</h4></div>
+                <div class="col-10">
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ tauxInscription }}%" aria-valuenow="{{ tauxInscription }}" aria-valuemin="0" aria-valuemax="100">{{ tauxInscription }}%</div>
+                        <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ tauxInscriptionEnAttente }}%" aria-valuenow="{{ tauxInscriptionEnAttente }}" aria-valuemin="0" aria-valuemax="100">{{ tauxInscriptionEnAttente }}%</div>
+                    </div>
+                </div>
+            </div>
+            {% for activite in activites %}
+                <div class="row">
+                    <div class="col-2"><h4>{{ activite.titre }}</h4></div>
+                    <div class="col-8">
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ activite.tauxInscription }}%" aria-valuenow="{{ activite.tauxInscription }}" aria-valuemin="0" aria-valuemax="100">{{ activite.nombreBenevolesInscrits }} / {{ activite.nombreBenevolesRequis }}</div>
+                            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: {{ activite.tauxInscriptionEnAttente }}%" aria-valuenow="{{ activite.tauxInscriptionEnAttente }}" aria-valuemin="0" aria-valuemax="100">{{ activite.nombreBenevolesEnAttente }} / {{ activite.nombreBenevolesRequis }}</div>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        {% if activite.nombreBenevolesInscrits < activite.nombreBenevolesRequis %}
+                            <a type="button" class="btn btn-primary" href="{{ path('inscription_benevole', {'id': activite.id, 'code': etablissement.username}) }}">Je souhaite aider</a>
+                        {% else %}
+                            <button type="button" class="btn btn-primary" disabled>Désolé, nous sommes complets</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </fieldset>
+
+    {% endif %}
+{% endblock %}

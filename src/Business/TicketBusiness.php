@@ -9,8 +9,8 @@
 namespace App\Business;
 
 
+use App\DataTransfer\TicketRow;
 use App\Entity\Depense;
-use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Entity\Remboursement;
 use App\Entity\Ticket;
@@ -19,11 +19,12 @@ use App\Enum\TicketEtatEnum;
 use App\Exception\BusinessException;
 use App\Service\FileUploader;
 use App\Service\TicketRowGenerator;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use SimpleEnum\Exception\UnknownEumException;
 use Stringy\Stringy;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Security\Core\Security;
 
 class TicketBusiness
 {
@@ -72,7 +73,7 @@ class TicketBusiness
     /**
      * @param Ticket $ticket
      * @param Remboursement $remboursement
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws UnknownEumException
      */
     public function synchroniserEtats(Ticket $ticket, Remboursement $remboursement)
     {
@@ -93,11 +94,8 @@ class TicketBusiness
     /**
      * Créer ticket
      * @param Ticket $ticket
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \SimpleEnum\Exception\UnknownEumException
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws DBALException
+     * @throws UnknownEumException
      */
     public function creer(Ticket $ticket)
     {
@@ -201,9 +199,9 @@ class TicketBusiness
 
     /**
      * @param Ticket $ticket
-     * @return \App\DataTransfer\TicketRow
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @return TicketRow
+     * @throws DBALException
+     * @throws UnknownEumException
      */
     public function getRow(Ticket $ticket)
     {

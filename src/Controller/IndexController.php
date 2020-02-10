@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\KermesseRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends MyController
@@ -10,7 +11,7 @@ class IndexController extends MyController
     /**
      * @Route("/", name="index")
      * @param KermesseRepository $rKermesse
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function kermessesListe(KermesseRepository $rKermesse)
     {

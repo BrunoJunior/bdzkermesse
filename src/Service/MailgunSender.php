@@ -12,6 +12,10 @@ use App\DataTransfer\ContactDTO;
 use App\Entity\Etablissement;
 use Mailgun\Mailgun;
 use Symfony\Component\Security\Core\Security;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MailgunSender extends AbstractEmailSender
 {
@@ -28,9 +32,9 @@ class MailgunSender extends AbstractEmailSender
     /**
      * EMailSender constructor.
      * @param Mailgun $mailgun
-     * @param \Twig_Environment $twig
+     * @param Environment $twig
      */
-    public function __construct(Mailgun $mailgun, \Twig_Environment $twig)
+    public function __construct(Mailgun $mailgun, Environment $twig)
     {
         parent::__construct($twig);
         $this->mailgun = $mailgun;
@@ -49,16 +53,18 @@ class MailgunSender extends AbstractEmailSender
      * @param ContactDTO $contact
      * @param callable|null $completer
      * @return int
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function envoyer(ContactDTO $contact, callable $completer = null): int
     {
         $utilisateur = $this->security->getUser();
-        $nom = $utilisateur->getUsername();
+        $nom = '';
         if ($utilisateur instanceof Etablissement) {
             $nom = $utilisateur->getNom();
+        } elseif ($utilisateur !== null) {
+            $nom = $utilisateur->getUsername();
         }
 
         $this->templateVars['emetteur'] = $contact->getEmetteur();

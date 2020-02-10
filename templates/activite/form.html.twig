@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/activite_form.css') }}">{% endblock %}
+
+{% block title %}Activité{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-sm-5">
+            <div class="well">
+                <fieldset>
+                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Activité</legend>
+                    {{ form_row(form.nom) }}
+                    {{ form_row(form.date) }}
+                    {{ form_row(form.accepteTickets) }}
+                </fieldset>
+            </div>
+        </div>
+        <div class="col-sm-10 col-md-8 col-xl-5">
+            <div class="well">
+                <fieldset>
+                    <legend class="d-none d-xl-block">Créneaux horaire</legend>
+                    {{ form_row(form.creneaux) }}
+                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
+                    <button type="button"
+                            class="add-another-collection-widget btn btn-secondary"
+                            data-list="#activite_creneaux">Ajouter un créneau horaire</button>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+    {{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}<script src="{{ asset('js/activite_form.js') }}"></script>{% endblock %}
