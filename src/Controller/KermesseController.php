@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Business\KermesseBusiness;
 use App\DataTransfer\Colonne;
 use App\Entity\Kermesse;
+use App\Exception\BusinessException;
+use App\Exception\ServiceException;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
@@ -14,8 +16,13 @@ use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
 use App\Service\RemboursementRowGenerator;
 use App\Service\TicketRowGenerator;
+use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Exception;
 use Psr\Log\LoggerInterface;
+use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,8 +52,8 @@ class KermesseController extends MyController
      * @param Request $request
      * @param KermesseService $sKermesse
      * @return Response
-     * @throws \App\Exception\ServiceException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws ServiceException
+     * @throws NonUniqueResultException
      */
     public function nouvelleKermesse(Request $request, KermesseService $sKermesse): Response
     {
@@ -96,7 +103,7 @@ class KermesseController extends MyController
                 $entityManager->commit();
                 $this->addFlash("success", "Kermesse " . $nouvelleKermesse->getAnnee() . ' créée à partir de la kermesse ' . $kermesse->getAnnee() . ' !');
                 return $this->redirectToRoute('index');
-            } catch (\Exception $exc) {
+            } catch (Exception $exc) {
                 $entityManager->rollback();
                 $this->addFlash('danger', $exc->getMessage());
                 $logger->critical($exc->getTraceAsString());
@@ -118,8 +125,8 @@ class KermesseController extends MyController
      * @param Request $request
      * @param KermesseService $sKermesse
      * @return Response
-     * @throws \App\Exception\ServiceException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws ServiceException
+     * @throws NonUniqueResultException
      */
     public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse): Response
     {
@@ -146,7 +153,7 @@ class KermesseController extends MyController
      * @Route("/kermesses/{id}", name="kermesse", requirements={"id"="\d+"})
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function index(Kermesse $kermesse): Response
     {
@@ -188,15 +195,6 @@ class KermesseController extends MyController
         );
     }
 
-    /*
-     * <tr>
-            <th scope="col">
-                <i class="fas fa-link"></i> Activités liées</th>
-            <th scope="col">
-                <i class="fab fa-telegram-plane"></i> Actions</th>
-        </tr>
-     */
-
     /**
      * @Route("/kermesses/{id}/tickets", name="liste_tickets")
      * @Security("kermesse.isProprietaire(user)")
@@ -204,8 +202,8 @@ class KermesseController extends MyController
      * @param TicketRowGenerator $ticketGenerator
      * @param Request $request
      * @return Response
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws DBALException
+     * @throws UnknownEumException
      */
     public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator, Request $request): Response
     {
@@ -240,8 +238,8 @@ class KermesseController extends MyController
      * @param RecetteRepository $rRecette
      * @param RecetteRowGenerator $rowGenerator
      * @return Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function listeRecettes(Kermesse $kermesse, RecetteRepository $rRecette, RecetteRowGenerator $rowGenerator, Request $request): Response
     {
@@ -276,7 +274,7 @@ class KermesseController extends MyController
      * @param Kermesse $kermesse
      * @param RemboursementRowGenerator $rGenerator
      * @return Response
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws UnknownEumException
      */
     public function listeRemboursements(Kermesse $kermesse, RemboursementRowGenerator $rGenerator): Response
     {
@@ -296,8 +294,8 @@ class KermesseController extends MyController
      * @param Kermesse $kermesse
      * @param KermesseCardGenerator $cardGenerator
      * @return Response
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function afficherCard(Kermesse $kermesse, KermesseCardGenerator $cardGenerator):Response
     {
@@ -312,7 +310,7 @@ class KermesseController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @return Response
-     * @throws \App\Exception\BusinessException
+     * @throws BusinessException
      */
     public function genererExportComptable(Kermesse $kermesse):Response
     {
@@ -323,5 +321,19 @@ class KermesseController extends MyController
             "Kermesse{$kermesse->getAnnee()}_ExportComptable.csv"
         );
         return $response;
+    }
+
+    /**
+     * Affichage du planning des bénévoles
+     * @Route("/kermesses/{id}/planning", name="planning_benevoles")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @return Response
+     */
+    public function showPlanning(Kermesse $kermesse): Response
+    {
+        return $this->render('kermesse/planning.html.twig', [
+            'menu' => $this->getMenu($kermesse, static::MENU_PLANNING),
+        ]);
     }
 }
