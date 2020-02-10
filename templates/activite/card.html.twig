@@ -8,6 +8,9 @@
         {% if card.nombreTickets is not empty %}
             <p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ card.nombreTickets }}</p>
         {% endif %}
+        {% if card.nombreBenevolesRequis > 0 %}
+            <p class="card-text" data-toggle="tooltip" title="Bénévoles requis"><i class="fas fa-users"></i> {{ card.nombreBenevolesInscrits }} / {{ card.nombreBenevolesRequis }}</p>
+        {% endif %}
         <hr />
         <p class="card-text">Total : {{ card.total }}</p>
     </div>

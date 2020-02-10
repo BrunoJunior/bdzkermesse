@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block headertitle %}Kermesse - Inscription validée{% endblock %}
+
+{% block body %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Merci {{ inscription.benevole.identite }}</h1>
+            <p class="lead">
+                Vous avez validé votre inscription à l'activité {{ inscription.inscription.activite.nom }}
+                le {{ inscription.inscription.activite.date|date('d/m/Y') }}
+                de {{ inscription.inscription.debut|date('H:m') }} à {{ inscription.inscription.fin|date('H:m') }}
+            </p>
+        </div>
+    </div>
+{% endblock %}
+

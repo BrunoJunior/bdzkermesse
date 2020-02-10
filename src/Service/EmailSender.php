@@ -9,20 +9,26 @@
 namespace App\Service;
 
 use App\DataTransfer\ContactDTO;
+use Swift_Mailer;
+use Swift_Message;
+use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class EmailSender extends AbstractEmailSender
 {
     /**
-     * @var \Swift_Mailer
+     * @var Swift_Mailer
      */
     protected $mailer;
 
     /**
      * ContactSender constructor.
-     * @param \Swift_Mailer $mailer
-     * @param \Twig_Environment $twig
+     * @param Swift_Mailer $mailer
+     * @param Environment $twig
      */
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig)
+    public function __construct(Swift_Mailer $mailer, Environment $twig)
     {
         parent::__construct($twig);
         $this->mailer = $mailer;
@@ -32,13 +38,13 @@ class EmailSender extends AbstractEmailSender
      * @param ContactDTO $contact
      * @param callable|null $completer
      * @return int
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function envoyer(ContactDTO $contact, callable $completer = null):int
     {
-        $message = (new \Swift_Message($contact->getTitre()))
+        $message = (new Swift_Message($contact->getTitre()))
             ->setFrom('mailgun@bdesprez.com')
             ->setTo($contact->getDestinataire())
             ->setBody($this->render(), 'text/html')

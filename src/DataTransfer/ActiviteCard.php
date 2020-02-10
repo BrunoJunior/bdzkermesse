@@ -8,6 +8,8 @@
 
 namespace App\DataTransfer;
 use App\Entity\Activite;
+use App\Entity\Creneau;
+use App\Entity\InscriptionBenevole;
 use App\Helper\HFloat;
 
 /**
@@ -136,6 +138,56 @@ class ActiviteCard
     {
         $total = ($this->recette ?? 0) - $this->depense + (($this->nombreTickets ?? 0) * $this->activite->getKermesse()->getMontantTicket());
         return HFloat::getInstance($total / 100.00)->getMontantFormatFrancais();
+    }
+
+    /**
+     * @return int
+     */
+    public function getNombreBenevolesRequis(): int
+    {
+        return array_reduce($this->activite->getCreneaux()->getValues(), function (int $somme, Creneau $creneau) {
+            return $somme + $creneau->getNbBenevolesRecquis();
+        }, 0);
+    }
+
+    /**
+     * @return int
+     */
+    public function getNombreBenevolesInscrits(): int
+    {
+        return array_reduce($this->activite->getCreneaux()->getValues(), function (int $somme, Creneau $creneau) {
+            return $somme + $creneau->getInscriptionBenevoles()->filter(function (InscriptionBenevole $inscription) {
+                    return $inscription->getValidee();
+                })->count();
+        }, 0);
+    }
+
+    /**
+     * @return int
+     */
+    public function getNombreBenevolesEnAttente(): int
+    {
+        return array_reduce($this->activite->getCreneaux()->getValues(), function (int $somme, Creneau $creneau) {
+            return $somme + $creneau->getInscriptionBenevoles()->filter(function (InscriptionBenevole $inscription) {
+                return !$inscription->getValidee();
+                })->count();
+        }, 0);
+    }
+
+    /**
+     * @return int
+     */
+    public function getTauxInscription(): int
+    {
+        return round($this->getNombreBenevolesInscrits() * 100 / $this->getNombreBenevolesRequis());
+    }
+
+    /**
+     * @return int
+     */
+    public function getTauxInscriptionEnAttente(): int
+    {
+        return round($this->getNombreBenevolesEnAttente() * 100 / $this->getNombreBenevolesRequis());
     }
 
     /**

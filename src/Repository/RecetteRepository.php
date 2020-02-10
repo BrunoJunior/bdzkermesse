@@ -6,8 +6,8 @@ use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * @method Recette|null find($id, $lockMode = null, $lockVersion = null)
@@ -22,7 +22,7 @@ class RecetteRepository extends ServiceEntityRepository
      */
     private $logger;
 
-    public function __construct(RegistryInterface $registry, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
         parent::__construct($registry, Recette::class);
         $this->logger = $logger;

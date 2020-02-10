@@ -9,8 +9,8 @@ use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Persistence\ManagerRegistry;
 use Psr\Log\LoggerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
  * @method Remboursement|null find($id, $lockMode = null, $lockVersion = null)
@@ -25,7 +25,7 @@ class RemboursementRepository extends ServiceEntityRepository
      */
     private $logger;
 
-    public function __construct(RegistryInterface $registry, LoggerInterface $logger)
+    public function __construct(ManagerRegistry $registry, LoggerInterface $logger)
     {
         parent::__construct($registry, Remboursement::class);
         $this->logger = $logger;

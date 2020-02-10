@@ -12,7 +12,6 @@ namespace App\Service;
 use App\Entity\Activite;
 use App\Entity\Depense;
 use App\Entity\Kermesse;
-use App\Entity\Membre;
 use App\Entity\Ticket;
 use App\Exception\ServiceException;
 use App\Repository\ActiviteRepository;

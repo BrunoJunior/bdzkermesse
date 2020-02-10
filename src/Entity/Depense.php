@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\DataTransfer\TicketRow;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

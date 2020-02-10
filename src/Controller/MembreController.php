@@ -117,9 +117,6 @@ class MembreController extends MyController
      * @param Membre $membre
      * @param Request $request
      * @return Response
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
      */
     public function contacterMembre(Membre $membre, Request $request): Response
     {

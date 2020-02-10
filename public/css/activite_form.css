@@ -1,0 +1,27 @@
+#activite_creneaux > fieldset {
+    position: relative;
+}
+
+#activite_creneaux > fieldset .btn.collection-widget-remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0 8px;
+}
+
+#activite_creneaux > fieldset.form-group {
+    border: 1px lightgrey solid;
+    padding: 20px;
+    -webkit-border-radius: .25rem;
+    -moz-border-radius: .25rem;
+    border-radius: .25rem;
+}
+
+#activite_creneaux > fieldset.form-group > legend {
+    display: none;
+}
+
+#activite_creneaux .creneau_heure {
+    display: inline-block;
+    width: 50%;
+}

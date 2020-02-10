@@ -7,7 +7,10 @@ use App\Entity\Membre;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\DBAL\DBALException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @method Ticket|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +20,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class TicketRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Ticket::class);
     }
@@ -26,7 +29,8 @@ class TicketRepository extends ServiceEntityRepository
      * Le montant total des dépenses d'une kermesse
      * @param Kermesse $kermesse
      * @return int
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function getMontantTotalPourKermesse(Kermesse $kermesse):int
     {
@@ -62,7 +66,7 @@ class TicketRepository extends ServiceEntityRepository
     /**
      * @param Kermesse $kermesse
      * @return ArrayCollection
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getTotauxParTicketByKermesse(Kermesse $kermesse):ArrayCollection
     {
@@ -88,7 +92,7 @@ class TicketRepository extends ServiceEntityRepository
     /**
      * @param Ticket $ticket
      * @return array
-     * @throws \Doctrine\DBAL\DBALException
+     * @throws DBALException
      */
     public function getTotauxByTicket(Ticket $ticket):array
     {

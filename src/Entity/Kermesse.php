@@ -64,6 +64,11 @@ class Kermesse extends MyEntity
      */
     private $dupliquee = false;
 
+    /**
+     * @ORM\Column(type="dateinterval", nullable=true)
+     */
+    private $dureeCreneau;
+
     public function __construct()
     {
         $this->activites = new ArrayCollection();
@@ -227,6 +232,18 @@ class Kermesse extends MyEntity
     public function setDupliquee(bool $dupliquee): self
     {
         $this->dupliquee = $dupliquee;
+        return $this;
+    }
+
+    public function getDureeCreneau(): ?\DateInterval
+    {
+        return $this->dureeCreneau;
+    }
+
+    public function setDureeCreneau(?\DateInterval $dureeCreneau): self
+    {
+        $this->dureeCreneau = $dureeCreneau;
+
         return $this;
     }
 }

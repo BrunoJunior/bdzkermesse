@@ -4,14 +4,18 @@ namespace App\Controller;
 
 use App\Business\RemboursementBusiness;
 use App\Business\TicketBusiness;
-use App\DataTransfer\RemboursementDTO;
 use App\DataTransfer\RemboursementRow;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
 use App\Form\DemandeRemboursementType;
 use App\Form\ValiderRemboursementType;
 use App\Repository\TicketRepository;
+use DateTime;
+use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Psr\Log\LoggerInterface;
+use SimpleEnum\Exception\UnknownEumException;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -40,8 +44,8 @@ class RemboursementController extends MyController
      * @Security("remboursement.isProprietaire(user)")
      * @param Remboursement $remboursement
      * @param TicketBusiness $bTicket
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @return Response
+     * @throws UnknownEumException
      */
     public function details(Remboursement $remboursement, TicketBusiness $bTicket): Response
     {
@@ -60,8 +64,8 @@ class RemboursementController extends MyController
      * @param Request $request
      * @param Membre $membre
      * @param TicketRepository $rTicket
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @return RedirectResponse|Response
+     * @throws NonUniqueResultException
      */
     public function demanderRemboursement(Request $request, Membre $membre, TicketRepository $rTicket): Response
     {
@@ -75,7 +79,7 @@ class RemboursementController extends MyController
                 $this->addFlash("success", "Demande de remboursement effectuée avec succès !");
                 $this->addFlash("success", "Un e-mail vous a été envoyé !");
                 return $this->redirectToRoute('membres');
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->logger->critical($exception->getTraceAsString());
                 $this->addFlash("danger", "Une erreur s'est produite lors de la demande de remboursement !");
             }
@@ -91,11 +95,12 @@ class RemboursementController extends MyController
      * @Security("remboursement.isProprietaire(user)")
      * @param Request $request
      * @param Remboursement $remboursement
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
+     * @throws Exception
      */
     public function validerRemboursement(Request $request, Remboursement $remboursement): Response
     {
-        $remboursement->setDate(new \DateTime());
+        $remboursement->setDate(new DateTime());
         $form = $this->createForm(ValiderRemboursementType::class, $remboursement);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -103,7 +108,7 @@ class RemboursementController extends MyController
                 $this->business->valider($remboursement);
                 $this->addFlash("success", "Le remboursement est considéré comme valide !");
                 return $this->redirectToRoute('membres');
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 $this->addFlash("danger", "Une erreur s'est produite durant la validation !");
                 $this->logger->critical($exception);
             }
@@ -118,14 +123,14 @@ class RemboursementController extends MyController
      * @Route("/remboursements/{id}/renvoyer_demande", name="renvoyer_demande")
      * @Security("remboursement.isProprietaire(user)")
      * @param Remboursement $remboursement
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return Response
      */
     public function renvoyerEmailDemande(Remboursement $remboursement):Response
     {
         try {
             $this->business->envoyerMailDemande($remboursement);
             $this->addFlash("success", "La demande de remboursement vous a été renvoyée par email !");
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->logger->critical($exception->getTraceAsString());
             $this->addFlash("danger", $exception->getMessage());
         }

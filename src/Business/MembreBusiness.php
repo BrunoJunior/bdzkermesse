@@ -15,7 +15,11 @@ use App\Entity\Membre;
 use App\Repository\MembreRepository;
 use App\Repository\RemboursementRepository;
 use App\Service\MailgunSender;
+use Doctrine\ORM\NonUniqueResultException;
 use Stringy\Stringy;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MembreBusiness
 {
@@ -75,7 +79,7 @@ class MembreBusiness
     /**
      * @param Membre $membre
      * @return string
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function getProchainNumeroSuivi(Membre $membre):string
     {
@@ -97,9 +101,9 @@ class MembreBusiness
      * @param Membre $membre
      * @param ContactDTO $contact
      * @return int
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function contacter(Membre $membre, ContactDTO $contact):int
     {
@@ -114,9 +118,9 @@ class MembreBusiness
      * @param array $templateVars
      * @param array $membresCopie
      * @return int
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function envoyerEmail(Membre $membre, string $titre, string $emetteur, string $template, array $templateVars = [], array $membresCopie = []):int
     {

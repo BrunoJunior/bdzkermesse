@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block headertitle %}Kermesse - {{ etablissement.nom }} - {{ activite.titre }} - Inscription validée{% endblock %}
+
+{% block body %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="display-4">Merci pour votre participation</h1>
+            <p class="lead">
+                Un email vous a été envoyé pour valider votre participation.<br />
+                Merci de cliquer sur le lien présent dans cet email !<br />
+                Cette validation permet d'éviter d'inscrire quelqu'un sans son accord !
+            </p>
+        </div>
+    </div>
+{% endblock %}
+
