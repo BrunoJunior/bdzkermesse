@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\ActiviteCard;
 use App\DataTransfer\Colonne;
 use App\Entity\Activite;
 use App\Entity\Kermesse;
@@ -169,5 +170,19 @@ class ActiviteController extends MyController
             [
                 'card' => $actCardGenerator->generate($activite, $depense, $recette, $nbTickets)
             ]);
+    }
+
+    /**
+     * @Route("/activites/{id}/benevoles", name="gerer_benevoles")
+     * @Security("activite.isProprietaire(user)")
+     * @param Activite $activite
+     * @return Response
+     */
+    public function gererBenevoles(Activite $activite): Response
+    {
+        return $this->render('activite/benevoles.html.twig', [
+            'activite' => new ActiviteCard($activite),
+            'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
+        ]);
     }
 }

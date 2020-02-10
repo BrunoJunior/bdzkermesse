@@ -23,6 +23,7 @@ abstract class MyController extends AbstractController
     const MENU_ACCUEIL = 'Accueil';
     const MENU_MEMBRES = 'Membres';
     const MENU_REMBOURSEMENTS = 'Remboursements';
+    const MENU_PLANNING = 'Planning';
 
     /**
      * @var LoggerInterface
@@ -67,6 +68,7 @@ abstract class MyController extends AbstractController
             ->addLink(MenuLink::getInstance(static::MENU_REMBOURSEMENTS, null, $this->generateUrl('liste_remboursements', ['id' => $kermesse->getId()])))
             ->addLink(MenuLink::getInstance(static::MENU_RECETTES, null, $this->generateUrl('liste_recettes', ['id' => $kermesse->getId()])))
             ->addLink(MenuLink::getInstance(static::MENU_MEMBRES_ACTIFS, null, $this->generateUrl('membres_actifs', ['id' => $kermesse->getId()])))
+            ->addLink(MenuLink::getInstance(static::MENU_PLANNING, null, $this->generateUrl('planning_benevoles', ['id' => $kermesse->getId()])))
             ->setActiveLinkByName($activeName);
         return MenuLink::getInstance('Édition ' . $kermesse->getAnnee() , 'tag', '#')
             ->setMenu($subMenu)

@@ -20,6 +20,15 @@
         <!-- Get your API key form https://app.mailgun.com/app/domains -->
         <env name="MAILGUN_API_KEY" value="&quot;replace_me&quot;"/>
         <!-- ###- mailgun/mailgun-php ### -->
+
+        <!-- ###+ symfony/mailer ### -->
+        <!-- MAILER_DSN=smtp://localhost -->
+        <!-- ###- symfony/mailer ### -->
+
+        <!-- ###+ symfony/mailgun-mailer ### -->
+        <!-- MAILER_DSN=mailgun://KEY:DOMAIN@default -->
+        <!-- MAILER_DSN=mailgun+smtp://USERNAME:PASSWORD@default -->
+        <!-- ###- symfony/mailgun-mailer ### -->
     </php>
 
     <testsuites>

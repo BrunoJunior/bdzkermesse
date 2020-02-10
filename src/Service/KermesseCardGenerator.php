@@ -8,11 +8,12 @@
 
 namespace App\Service;
 
-
 use App\DataTransfer\KermesseCard;
 use App\Entity\Kermesse;
 use App\Repository\RecetteRepository;
 use App\Repository\TicketRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 class KermesseCardGenerator
 {
@@ -30,6 +31,7 @@ class KermesseCardGenerator
     /**
      * KermesseDto constructor.
      * @param RecetteRepository $rRecette
+     * @param TicketRepository $rTicket
      */
     public function __construct(RecetteRepository $rRecette, TicketRepository $rTicket)
     {
@@ -40,8 +42,8 @@ class KermesseCardGenerator
     /**
      * @param Kermesse $kermesse
      * @return KermesseCard
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NoResultException
+     * @throws NonUniqueResultException
      */
     public function generate(Kermesse $kermesse): KermesseCard
     {
