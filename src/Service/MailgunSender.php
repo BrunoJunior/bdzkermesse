@@ -10,7 +10,10 @@ namespace App\Service;
 
 use App\DataTransfer\ContactDTO;
 use App\Entity\Etablissement;
+use Exception;
 use Mailgun\Mailgun;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
 use Twig\Error\LoaderError;
@@ -30,14 +33,36 @@ class MailgunSender extends AbstractEmailSender
     private $security;
 
     /**
+     * dev / prod
+     * @var string
+     */
+    private $environment;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @var EmailSender
+     */
+    private $emailSender;
+
+    /**
      * EMailSender constructor.
      * @param Mailgun $mailgun
      * @param Environment $twig
+     * @param KernelInterface $kernel
+     * @param LoggerInterface $logger
+     * @param EmailSender $emailSender
      */
-    public function __construct(Mailgun $mailgun, Environment $twig)
+    public function __construct(Mailgun $mailgun, Environment $twig, KernelInterface $kernel, LoggerInterface $logger, EmailSender $emailSender)
     {
         parent::__construct($twig);
         $this->mailgun = $mailgun;
+        $this->environment = $kernel->getEnvironment();
+        $this->logger = $logger;
+        $this->emailSender = $emailSender;
     }
 
     /**
@@ -78,7 +103,15 @@ class MailgunSender extends AbstractEmailSender
         if (!empty($contact->getCopies())) {
             $params['cc'] = implode(',', $contact->getCopies());
         }
-        $retour = $this->mailgun->messages()->send('mb.bdesprez.com', $params);
-        return $retour->getId() == '' ? 0 : 1;
+
+        try {
+            $retour = $this->mailgun->messages()->send('mb.bdesprez.com', $params);
+            return $retour->getId() == '' ? 0 : 1;
+        } catch (Exception $exception) {
+            $this->logger->critical("Erreur lors de l'envoi du mail via mailgun !", $exception->getTrace());
+            // On essaye avec le mailer standard
+            return $this->emailSender->setTemplate($this->template)->setTemplateVars($this->templateVars)->envoyer($contact, $completer);
+        }
+
     }
 }
