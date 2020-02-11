@@ -25,6 +25,9 @@ use SimpleEnum\Exception\UnknownEumException;
 use Stringy\Stringy;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class TicketBusiness
 {
@@ -96,6 +99,9 @@ class TicketBusiness
      * @param Ticket $ticket
      * @throws DBALException
      * @throws UnknownEumException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function creer(Ticket $ticket)
     {

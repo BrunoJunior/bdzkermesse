@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class TicketType extends AbstractType
 {
@@ -46,7 +47,14 @@ class TicketType extends AbstractType
                 'prototype' => true
             ])
             ->add('duplicata', FileType::class, [
-                'required' => false
+                'required' => false,
+                //BUG #19 - On limite à 1Mo, c'est déjà pas mal pour un ticket ou une facture
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1M',
+                        'maxSizeMessage' => 'Le fichier est trop volumineux ({{ size }} {{ suffix }}). La taille maximum autorisée est de {{ limit }} {{ suffix }}'
+                    ])
+                ]
             ])
             ->add('commentaire', TextareaType::class, ['required' => false])
         ;
