@@ -30,7 +30,7 @@
                 </div>
             </div>
             {% for activite in activites %}
-                <div class="row">
+                <div class="row p-1">
                     <div class="col-2"><h4>{{ activite.titre }}</h4></div>
                     <div class="col-8">
                         <div class="progress">
@@ -40,9 +40,9 @@
                     </div>
                     <div class="col-2">
                         {% if activite.nombreBenevolesInscrits < activite.nombreBenevolesRequis %}
-                            <a type="button" class="btn btn-primary" href="{{ path('inscription_benevole', {'id': activite.id, 'code': etablissement.username}) }}">Je souhaite aider</a>
+                            <a type="button" class="btn btn-primary btn-sm" href="{{ path('inscription_benevole', {'id': activite.id, 'code': etablissement.username}) }}">Je souhaite aider</a>
                         {% else %}
-                            <button type="button" class="btn btn-primary" disabled>Désolé, nous sommes complets</button>
+                            <button type="button" class="btn btn-primary btn-sm" disabled>Désolé, nous sommes complets</button>
                         {% endif %}
                     </div>
                 </div>

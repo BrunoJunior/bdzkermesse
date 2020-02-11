@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Business\KermesseBusiness;
 use App\DataTransfer\Colonne;
+use App\DataTransfer\Planning;
 use App\Entity\Kermesse;
 use App\Exception\BusinessException;
 use App\Exception\ServiceException;
@@ -334,6 +335,7 @@ class KermesseController extends MyController
     {
         return $this->render('kermesse/planning.html.twig', [
             'menu' => $this->getMenu($kermesse, static::MENU_PLANNING),
+            'planning' => Planning::createFromKermesse($kermesse)
         ]);
     }
 }
