@@ -24,6 +24,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class BenevoleController extends AbstractController
 {
@@ -141,7 +142,7 @@ class BenevoleController extends AbstractController
                 ->setTemplateVars(['btnurl' => $this->generateUrl('valider_inscription', [
                     'id' => $inscBenevole->getBenevole()->getId(),
                     'token' => $inscBenevole->getToken()
-                ])])
+                ], UrlGeneratorInterface::ABSOLUTE_URL)])
                 ->envoyer($contact);
             return $this->render('benevole/inscription_a_valider.html.twig', [
                 'etablissement' => $etablissement,

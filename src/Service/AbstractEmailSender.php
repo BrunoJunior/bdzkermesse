@@ -25,7 +25,7 @@ abstract class AbstractEmailSender
     /**
      * @var string
      */
-    private $template;
+    protected $template;
 
     /**
      * @var array
