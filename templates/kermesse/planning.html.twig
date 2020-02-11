@@ -3,5 +3,35 @@
 {% block title %}Kermesse - Planning{% endblock %}
 
 {% block body %}
-
+    <div class="row p-3 border-bottom">
+        <div class="col-1">Date</div>
+        <div class="col">
+            <div class="row">
+                <div class="col-2 border-right">Activité</div>
+                {% for i in 0..20 %}
+                    <div class="col">
+                        {% if i is divisible by(2) %}
+                            {{ (i / 2) + 8 }}:00
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% for ligne in planning.lignes %}
+        <div class="row p-3 border-bottom">
+            <div class="col-1">{{ ligne.date|date('d/m/Y') }}</div>
+            <div class="col">
+                {% for activite in ligne.activites %}
+                    <div class="row">
+                        <div class="col-2 border-right">{{ activite.nom }}</div>
+                        {% for i in 0..20 %}
+                            <div class="col border-right" style="border-right-style: dashed">
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
