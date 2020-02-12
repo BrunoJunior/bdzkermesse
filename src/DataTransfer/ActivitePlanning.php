@@ -4,17 +4,18 @@ namespace App\DataTransfer;
 
 use App\Entity\Activite;
 
-class ActivitePlanning
+class ActivitePlanning extends PlageHoraire
 {
+
     /**
      * @var string
      */
     private $nom;
 
     /**
-     * @var array|CreneauPlanning[]
+     * @var array|LigneCreneaux[]
      */
-    private $creneaux = [];
+    private $lignesCreneaux = [];
 
     /**
      * @param Activite $entity
@@ -27,6 +28,31 @@ class ActivitePlanning
             $activite->addCreneau(CreneauPlanning::createFromEntity($creneau));
         }
         return $activite;
+    }
+
+    /**
+     * @param CreneauPlanning $creneauPlanning
+     * @return $this
+     */
+    private function addCreneau(CreneauPlanning $creneauPlanning): self
+    {
+        // Calcul des extremum
+        $this->recalculerExtremumAvecAutrePlage($creneauPlanning);
+        $ajoute = false;
+        // On essaie d'ajouter le créneau à la première ligne
+        // Si ça ne marche pas, on réessaie avec la ligne suivante
+        // Jusqu'à ce que ça passe sur une ligne ou que ça ai râté sur toutes les lignes
+        foreach ($this->lignesCreneaux as $ligneCreneau) {
+            if ($ligneCreneau->addCreneau($creneauPlanning) !== null) {
+                $ajoute = true;
+                break;
+            }
+        }
+        // Ça a râté sur toutes les lignes, on en crée une nouvelle et on y ajoute le créneau
+        if (!$ajoute) {
+            $this->lignesCreneaux[] = (new LigneCreneaux())->addCreneau($creneauPlanning);
+        }
+        return $this;
     }
 
     /**
@@ -50,19 +76,9 @@ class ActivitePlanning
     /**
      * @return array|CreneauPlanning[]
      */
-    public function getCreneaux(): array
+    public function getLignesCreneaux(): array
     {
-        return $this->creneaux;
-    }
-
-    /**
-     * @param CreneauPlanning $creneau
-     * @return $this
-     */
-    public function addCreneau(CreneauPlanning $creneau): self
-    {
-        $this->creneaux[] = $creneau;
-        return $this;
+        return $this->lignesCreneaux;
     }
 
 }

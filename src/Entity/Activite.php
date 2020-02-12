@@ -66,6 +66,7 @@ class Activite extends MyEntity
 
     /**
      * @ORM\OneToMany(targetEntity="Creneau", mappedBy="activite", orphanRemoval=true, cascade={"persist"})
+     * @ORM\OrderBy({"debut" = "ASC"})
      */
     private $creneaux;
 

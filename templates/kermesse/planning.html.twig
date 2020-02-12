@@ -2,36 +2,71 @@
 
 {% block title %}Kermesse - Planning{% endblock %}
 
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/planning.css') }}">{% endblock %}
+
 {% block body %}
+    <div class="row">
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="afficherIncomplets">
+            <label class="custom-control-label" for="afficherIncomplets">Afficher les créneaux incomplets</label>
+        </div>
+    </div>
     <div class="row p-3 border-bottom">
         <div class="col-1">Date</div>
         <div class="col">
             <div class="row">
                 <div class="col-2 border-right">Activité</div>
-                {% for i in 0..20 %}
-                    <div class="col">
-                        {% if i is divisible by(2) %}
-                            {{ (i / 2) + 8 }}:00
-                        {% endif %}
-                    </div>
-                {% endfor %}
+                <div class="col"><div class="row">
+                    {% for i in 0..(nbCols - 1) %}
+                        <div class="col">
+                            {% if i is divisible by(2) %}
+                                {{ (i / 2) + planning.debut|date('H') }}:00
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div></div>
             </div>
         </div>
     </div>
     {% for ligne in planning.lignes %}
-        <div class="row p-3 border-bottom">
-            <div class="col-1">{{ ligne.date|date('d/m/Y') }}</div>
-            <div class="col">
+        <div class="row p-3 border-bottom planning-ligne">
+            <div class="col-1 ligne-date">{{ ligne.date|date('d/m/Y') }}</div>
+            <div class="col ligne-activites">
                 {% for activite in ligne.activites %}
-                    <div class="row">
-                        <div class="col-2 border-right">{{ activite.nom }}</div>
-                        {% for i in 0..20 %}
-                            <div class="col border-right" style="border-right-style: dashed">
+                    <div class="row ligne-activite mb-1">
+                        <div class="col-2 border-right activite-nom">{{ activite.nom }}</div>
+                        <div class="col activite-lignes-creneaux">
+                        {% for ligneCreneaux in activite.lignesCreneaux %}
+                            <div class="row activite-ligne-creneaux">
+                                {% for creneau in ligneCreneaux.creneaux %}
+                                    {% if loop.first and creneau.offset(planning) > 0 %}
+                                        <div style="width: {{ creneau.offset(planning) }}%"></div>
+                                    {% endif %}
+                                    <div data-toggle="tooltip" data-placement="top"
+                                         title="De {{ creneau.debut|date('H:i') }} à {{ creneau.fin|date('H:i') }}"
+                                         class="activite-creneau rounded-lg p-1
+                                         {% if not creneau.complet %}creneau-incomplet{% endif %}
+                                         {% if creneau.complet %}
+                                            bg-success
+                                         {% elseif creneau.tauxBenevoles >= 75 %}
+                                            bg-primary
+                                         {% elseif creneau.tauxBenevoles >= 50 %}
+                                            bg-warning
+                                         {% else %}
+                                            bg-danger
+                                         {% endif %}"
+                                         style="width: {{ creneau.tailleRelative(planning) }}%">
+                                         {{ creneau.benevoles }}
+                                    </div>
+                                {% endfor %}
                             </div>
                         {% endfor %}
+                        </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
     {% endfor %}
 {% endblock %}
+
+{% block javascripts %}<script src="{{ asset('js/planning.js') }}"></script>{% endblock %}

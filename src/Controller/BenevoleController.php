@@ -6,8 +6,10 @@ use App\Business\KermesseBusiness;
 use App\DataTransfer\ActiviteCard;
 use App\DataTransfer\ContactDTO;
 use App\DataTransfer\Inscription;
+use App\DataTransfer\Planning;
 use App\Entity\Activite;
 use App\Entity\Benevole;
+use App\Entity\Kermesse;
 use App\Form\InscriptionType;
 use App\Repository\BenevoleRepository;
 use App\Repository\EtablissementRepository;
@@ -153,6 +155,30 @@ class BenevoleController extends AbstractController
             'etablissement' => $etablissement,
             'activite' => new ActiviteCard($activite),
             'form' => $form->createView()
+        ]);
+    }
+
+
+    /**
+     * Affichage du planning des bénévoles
+     * @Route("/benevoles/{code}/planning", name="benevoles_planning")
+     * @param string $code
+     * @param EtablissementRepository $rEtablissement
+     * @param KermesseRepository $rKermesse
+     * @return Response
+     * @throws NonUniqueResultException
+     */
+    public function showPlanning(string $code, EtablissementRepository $rEtablissement, KermesseRepository $rKermesse): Response
+    {
+        $etablissement = $rEtablissement->findOneBy(['username' => $code]);
+        if ($etablissement === null) {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
+        $kermesse = $rKermesse->findCouranteByEtablissement($etablissement);
+        $planning = Planning::createFromKermesse($kermesse);
+        return $this->render('kermesse/planning.html.twig', [
+            'planning' => $planning,
+            'nbCols' => round($planning->getTaillePlage() / 1800)
         ]);
     }
 }

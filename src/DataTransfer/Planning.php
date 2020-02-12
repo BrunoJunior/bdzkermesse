@@ -8,8 +8,9 @@ use App\Entity\Kermesse;
  * Class Planning
  * @package App\DataTransfer
  */
-class Planning
+class Planning extends PlageHoraire
 {
+
     /**
      * @var array|LignePlanning[]
      */
@@ -30,8 +31,11 @@ class Planning
             if (!array_key_exists($dateStr, $planning->lignes)) {
                 $planning->lignes[$dateStr] = (new LignePlanning())->setDate($activite->getDate());
             }
-            $planning->lignes[$dateStr]->addActivite(ActivitePlanning::createFromEntity($activite));
+            $actPlanning = ActivitePlanning::createFromEntity($activite);
+            $planning->recalculerExtremumAvecAutrePlage($actPlanning, true);
+            $planning->lignes[$dateStr]->addActivite($actPlanning);
         }
+        ksort($planning->lignes);
         return $planning;
     }
 

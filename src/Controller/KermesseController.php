@@ -333,9 +333,11 @@ class KermesseController extends MyController
      */
     public function showPlanning(Kermesse $kermesse): Response
     {
+        $planning = Planning::createFromKermesse($kermesse);
         return $this->render('kermesse/planning.html.twig', [
             'menu' => $this->getMenu($kermesse, static::MENU_PLANNING),
-            'planning' => Planning::createFromKermesse($kermesse)
+            'planning' => $planning,
+            'nbCols' => round($planning->getTaillePlage() / 1800)
         ]);
     }
 }
