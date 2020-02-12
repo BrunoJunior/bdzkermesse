@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\InscriptionBenevoleRepository")
  */
-class InscriptionBenevole
+class InscriptionBenevole extends MyEntity
 {
     /**
      * @ORM\Id()
@@ -89,5 +89,21 @@ class InscriptionBenevole
         $this->validee = $validee;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getEtablissement(): ?Etablissement
+    {
+        $creneau = $this->getInscription();
+        if ($creneau === null) {
+            return null;
+        }
+        $activite = $creneau->getActivite();
+        if ($activite === null) {
+            return null;
+        }
+        return $activite->getEtablissement();
     }
 }

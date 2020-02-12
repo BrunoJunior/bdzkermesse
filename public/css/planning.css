@@ -2,3 +2,13 @@
     text-wrap: normal;
     text-align: center;
 }
+
+.planning-heure {
+    position: absolute;
+    background: white;
+}
+
+.planning-entete {
+    border-left: 1px dashed #dee2e6;
+    position: relative;
+}
