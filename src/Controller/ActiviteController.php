@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DataTransfer\ActiviteCard;
+use App\DataTransfer\ActivitePlanning;
 use App\DataTransfer\Colonne;
 use App\Entity\Activite;
 use App\Entity\Kermesse;
@@ -181,7 +182,7 @@ class ActiviteController extends MyController
     public function gererBenevoles(Activite $activite): Response
     {
         return $this->render('activite/benevoles.html.twig', [
-            'activite' => new ActiviteCard($activite),
+            'activite' => ActivitePlanning::createFromEntity($activite),
             'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
         ]);
     }
