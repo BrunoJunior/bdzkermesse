@@ -4,7 +4,6 @@ namespace App\DataTransfer;
 
 use App\Entity\Benevole;
 use App\Entity\Creneau;
-use App\Entity\InscriptionBenevole;
 
 class CreneauPlanning extends PlageHoraire
 {
@@ -13,6 +12,11 @@ class CreneauPlanning extends PlageHoraire
      * @var array|InfosBenevole[]
      */
     private $benevoles = [];
+
+    /**
+     * @var array|InfosBenevole[]
+     */
+    private $benevolesEnAttente = [];
 
     /**
      * @var int
@@ -32,14 +36,11 @@ class CreneauPlanning extends PlageHoraire
     {
         $creneau = (new self());
         $creneau->nbRequis = $entity->getNbBenevolesRecquis();
-        $benevolesValides = $entity->getInscriptionBenevoles()->filter(function (InscriptionBenevole $inscription) {
-            return $inscription->getValidee();
-        });
-        $creneau->nbValides = count($benevolesValides);
-        $creneau->setDebut($entity->getDebut())->setFin($entity->getFin());
-        foreach ($benevolesValides as $inscription) {
-            $creneau->addBenevole($inscription->getBenevole());
+        foreach ($entity->getInscriptionBenevoles() as $inscription) {
+            $creneau->addBenevole($inscription->getBenevole(), $inscription->getValidee());
         }
+        $creneau->nbValides = count($creneau->benevoles);
+        $creneau->setDebut($entity->getDebut())->setFin($entity->getFin());
         return $creneau;
     }
 
@@ -60,20 +61,27 @@ class CreneauPlanning extends PlageHoraire
     }
 
     /**
+     * @param bool $valide
      * @return InfosBenevole[]|array
      */
-    public function getBenevoles(): array
+    public function getBenevoles(bool $valide = true): array
     {
-        return $this->benevoles;
+        return $valide ? $this->benevoles : $this->benevolesEnAttente;
     }
 
     /**
      * @param Benevole $benevole
+     * @param bool $valide
      * @return $this
      */
-    public function addBenevole(Benevole $benevole): self
+    public function addBenevole(Benevole $benevole, bool $valide = true): self
     {
-        $this->benevoles[] = InfosBenevole::createFromEntity($benevole);
+        $aAjouter = InfosBenevole::createFromEntity($benevole);
+        if ($valide) {
+            $this->benevoles[] = $aAjouter;
+        } else {
+            $this->benevolesEnAttente[] = $aAjouter;
+        }
         return $this;
     }
 

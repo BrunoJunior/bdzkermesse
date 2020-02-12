@@ -1,7 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Activité - {{ activite.titre }} - Bénévoles{% endblock %}
+{% block title %}Activité - {{ activite.nom }} - Bénévoles{% endblock %}
 
 {% block body %}
-
+    {% for ligneCreneaux in activite.lignesCreneaux %}
+        {% for creneau in ligneCreneaux.creneaux %}
+            <div class="row border-bottom mb-2">
+                <div class="col-2">De {{ creneau.debut|date('H:i') }} à {{ creneau.fin|date('H:i') }}</div>
+                <div class="col"><div class="row">
+                    {% for benevole in creneau.benevoles %}
+                        <div class="col-4">
+                            <div class="card text-white bg-success">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ benevole.identite }}</h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-envelope"></i> {{ benevole.email }}<br />
+                                        <i class="fas fa-mobile"></i> {{ benevole.tel }}
+                                    </p>
+                                    <a href="#" class="btn btn-danger">Annuler</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    {% for benevole in creneau.benevoles(false) %}
+                        <div class="col-4">
+                            <div class="card bg-warning">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ benevole.identite }}</h5>
+                                    <p class="card-text">
+                                        <i class="fas fa-envelope"></i> {{ benevole.email }}<br />
+                                        <i class="fas fa-mobile"></i> {{ benevole.tel }}
+                                    </p>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <a href="#" class="btn btn-success">Valider</a>
+                                        <a href="#" class="btn btn-danger">Annuler</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div></div>
+            </div>
+        {% endfor %}
+    {% endfor %}
 {% endblock %}
