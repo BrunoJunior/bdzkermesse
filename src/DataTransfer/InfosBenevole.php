@@ -2,10 +2,15 @@
 
 namespace App\DataTransfer;
 
-use App\Entity\Benevole;
+use App\Entity\InscriptionBenevole;
 
 class InfosBenevole
 {
+    /**
+     * @var int
+     */
+    private $idInscription;
+
     /**
      * @var string
      */
@@ -22,16 +27,18 @@ class InfosBenevole
     private $tel;
 
     /**
-     * @param Benevole $entity
+     * @param InscriptionBenevole $entity
      * @return static
      */
-    public static function createFromEntity(Benevole $entity): self
+    public static function createFromEntity(InscriptionBenevole $entity): self
     {
-        $benevole = new self();
-        $benevole->identite = $entity->getIdentite();
-        $benevole->email = $entity->getEmail();
-        $benevole->tel = $entity->getPortable();
-        return $benevole;
+        $benevole = $entity->getBenevole();
+        $infos = new self();
+        $infos->idInscription = $entity->getId();
+        $infos->identite = $benevole->getIdentite();
+        $infos->email = $benevole->getEmail();
+        $infos->tel = $benevole->getPortable();
+        return $infos;
     }
 
     /**
@@ -56,5 +63,13 @@ class InfosBenevole
     public function getTel(): string
     {
         return $this->tel;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdInscription(): int
+    {
+        return $this->idInscription;
     }
 }

@@ -1,0 +1,6 @@
+Bonjour {{ identite }},
+
+Votre participation à l'activité «{{ activite }}», le {{ date|date("d/m/Y") }}, de {{ debut|date("H:i") }} à {{ fin|date("H:i") }}, a été {% if refus %}annulée{% else %}validée{% endif %} par l'équipe.
+
+Merci,
+L'équipe de la kermesse

@@ -4,6 +4,7 @@ namespace App\DataTransfer;
 
 use App\Entity\Benevole;
 use App\Entity\Creneau;
+use App\Entity\InscriptionBenevole;
 
 class CreneauPlanning extends PlageHoraire
 {
@@ -37,7 +38,7 @@ class CreneauPlanning extends PlageHoraire
         $creneau = (new self());
         $creneau->nbRequis = $entity->getNbBenevolesRecquis();
         foreach ($entity->getInscriptionBenevoles() as $inscription) {
-            $creneau->addBenevole($inscription->getBenevole(), $inscription->getValidee());
+            $creneau->addBenevole($inscription, $inscription->getValidee());
         }
         $creneau->nbValides = count($creneau->benevoles);
         $creneau->setDebut($entity->getDebut())->setFin($entity->getFin());
@@ -70,13 +71,13 @@ class CreneauPlanning extends PlageHoraire
     }
 
     /**
-     * @param Benevole $benevole
+     * @param InscriptionBenevole $inscriptionBenevole
      * @param bool $valide
      * @return $this
      */
-    public function addBenevole(Benevole $benevole, bool $valide = true): self
+    public function addBenevole(InscriptionBenevole $inscriptionBenevole, bool $valide = true): self
     {
-        $aAjouter = InfosBenevole::createFromEntity($benevole);
+        $aAjouter = InfosBenevole::createFromEntity($inscriptionBenevole);
         if ($valide) {
             $this->benevoles[] = $aAjouter;
         } else {

@@ -9,7 +9,6 @@ use App\DataTransfer\Inscription;
 use App\DataTransfer\Planning;
 use App\Entity\Activite;
 use App\Entity\Benevole;
-use App\Entity\Kermesse;
 use App\Form\InscriptionType;
 use App\Repository\BenevoleRepository;
 use App\Repository\EtablissementRepository;
