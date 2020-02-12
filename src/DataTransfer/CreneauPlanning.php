@@ -4,29 +4,9 @@ namespace App\DataTransfer;
 
 use App\Entity\Creneau;
 use App\Entity\InscriptionBenevole;
-use DateTimeInterface;
 
-class CreneauPlanning
+class CreneauPlanning extends PlageHoraire
 {
-    /**
-     * @var DateTimeInterface
-     */
-    private $debut;
-
-    /**
-     * @var DateTimeInterface
-     */
-    private $fin;
-
-    /**
-     * @var int
-     */
-    private $tauxBenevoles;
-
-    /**
-     * @var bool
-     */
-    private $complet;
 
     /**
      * @var array|string[]
@@ -34,20 +14,28 @@ class CreneauPlanning
     private $benevoles = [];
 
     /**
+     * @var int
+     */
+    private $nbRequis;
+
+    /**
+     * @var int
+     */
+    private $nbValides;
+
+    /**
      * @param Creneau $entity
      * @return static
      */
     public static function createFromEntity(Creneau $entity): self
     {
-        $nbBenevolesRequis = $entity->getNbBenevolesRecquis();
+        $creneau = (new self());
+        $creneau->nbRequis = $entity->getNbBenevolesRecquis();
         $benevolesValides = $entity->getInscriptionBenevoles()->filter(function (InscriptionBenevole $inscription) {
             return $inscription->getValidee();
         });
-        $creneau = (new self())
-            ->setDebut($entity->getDebut())
-            ->setFin($entity->getFin())
-            ->setComplet($nbBenevolesRequis === $benevolesValides->count())
-            ->setTauxBenevoles(round($benevolesValides->count() * 100 / $nbBenevolesRequis));
+        $creneau->nbValides = count($benevolesValides);
+        $creneau->setDebut($entity->getDebut())->setFin($entity->getFin());
         foreach ($benevolesValides as $inscription) {
             $creneau->addBenevole($inscription->getBenevole()->getIdentite());
         }
@@ -55,57 +43,11 @@ class CreneauPlanning
     }
 
     /**
-     * @return DateTimeInterface
-     */
-    public function getDebut(): DateTimeInterface
-    {
-        return $this->debut;
-    }
-
-    /**
-     * @param DateTimeInterface $debut
-     * @return $this
-     */
-    public function setDebut(DateTimeInterface $debut): self
-    {
-        $this->debut = $debut;
-        return $this;
-    }
-
-    /**
-     * @return DateTimeInterface
-     */
-    public function getFin(): DateTimeInterface
-    {
-        return $this->fin;
-    }
-
-    /**
-     * @param DateTimeInterface $fin
-     * @return $this
-     */
-    public function setFin(DateTimeInterface $fin): self
-    {
-        $this->fin = $fin;
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getTauxBenevoles(): int
     {
-        return $this->tauxBenevoles;
-    }
-
-    /**
-     * @param int $tauxBenevoles
-     * @return $this
-     */
-    public function setTauxBenevoles(int $tauxBenevoles): self
-    {
-        $this->tauxBenevoles = $tauxBenevoles;
-        return $this;
+        return round($this->nbValides * 100 / $this->nbRequis);
     }
 
     /**
@@ -113,25 +55,15 @@ class CreneauPlanning
      */
     public function isComplet(): bool
     {
-        return $this->complet;
+        return $this->nbRequis === $this->nbValides;
     }
 
     /**
-     * @param bool $complet
-     * @return $this
-     */
-    public function setComplet(bool $complet): self
-    {
-        $this->complet = $complet;
-        return $this;
-    }
-
-    /**
-     * @return array|string[]
+     * @return string
      */
     public function getBenevoles()
     {
-        return $this->benevoles;
+        return (implode(', ', $this->benevoles) ?: 'Aucun bénévole…') . " ($this->nbValides/$this->nbRequis)";
     }
 
     /**
@@ -142,5 +74,27 @@ class CreneauPlanning
     {
         $this->benevoles[] = $benevole;
         return $this;
+    }
+
+    /**
+     * Offset en % par rapport au début du planning
+     * @param Planning $planning
+     * @return int
+     */
+    public function getOffset(Planning $planning): int
+    {
+        $taillePlagePlanning = $planning->getTaillePlage();
+        $offsetSec = $this->debut->getTimestamp() - $planning->getDebut()->getTimestamp();
+        return round((100 * $offsetSec) / $taillePlagePlanning);
+    }
+
+    /**
+     * La taille relative (en %) par rapport au planning
+     * @param Planning $planning
+     * @return int
+     */
+    public function getTailleRelative(Planning $planning): int
+    {
+        return round((100 * $this->getTaillePlage()) / $planning->getTaillePlage());
     }
 }
