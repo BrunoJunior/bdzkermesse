@@ -2,6 +2,7 @@
 
 namespace App\DataTransfer;
 
+use App\Entity\Benevole;
 use App\Entity\Creneau;
 use App\Entity\InscriptionBenevole;
 
@@ -9,7 +10,7 @@ class CreneauPlanning extends PlageHoraire
 {
 
     /**
-     * @var array|string[]
+     * @var array|InfosBenevole[]
      */
     private $benevoles = [];
 
@@ -37,7 +38,7 @@ class CreneauPlanning extends PlageHoraire
         $creneau->nbValides = count($benevolesValides);
         $creneau->setDebut($entity->getDebut())->setFin($entity->getFin());
         foreach ($benevolesValides as $inscription) {
-            $creneau->addBenevole($inscription->getBenevole()->getIdentite());
+            $creneau->addBenevole($inscription->getBenevole());
         }
         return $creneau;
     }
@@ -59,20 +60,20 @@ class CreneauPlanning extends PlageHoraire
     }
 
     /**
-     * @return string
+     * @return InfosBenevole[]|array
      */
-    public function getBenevoles()
+    public function getBenevoles(): array
     {
-        return (implode(', ', $this->benevoles) ?: 'Aucun bénévole…') . " ($this->nbValides/$this->nbRequis)";
+        return $this->benevoles;
     }
 
     /**
-     * @param string $benevole
+     * @param Benevole $benevole
      * @return $this
      */
-    public function addBenevole(string $benevole): self
+    public function addBenevole(Benevole $benevole): self
     {
-        $this->benevoles[] = $benevole;
+        $this->benevoles[] = InfosBenevole::createFromEntity($benevole);
         return $this;
     }
 
@@ -96,5 +97,14 @@ class CreneauPlanning extends PlageHoraire
     public function getTailleRelative(Planning $planning): int
     {
         return round((100 * $this->getTaillePlage()) / $planning->getTaillePlage());
+    }
+
+    /**
+     * Proportion sous la forme «1 / 4»
+     * @return string
+     */
+    public function getProportion(): string
+    {
+        return "$this->nbValides / $this->nbRequis";
     }
 }

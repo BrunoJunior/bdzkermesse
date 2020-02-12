@@ -56,7 +56,16 @@
                                             bg-danger
                                          {% endif %}"
                                          style="width: {{ creneau.tailleRelative(planning) }}%">
-                                         {{ creneau.benevoles }}
+                                        {% for benevole in creneau.benevoles %}
+                                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                <span data-toggle="tooltip" data-placement="bottom" data-html="true"
+                                                      title="<div><i class='fas fa-envelope'></i> {{ benevole.email }}</div><div><i class='fas fa-mobile'></i> {{ benevole.tel }}</div>">{{ benevole.identite }}</span>
+                                            {% else %}
+                                                {{ benevole.identite }}
+                                            {% endif %}
+                                            {% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                        ({{ creneau.proportion }})
                                     </div>
                                 {% endfor %}
                             </div>
