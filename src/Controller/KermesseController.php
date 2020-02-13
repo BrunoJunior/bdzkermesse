@@ -337,6 +337,7 @@ class KermesseController extends MyController
         return $this->render('kermesse/planning.html.twig', [
             'menu' => $this->getMenu($kermesse, static::MENU_PLANNING),
             'planning' => $planning,
+            'codeEtablissement' => $kermesse->getEtablissement()->getUsername(),
             'nbCols' => round($planning->getTaillePlage() / 1800)
         ]);
     }

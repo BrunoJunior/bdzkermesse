@@ -13,6 +13,11 @@ class ActivitePlanning extends PlageHoraire
     private $nom;
 
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var array|LigneCreneaux[]
      */
     private $lignesCreneaux = [];
@@ -23,7 +28,7 @@ class ActivitePlanning extends PlageHoraire
      */
     public static function createFromEntity(Activite $entity): self
     {
-        $activite = (new self())->setNom($entity->getNom());
+        $activite = (new self())->setNom($entity->getNom())->setId($entity->getId());
         foreach ($entity->getCreneaux() as $creneau) {
             $activite->addCreneau(CreneauPlanning::createFromEntity($creneau));
         }
@@ -79,6 +84,24 @@ class ActivitePlanning extends PlageHoraire
     public function getLignesCreneaux(): array
     {
         return $this->lignesCreneaux;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     * @return self
+     */
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
 }

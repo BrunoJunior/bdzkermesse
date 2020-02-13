@@ -177,6 +177,7 @@ class BenevoleController extends AbstractController
         $planning = Planning::createFromKermesse($kermesse);
         return $this->render('kermesse/planning.html.twig', [
             'planning' => $planning,
+            'codeEtablissement' => $code,
             'nbCols' => round($planning->getTaillePlage() / 1800)
         ]);
     }

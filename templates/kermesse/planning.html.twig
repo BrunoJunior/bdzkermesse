@@ -16,7 +16,7 @@
             <div class="col-1">Date</div>
             <div class="col">
                 <div class="row">
-                    <div class="col-2 border-right">Activité</div>
+                    <div class="col-2">Activité</div>
                     <div class="col"><div class="row" style="height: 100%;">
                         {% for i in 0..(nbCols - 1) %}
                             <div class="col planning-entete">
@@ -40,7 +40,7 @@
                 <div class="col ligne-activites">
                     {% for activite in ligne.activites %}
                         <div class="row ligne-activite mb-1">
-                            <div class="col-2 border-right activite-nom">{{ activite.nom }}</div>
+                            <div class="col-2 activite-nom">{{ activite.nom }}</div>
                             <div class="col activite-lignes-creneaux">
                             {% for ligneCreneaux in activite.lignesCreneaux %}
                                 <div class="row activite-ligne-creneaux">
@@ -50,28 +50,32 @@
                                         {% endif %}
                                         <div data-toggle="tooltip" data-placement="top"
                                              title="De {{ creneau.debut|date('H:i') }} à {{ creneau.fin|date('H:i') }}"
-                                             class="activite-creneau rounded-lg p-1
-                                             {% if not creneau.complet %}creneau-incomplet{% endif %}
-                                             {% if creneau.complet %}
-                                                bg-success
-                                             {% elseif creneau.tauxBenevoles >= 75 %}
-                                                bg-primary
-                                             {% elseif creneau.tauxBenevoles >= 50 %}
-                                                bg-warning
-                                             {% else %}
-                                                bg-danger
-                                             {% endif %}"
+                                             class="activite-creneau p-1 {% if not creneau.complet %}creneau-incomplet{% endif %}"
                                              style="width: {{ creneau.tailleRelative(planning) }}%">
-                                            {% for benevole in creneau.benevoles %}
-                                                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                                    <span data-toggle="tooltip" data-placement="bottom" data-html="true"
-                                                          title="<div><i class='fas fa-envelope'></i> {{ benevole.email }}</div><div><i class='fas fa-mobile'></i> {{ benevole.tel }}</div>">{{ benevole.identite }}</span>
-                                                {% else %}
-                                                    {{ benevole.identite }}
-                                                {% endif %}
-                                                {% if not loop.last %}, {% endif %}
-                                            {% endfor %}
-                                            ({{ creneau.proportion }})
+                                            <a
+                                                    href="{% if creneau.complet %}#{% else %}{{ path('inscription_benevole', {'id': activite.id, 'code': codeEtablissement}) }}{% endif %}"
+                                                    type="button"
+                                                    class="btn btn-lg btn-block btn-sm
+                                                    {% if creneau.complet %}
+                                                        btn-success
+                                                     {% elseif creneau.tauxBenevoles >= 75 %}
+                                                        btn-primary
+                                                     {% elseif creneau.tauxBenevoles >= 50 %}
+                                                        btn-warning
+                                                     {% else %}
+                                                        btn-danger
+                                                     {% endif %}">
+                                                {% for benevole in creneau.benevoles %}
+                                                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                        <span data-toggle="tooltip" data-placement="bottom" data-html="true"
+                                                              title="<div><i class='fas fa-envelope'></i> {{ benevole.email }}</div><div><i class='fas fa-mobile'></i> {{ benevole.tel }}</div>">{{ benevole.identite }}</span>
+                                                    {% else %}
+                                                        {{ benevole.identite }}
+                                                    {% endif %}
+                                                    {% if not loop.last %}, {% endif %}
+                                                {% endfor %}
+                                                ({{ creneau.proportion }})
+                                            </a>
                                         </div>
                                     {% endfor %}
                                 </div>
