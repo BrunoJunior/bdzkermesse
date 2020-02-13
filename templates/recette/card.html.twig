@@ -7,7 +7,9 @@
         <p class="card-text" data-toggle="tooltip" title="Montant"><i class="fas fa-euro-sign"></i> {{ recette.montant }}</p>
     </div>
     <div class="card-footer">
+        <div class="btn-group" role="group" aria-label="Actions">
         <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
         <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>
+        </div>
     </div>
 </div>
