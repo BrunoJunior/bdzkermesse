@@ -12,7 +12,7 @@
         </div>
     </div>
     <div id="planning" style="position: relative;">
-        <div class="row p-3 border-bottom">
+        <div class="row pt-3 pb-3 border-bottom">
             <div class="col-1">Date</div>
             <div class="col">
                 <div class="row">
@@ -35,7 +35,7 @@
             </div>
         </div>
         {% for ligne in planning.lignes %}
-            <div class="row p-3 border-bottom planning-ligne">
+            <div class="row pt-3 pb-3 border-bottom planning-ligne">
                 <div class="col-1 ligne-date">{{ ligne.date|date('d/m/Y') }}</div>
                 <div class="col ligne-activites">
                     {% for activite in ligne.activites %}

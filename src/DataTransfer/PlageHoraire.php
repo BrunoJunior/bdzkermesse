@@ -81,11 +81,25 @@ class PlageHoraire
     {
         if ($this->debut === null || $this->debut > $debut) {
             $newDebut = DateTime::createFromFormat(DateTimeInterface::ATOM, $debut->format(DateTimeInterface::ATOM));
-            $this->debut = $arrondir ? $newDebut->setTime((int) $newDebut->format('G'), 0, 0) : $debut;
+            $minutes = (int) $newDebut->format('i');
+            if ($arrondir && $minutes > 30) {// Arrondir à la demi-heure inférieure
+                $this->debut = $newDebut->setTime((int) $newDebut->format('G'), 30, 0);
+            } elseif ($arrondir && $minutes < 30) {// Arrondir à l'heure inférieure
+                $this->debut = $newDebut->setTime((int) $newDebut->format('G'), 0, 0);
+            } else {
+                $this->debut = $debut;
+            }
         }
         if ($this->fin === null || $this->fin < $fin) {
             $newFin = DateTime::createFromFormat(DateTimeInterface::ATOM, $fin->format(DateTimeInterface::ATOM));
-            $this->fin = $arrondir ? $newFin->setTime(1 + (int) $newFin->format('G'), 0, 0) : $fin;
+            $minutes = (int) $newFin->format('i');
+            if ($arrondir && $minutes > 0 && $minutes < 30) { // Arrondir à la demi-heure supérieure
+                $this->fin = $newFin->setTime((int) $newFin->format('G'), 30, 0);
+            } elseif ($arrondir && $minutes > 30) { // Arrondir à l'heure supérieure
+                $this->fin = $newFin->setTime( 1 + (int) $newFin->format('G'), 0, 0);
+            } else {
+                $this->fin = $fin;
+            }
         }
         return $this;
     }
