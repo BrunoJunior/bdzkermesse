@@ -94,7 +94,7 @@ class MailgunSender extends AbstractEmailSender
 
         $this->templateVars['emetteur'] = $contact->getEmetteur();
         $params = [
-            'from' => "Kermesse - $nom <mailgun@bdesprez.com>",
+            'from' => "Kermesse - $nom <noreply@web-project.fr>",
             'to' => $contact->getDestinataire(),
             'subject' => $nom . ' - ' . $contact->getTitre(),
             'html' => $this->render(),
@@ -105,7 +105,7 @@ class MailgunSender extends AbstractEmailSender
         }
 
         try {
-            $retour = $this->mailgun->messages()->send('mb.bdesprez.com', $params);
+            $retour = $this->mailgun->messages()->send('mb.web-project.fr', $params);
             return $retour->getId() == '' ? 0 : 1;
         } catch (Exception $exception) {
             $this->logger->critical("Erreur lors de l'envoi du mail via mailgun !", $exception->getTrace());
