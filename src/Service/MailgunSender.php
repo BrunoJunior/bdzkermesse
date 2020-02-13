@@ -105,7 +105,7 @@ class MailgunSender extends AbstractEmailSender
         }
 
         try {
-            $retour = $this->mailgun->messages()->send('mg.web-project.fr', $params);
+            $retour = $this->mailgun->messages()->send(getenv('MAILGUN_DOMAIN'), $params);
             return $retour->getId() == '' ? 0 : 1;
         } catch (Exception $exception) {
             $this->logger->critical("Erreur lors de l'envoi du mail via mailgun !", $exception->getTrace());
