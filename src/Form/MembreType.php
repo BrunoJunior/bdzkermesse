@@ -18,7 +18,10 @@ class MembreType extends AbstractType
             ->add('email', EmailType::class)
             ->add('nom', TextType::class)
             ->add('prenom', TextType::class)
-            ->add('gestionnaire', CheckboxType::class, ['label' => 'Gestionnaire de factures'])
+            ->add('gestionnaire', CheckboxType::class, [
+                'label' => 'Gestionnaire de factures',
+                'required' => false
+            ])
         ;
     }
 
