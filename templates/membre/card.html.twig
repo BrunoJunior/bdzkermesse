@@ -6,12 +6,14 @@
         <p class="card-text" data-toggle="tooltip" title="En attente de remboursement"><i class="fas fa-spinner fa-spin"></i> {{ membre.montantAttenteRemboursement }}</p>
     </div>
     <div class="card-footer">
-        <a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
-        {% if membre.email is not empty %}<a href="{{ path('contacter_membre', {'id': membre.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Contacter"><i class="fas fa-envelope"></i></a>{% endif %}
-        {% if membre.aRembourser %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Demander remboursement"><i class="fas fa-money-check"></i></a>{% endif %}
-        {% if membre.enAttenteRemboursement %}
-            <a href="{{ path('renvoyer_demande', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
-            <a href="{{ path('valider_remboursement', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer remboursement"><i class="fas fa-clipboard-check"></i></a>
-        {% endif %}
+        <div class="btn-group" role="group" aria-label="Actions">
+            <a href="{{ path('editer_membre', {'id': membre.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+            {% if membre.email is not empty %}<a href="{{ path('contacter_membre', {'id': membre.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Contacter"><i class="fas fa-envelope"></i></a>{% endif %}
+            {% if membre.aRembourser %}<a href="{{ path('demande_remboursement', {'id': membre.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Demander remboursement"><i class="fas fa-money-check"></i></a>{% endif %}
+            {% if membre.enAttenteRemboursement %}
+                <a href="{{ path('renvoyer_demande', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
+                <a href="{{ path('valider_remboursement', {'id': membre.idPremierRemboursementAttente}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer remboursement"><i class="fas fa-clipboard-check"></i></a>
+            {% endif %}
+        </div>
     </div>
 </div>

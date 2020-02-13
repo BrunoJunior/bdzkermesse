@@ -8,8 +8,10 @@
         <p class="card-text" data-toggle="tooltip" title="Activités liées"><i class="fas fa-link"></i> {{ ticket.activitesLiees }}</p>
     </div>
     <div class="card-footer">
-        <a href="{{ path('editer_ticket', {'id': ticket.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
-        {% if ticket.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ ticket.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
-        {% if ticket.entity.etat == 0 %}<a href="{{ path('supprimer_ticket', {'id': ticket.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>{% endif %}
+        <div class="btn-group" role="group" aria-label="Actions">
+            <a href="{{ path('editer_ticket', {'id': ticket.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+            {% if ticket.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ ticket.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
+            {% if ticket.entity.etat == 0 %}<a href="{{ path('supprimer_ticket', {'id': ticket.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>{% endif %}
+        </div>
     </div>
 </div>

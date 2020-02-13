@@ -7,10 +7,12 @@
         <p class="card-text" data-toggle="tooltip" title="Mode"><i class="fas fa-info-circle"></i> {{ remboursement.mode }}</p>
     </div>
     <div class="card-footer">
-        <a href="{{ path('remboursement', {'id': remboursement.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Détails"><i class="fas fa-eye"></i></a>
-        {% if remboursement.enAttente %}
-            <a href="{{ path('renvoyer_demande', {'id': remboursement.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
-            <a href="{{ path('valider_remboursement', {'id': remboursement.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer"><i class="fas fa-clipboard-check"></i></a>
-        {% endif %}
+        <div class="btn-group" role="group" aria-label="Actions">
+            <a href="{{ path('remboursement', {'id': remboursement.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Détails"><i class="fas fa-eye"></i></a>
+            {% if remboursement.enAttente %}
+                <a href="{{ path('renvoyer_demande', {'id': remboursement.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Renvoyer email de demande"><i class="fas fa-retweet"></i></a>
+                <a href="{{ path('valider_remboursement', {'id': remboursement.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Confirmer"><i class="fas fa-clipboard-check"></i></a>
+            {% endif %}
+        </div>
     </div>
 </div>
