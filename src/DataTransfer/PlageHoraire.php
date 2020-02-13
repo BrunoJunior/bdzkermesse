@@ -84,7 +84,7 @@ class PlageHoraire
             $this->debut = $arrondir ? $newDebut->setTime((int) $newDebut->format('G'), 0, 0) : $debut;
         }
         if ($this->fin === null || $this->fin < $fin) {
-            $newFin = DateTime::createFromFormat(DateTimeInterface::ATOM, $debut->format(DateTimeInterface::ATOM));
+            $newFin = DateTime::createFromFormat(DateTimeInterface::ATOM, $fin->format(DateTimeInterface::ATOM));
             $this->fin = $arrondir ? $newFin->setTime(1 + (int) $newFin->format('G'), 0, 0) : $fin;
         }
         return $this;
