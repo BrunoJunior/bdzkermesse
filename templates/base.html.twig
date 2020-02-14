@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.css">
         <link rel="stylesheet" href="{{ asset('bootstrap-datepicker/css/bootstrap-datepicker3.standalone.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
         <title>{% block title %}LA kermesse{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
@@ -40,7 +41,7 @@
         {% include "menu_slim.html.twig" with {'menu': menu} only %}
     {% endif %}
 
-        <div class="container-fluid">
+        <div id="main-container" class="container-fluid">
             {% if breadcrumb is defined %}
                 <div class="row">
                     <nav aria-label="breadcrumb">
