@@ -2,6 +2,31 @@
 
 {% block title %}Actions{% endblock %}
 
+{% block stylesheets %}
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            position: relative;
+            height: 100%;
+        }
+
+        body::after {
+            content: "";
+            background: url("/imgs/actions_bg.jpg");
+            opacity: 0.8;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            position: absolute;
+            z-index: -1;
+        }
+    </style>
+{% endblock %}
+
 {% block body %}
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center pagination-lg">
