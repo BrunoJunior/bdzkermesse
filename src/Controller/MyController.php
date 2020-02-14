@@ -24,6 +24,7 @@ abstract class MyController extends AbstractController
     const MENU_MEMBRES = 'Membres';
     const MENU_REMBOURSEMENTS = 'Remboursements';
     const MENU_PLANNING = 'Planning';
+    const MENU_ACTIVITES_AUTRES = 'Actions';
 
     /**
      * @var LoggerInterface
@@ -89,6 +90,7 @@ abstract class MyController extends AbstractController
         if ($kermesse !== null) {
             $menu->addLink($this->getKermesseMenu($kermesse, $activeLink));
         }
+        $menu->addLink(MenuLink::getInstance(static::MENU_ACTIVITES_AUTRES, 'stream', $this->generateUrl('lister_actions'))->setActive($activeLink === static::MENU_ACTIVITES_AUTRES));
         return $menu;
     }
 }

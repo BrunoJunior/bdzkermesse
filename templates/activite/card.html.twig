@@ -21,7 +21,9 @@
             {% if not card.activite.caisseCentrale %}
                 <a href="{{ path('editer_activite', {'id': card.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
                 {% if card.total == 0.0 %}<a href="{{ path('supprimer_activite', {'id': card.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>{% endif %}
-                <a href="{{ path('gerer_benevoles', {'id': card.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Gérer les bénévoles"><i class="fas fa-users-cog"></i></a>
+                {% if card.activite.kermesse is not null %}
+                    <a href="{{ path('gerer_benevoles', {'id': card.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Gérer les bénévoles"><i class="fas fa-users-cog"></i></a>
+                {% endif %}
             {% endif %}
         </div>
     </div>

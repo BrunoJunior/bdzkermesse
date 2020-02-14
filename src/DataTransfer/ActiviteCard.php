@@ -99,6 +99,15 @@ class ActiviteCard
     }
 
     /**
+     * @return int
+     */
+    public function getMontantTicket(): int
+    {
+        $kermesse = $this->activite->getKermesse();
+        return $kermesse  ? $kermesse->getMontantTicket() : 0;
+    }
+
+    /**
      * La recette sous forme de HTML
      * @return null|string
      */
@@ -122,7 +131,7 @@ class ActiviteCard
      */
     public function getNombreTickets(): string
     {
-        $montantTicket = $this->activite->getKermesse()->getMontantTicket();
+        $montantTicket = $this->getMontantTicket();
         if ($montantTicket === 0 || !$this->activite->isAccepteTickets()) {
             return '';
         }
@@ -136,7 +145,7 @@ class ActiviteCard
      */
     public function getTotal(): string
     {
-        $total = ($this->recette ?? 0) - $this->depense + (($this->nombreTickets ?? 0) * $this->activite->getKermesse()->getMontantTicket());
+        $total = ($this->recette ?? 0) - $this->depense + (($this->nombreTickets ?? 0) * $this->getMontantTicket());
         return HFloat::getInstance($total / 100.00)->getMontantFormatFrancais();
     }
 
