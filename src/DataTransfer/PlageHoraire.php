@@ -5,7 +5,9 @@ namespace App\DataTransfer;
 use App\Exception\PlageException;
 use DateInterval;
 use DateTime;
+use DateTimeImmutable;
 use DateTimeInterface;
+use Exception;
 
 class PlageHoraire
 {
@@ -18,6 +20,22 @@ class PlageHoraire
      * @var DateTimeInterface
      */
     protected $fin;
+
+    /**
+     * Création d'une plage horaire pour l'année scolaire à partir d'une date
+     * Une année scolaire est à peu près entre le 01 septembre et le 31 aout.
+     * @param DateTimeInterface|null $date
+     * @return static
+     * @throws Exception
+     */
+    public static function createAnneeScolaire(?DateTimeInterface $date = null): self
+    {
+        $date = ($date === null ? new DateTimeImmutable() : clone $date)->setTime(0, 0, 0);
+        $month = (int) $date->format('n');
+        $year = (int) $date->format('Y');
+        $debut = $month > 8 ? $date->setDate($year, 9, 1) : $date->setDate($year - 1, 9, 1);
+        return (new self())->setDebut($debut)->setFin((clone $debut)->modify('+1 year'));
+    }
 
     /**
      * @return DateTimeInterface

@@ -36,11 +36,11 @@ class RecetteController extends MyController
     /**
      * @param Recette $recette
      * @param Request $request
-     * @param Kermesse $kermesse
+     * @param Kermesse|null $kermesse
      * @param Activite|null $activite
      * @return RedirectResponse|Response
      */
-    private function traiterNouvelleRecette(Recette $recette, Request $request, Kermesse $kermesse, Activite $activite = null):Response
+    private function traiterNouvelleRecette(Recette $recette, Request $request, ?Kermesse $kermesse, Activite $activite = null):Response
     {
         $form = $this->createForm(RecetteType::class, $recette, [
             'kermesse' => $kermesse,
@@ -53,14 +53,16 @@ class RecetteController extends MyController
             $em->persist($recette);
             $em->flush();
             $this->addFlash("success", "Recette enregistrée avec succès !");
-            $route = $activite === null ? 'liste_recettes' : 'kermesse';
+            $route = $activite === null ? 'liste_recettes' : ($kermesse === null ? 'lister_actions' : 'kermesse');
             return $this->redirectToRoute($route, ['id' => $kermesse->getId()]);
         }
         return $this->render(
             'recette/nouvelle.html.twig',
             [
                 'form' => $form->createView(),
-                'menu' => $this->getMenu($kermesse, $activite === null ? static::MENU_RECETTES : static::MENU_ACTIVITES)
+                'kermesse' => $kermesse,
+                'activite' => $activite,
+                'menu' => $this->getMenu($kermesse, $activite === null ? static::MENU_RECETTES : ($kermesse === null ? static::MENU_ACTIVITES_AUTRES : static::MENU_ACTIVITES))
             ]
         );
     }
@@ -112,15 +114,29 @@ class RecetteController extends MyController
             $em->persist($recette);
             $em->flush();
             $this->addFlash("success", "Recette enregistrée avec succès !");
-            return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
+            return  $this->redirectVersRecetteOuActions($kermesse);
         }
         return $this->render(
             'recette/edition.html.twig',
             [
                 'form' => $form->createView(),
+                'kermesse' => $kermesse,
+                'activite' => $recette->getActivite(),
                 'menu' => $this->getMenu($kermesse, static::MENU_RECETTES)
             ]
         );
+    }
+
+    /**
+     * @param Kermesse|null $kermesse
+     * @return Response
+     */
+    private function redirectVersRecetteOuActions(?Kermesse $kermesse): Response
+    {
+        if ($kermesse !== null) {
+            return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
+        }
+        return  $this->redirectToRoute('lister_actions');
     }
 
     /**
@@ -136,6 +152,6 @@ class RecetteController extends MyController
         $em->remove($recette);
         $em->flush();
         $this->addFlash("success", "Recette suprimmée !");
-        return $this->redirectToRoute('liste_recettes', ['id' => $kermesse->getId()]);
+        return $this->redirectVersRecetteOuActions($kermesse);
     }
 }

@@ -2,11 +2,16 @@
 
 namespace App\Repository;
 
+use App\DataTransfer\PlageHoraire;
 use App\Entity\Activite;
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
+use Exception;
 
 /**
  * @method Activite|null find($id, $lockMode = null, $lockVersion = null)
@@ -16,6 +21,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ActiviteRepository extends ServiceEntityRepository
 {
+
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Activite::class);
@@ -44,7 +50,7 @@ class ActiviteRepository extends ServiceEntityRepository
      * @param string $nom
      * @param Kermesse $kermesse
      * @return Activite|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findParNomPourKermesse(string $nom, Kermesse $kermesse): ?Activite
     {
@@ -60,7 +66,7 @@ class ActiviteRepository extends ServiceEntityRepository
     /**
      * @param Kermesse $kermesse
      * @return Activite|null
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function findCaisseCentrale(Kermesse $kermesse): ?Activite
     {
@@ -136,11 +142,31 @@ class ActiviteRepository extends ServiceEntityRepository
 
     /**
      * Liste des ids d'activités de la kermesse acceptant les tickets
-     * @param Kermesse $kermesse
+     * @param Kermesse|null $kermesse
      * @return array
      */
-    public function getListeIdAccepteTickets(Kermesse $kermesse): array
+    public function getListeIdAccepteTickets(?Kermesse $kermesse): array
     {
-        return $this->getListeIdAccepte($kermesse, 'accepte_tickets');
+        return $kermesse === null ? [] : $this->getListeIdAccepte($kermesse, 'accepte_tickets');
+    }
+
+    /**
+     * Obtenir la liste des activités d'un établissement non liées à une kermesse
+     * pour une année scolaire
+     * @param Etablissement $etablissement
+     * @param DateTimeInterface|null $date (null = année scolaire en cours)
+     * @return array
+     * @throws Exception
+     */
+    public function getListeAutres(Etablissement $etablissement, ?DateTimeInterface $date = null): array
+    {
+        $anneeScolaire = PlageHoraire::createAnneeScolaire($date);
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.kermesse IS NULL')
+            ->andWhere('a.date >= :debut')->setParameter('debut', $anneeScolaire->getDebut())
+            ->andWhere('a.date < :fin')->setParameter('fin', $anneeScolaire->getFin())
+            ->andWhere('a.etablissement = :etab')->setParameter('etab', $etablissement)
+            ->getQuery()
+            ->getArrayResult();
     }
 }

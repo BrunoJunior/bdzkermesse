@@ -2,23 +2,29 @@
 
 namespace App\Controller;
 
-use App\DataTransfer\ActiviteCard;
 use App\DataTransfer\ActivitePlanning;
 use App\DataTransfer\Colonne;
+use App\DataTransfer\PlageHoraire;
 use App\Entity\Activite;
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Form\ActiviteType;
+use App\Helper\Breadcrumb;
 use App\Helper\HFloat;
+use App\Repository\ActiviteRepository;
 use App\Repository\DepenseRepository;
 use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\DepenseRowGenerator;
 use App\Service\RecetteRowGenerator;
+use DateTimeImmutable;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -26,13 +32,13 @@ class ActiviteController extends MyController
 {
 
     /**
-     * @Route("/kermesses/{id}/activites/new", name="nouvelle_activite")
+     * @Route("/kermesses/{id<\d+>}/activites/new", name="nouvelle_activite")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
      * @return Response
      */
-    public function nouvelleActivite(Kermesse $kermesse, Request $request):Response
+    public function nouvelleActivite(?Kermesse $kermesse, Request $request): Response
     {
         $activite = new Activite();
         $activite->setCaisseCentrale(false);
@@ -51,49 +57,106 @@ class ActiviteController extends MyController
             'activite/nouvelle.html.twig',
             [
                 'form' => $form->createView(),
-                'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
+                'kermesse' => $kermesse,
+                'menu' => $this->getMenuKermesseOuAutre($kermesse)
             ]
         );
     }
 
     /**
-     * @Route("/activites/{id}/edit", name="editer_activite")
+     * @Route("/activites/new", name="nouvelle_autre_activite")
+     * @param Request $request
+     * @return Response
+     */
+    public function nouvelleAutreActivite(Request $request): Response
+    {
+        $etablissement = $this->getUser();
+        if (!$etablissement instanceof Etablissement) {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
+        $activite = new Activite();
+        $activite->setCaisseCentrale(false);
+        $activite->setAccepteSeulementMonnaie();
+        $activite->setEtablissement($etablissement);
+        $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => false]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($activite);
+            $em->flush();
+            $this->addFlash("success", "Activité " . $activite->getNom() . ' créée !');
+            return $this->redirectToRoute('lister_actions');
+        }
+        return $this->render(
+            'activite/nouvelle.html.twig',
+            [
+                'form' => $form->createView(),
+                'kermesse' => null,
+                'menu' => $this->getMenuKermesseOuAutre(null)
+            ]
+        );
+    }
+
+    /**
+     * @Route("/activites/{id<\d+>}/edit", name="editer_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param Request $request
      * @return Response
      */
-    public function editerActivite(Activite $activite, Request $request):Response
+    public function editerActivite(Activite $activite, Request $request): Response
     {
         if ($activite->isCaisseCentrale()) {
             $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
         }
         $activite->setAccepteMonnaie(true);
-        $form = $this->createForm(ActiviteType::class, $activite);
+        $kermesse = $activite->getKermesse();
+        $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => $activite->getKermesse() !== null]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($activite);
             $em->flush();
             $this->addFlash("success", "Activité " . $activite->getNom() . ' mise à jour !');
-            return $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
+            return $this->redirectToKermesseOuAutre($kermesse);
         }
         return $this->render(
             'activite/edition.html.twig',
             [
                 'form' => $form->createView(),
-                'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
+                'kermesse' => $kermesse,
+                'menu' => $this->getMenuKermesseOuAutre($kermesse)
             ]
         );
     }
 
     /**
-     * @Route("/activites/{id}/supprimer", name="supprimer_activite")
+     * @param Kermesse|null $kermesse
+     * @return Response
+     */
+    private function redirectToKermesseOuAutre(?Kermesse $kermesse): Response
+    {
+        return $kermesse
+            ? $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()])
+            : $this->redirectToRoute('lister_actions');
+    }
+
+    /**
+     * @param Kermesse|null $kermesse
+     * @return Breadcrumb
+     */
+    private function getMenuKermesseOuAutre(?Kermesse $kermesse): Breadcrumb
+    {
+        return $this->getMenu($kermesse, $kermesse ? static::MENU_ACTIVITES : static::MENU_ACTIVITES_AUTRES);
+    }
+
+    /**
+     * @Route("/activites/{id<\d+>}/supprimer", name="supprimer_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @return Response
      */
-    public function supprimerActivite(Activite $activite):Response
+    public function supprimerActivite(Activite $activite): Response
     {
         $kermesse = $activite->getKermesse();
         if (!$activite->isCaisseCentrale()) {
@@ -102,11 +165,11 @@ class ActiviteController extends MyController
             $em->flush();
             $this->addFlash("success", "Activité " . $activite->getNom() . ' supprimée !');
         }
-        return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
+        return $this->redirectToKermesseOuAutre($kermesse);
     }
 
     /**
-     * @Route("/activites/{id}", name="activite")
+     * @Route("/activites/{id<\d+>}", name="activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param RecetteRepository $rRecette
@@ -141,7 +204,7 @@ class ActiviteController extends MyController
                 'depenses' => $dRowGenerator->generateList($activite),
                 'total_recettes' => $totaux,
                 'total_depenses' => HFloat::getInstance($depense / 100.0)->getMontantFormatFrancais(),
-                'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES),
+                'menu' => $this->getMenuKermesseOuAutre($activite->getKermesse()),
                 'colonnes' => $colonnes,
                 'order' => $order
             ]
@@ -149,7 +212,7 @@ class ActiviteController extends MyController
     }
 
     /**
-     * @Route("/activites/{id}/card", name="carte_activite")
+     * @Route("/activites/{id<\d+>}/card", name="carte_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param RecetteRepository $rRecette
@@ -159,7 +222,7 @@ class ActiviteController extends MyController
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function card(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, ActiviteCardGenerator $actCardGenerator):Response
+    public function card(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, ActiviteCardGenerator $actCardGenerator): Response
     {
         $totaux = $rRecette->getTotauxPourActivite($activite);
         $recette = $totaux['montant'];
@@ -174,7 +237,7 @@ class ActiviteController extends MyController
     }
 
     /**
-     * @Route("/activites/{id}/benevoles", name="gerer_benevoles")
+     * @Route("/activites/{id<\d+>}/benevoles", name="gerer_benevoles")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @return Response
@@ -185,5 +248,36 @@ class ActiviteController extends MyController
             'activite' => ActivitePlanning::createFromEntity($activite),
             'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
         ]);
+    }
+
+    /**
+     * @Route("/actions/{annee<\d+>?}", name="lister_actions")
+     * @param int|null $annee
+     * @param ActiviteRepository $rActivite
+     * @return Response
+     * @throws Exception
+     */
+    public function actions(?int $annee, ActiviteRepository $rActivite): Response
+    {
+        $etablissement = $this->getUser();
+        if (!$etablissement instanceof Etablissement) {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
+        $now = new DateTimeImmutable();
+        $date = $now;
+        if ($annee) {
+            $date = $now->setDate($annee, (int) $now->format('n'), (int) $now->format('d'));
+        }
+        $periode = PlageHoraire::createAnneeScolaire($date);
+        return $this->render(
+            'activite/actions.html.twig',
+            [
+                'activites' => $rActivite->getListeAutres($etablissement, $date),
+                'periode' => $periode,
+                'annee' => (int) $date->format('Y'),
+                'courante' => $now >= $periode->getDebut() && $now < $periode->getFin(),
+                'menu' => $this->getMenuKermesseOuAutre(null)
+            ]
+        );
     }
 }

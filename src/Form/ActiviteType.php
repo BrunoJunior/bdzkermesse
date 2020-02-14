@@ -19,16 +19,18 @@ class ActiviteType extends AbstractType
                 'widget' => 'single_text',
                 'html5' => false,
                 'attr' => ['class' => 'js-datepicker'],
-            ])
-            ->add('creneaux', CollectionType::class, [
-                'label' => 'Créneaux horaire',
-                'by_reference' => false,
-                'entry_type' => CreneauType::class,
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true,
             ]);
-        if ($options['tickets']) {
+        if ($options['withKermesse']) {
+            $builder->add('creneaux', CollectionType::class, [
+                    'label' => 'Créneaux horaire',
+                    'by_reference' => false,
+                    'entry_type' => CreneauType::class,
+                    'allow_add' => true,
+                    'allow_delete' => true,
+                    'prototype' => true,
+                ]);
+        }
+        if ($options['tickets'] && $options['withKermesse']) {
             $builder
                 ->add('accepteTickets', CheckboxType::class, [
                     'label'    => 'Accepte les tickets ?',
@@ -42,6 +44,7 @@ class ActiviteType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Activite::class,
             'tickets' => true,
+            'withKermesse' => true
         ]);
     }
 }
