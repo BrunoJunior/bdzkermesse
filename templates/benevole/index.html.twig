@@ -2,8 +2,10 @@
 
 {% block headertitle %}Kermesse - {{ etablissement.nom }} - Accès bénévoles{% endblock %}
 
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/registration.css') }}">{% endblock %}
+
 {% block body %}
-    <div class="jumbotron jumbotron-fluid">
+    <div class="jumbotron jumbotron-fluid bg-white-t50">
         <div class="container">
             <h1 class="display-4">Merci</h1>
             <p class="lead">
@@ -11,7 +13,9 @@
                 Toute l'équipe souhaite déjà vous remercier pour cette intention !<br />
                 Sans vous, la kermesse, l'action la plus attendue de l'année par les enfants n'existerait tout simplement pas.<br />
             </p>
-            <a type="button" class="btn btn-secondary btn-lg" href="{{ path('benevoles_planning', {'code': etablissement.username}) }}">Visualiser le planning</a>
+            {% if kermesse is not null %}
+                <a type="button" class="btn btn-secondary btn-lg" href="{{ path('benevoles_planning', {'code': etablissement.username}) }}">Visualiser le planning</a>
+            {% endif %}
         </div>
     </div>
     {% if kermesse is null %}
@@ -19,7 +23,7 @@
             Notre équipe met tout en oeuvre pour préparer l'accès bénévoles de la kermesse de cette année !
         </div>
     {% else %}
-        <fieldset class="border rounded p-3">
+        <fieldset class="border rounded p-3 bg-white-t50">
             <label><h3>Taux d'inscription</h3></label>
             <div class="row">
                 <div class="col-2"><h4>Global</h4></div>
