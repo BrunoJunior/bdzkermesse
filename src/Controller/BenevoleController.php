@@ -77,7 +77,7 @@ class BenevoleController extends AbstractController
     }
 
     /**
-     * @Route("/benevoles/{code}/", name="acces_benevole")
+     * @Route("/benevoles/{code<[a-zA-Z0-9_.-]+>}", name="acces_benevole")
      * @param string $code
      * @param EtablissementRepository $rEtablissement
      * @param KermesseRepository $rKermesse
@@ -96,7 +96,7 @@ class BenevoleController extends AbstractController
         return $this->render('benevole/index.html.twig', [
             'etablissement' => $etablissement,
             'kermesse' => $kermesse,
-            'activites' => $kermesse->getActivites()->filter(function (Activite $activite) {
+            'activites' => $kermesse === null ? [] : $kermesse->getActivites()->filter(function (Activite $activite) {
                 return $activite->getCreneaux()->count() > 0;
             })->map(function (Activite $activite) {
                 return new ActiviteCard($activite);
@@ -107,7 +107,7 @@ class BenevoleController extends AbstractController
     }
 
     /**
-     * @Route("/benevoles/{code}/{id<\d+>}", name="inscription_benevole")
+     * @Route("/benevoles/{code<[a-zA-Z0-9_.-]+>}/{id<\d+>}", name="inscription_benevole")
      * @param string $code
      * @param Activite $activite
      * @param Request $request
@@ -160,7 +160,7 @@ class BenevoleController extends AbstractController
 
     /**
      * Affichage du planning des bénévoles
-     * @Route("/benevoles/{code}/planning", name="benevoles_planning")
+     * @Route("/benevoles/{code<[a-zA-Z0-9_.-]+>}/planning", name="benevoles_planning")
      * @param string $code
      * @param EtablissementRepository $rEtablissement
      * @param KermesseRepository $rKermesse

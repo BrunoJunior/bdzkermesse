@@ -1,34 +1,41 @@
-{% extends 'base.html.twig' %}
+<!DOCTYPE html>
+<html class="h-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/registration.css') }}">
+    <title>{% block title %}LA kermesse{% endblock %}</title>
+</head>
+<body class="h-100">
 
-{% block body %}
-    {% if error %}
-        <div class="alert alert-danger">
-            {{ error.messageKey }}
-        </div>
-    {% endif %}
-        <div class="row d-flex justify-content-center">
-        <div class="col-lg-6">
-            <div class="well">
-                <form action="{{ path('security_login') }}" method="post">
-                    <fieldset>
-                        <legend><i class="fa fa-lock" aria-hidden="true"></i> Connexion</legend>
-                        <div class="form-group">
-                            <label for="username">Code</label>
-                            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Mot de passe</label>
-                            <input type="password" id="password" name="_password" class="form-control" />
-                        </div>
-                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
-                        <div class="d-flex justify-content-between">
-                            <a class="btn btn-secondary" href="{{ path('registration') }}" role="button">S'inscrire</a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-sign-in" aria-hidden="true"></i> On entre
-                            </button>
-                        </div>
-                    </fieldset>
-                </form>
+{% if error %}
+    <div class="alert alert-danger fixed-top">
+        {{ error.messageKey }}
+    </div>
+{% endif %}
+
+<div class="h-100 row align-items-center justify-content-center">
+    <div class="p-3 rounded-lg bg-white-t50">
+        <h2 class="mb-3">LA Kermesse - Connexion</h2>
+        <form class="form-inline" action="{{ path('security_login') }}" method="post">
+            <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control mb-2 mr-sm-2" placeholder="Code"/>
+            <div class="input-group mb-2 mr-sm-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                </div>
+                <input type="password" id="password" name="_password" class="form-control" />
             </div>
-        </div>
-{% endblock %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
+            <button type="submit" class="btn btn-primary mb-2">
+                <i class="fa fa-sign-in"></i> Connexion
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="{{ asset('js/jquery.min.js') }}"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+</html>
