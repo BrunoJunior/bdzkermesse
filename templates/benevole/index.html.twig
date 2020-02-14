@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-2">
                         {% if activite.nombreBenevolesInscrits < activite.nombreBenevolesRequis %}
-                            <a type="button" class="btn btn-primary btn-sm" href="{{ path('inscription_benevole', {'id': activite.id, 'code': etablissement.username}) }}">Je souhaite aider</a>
+                            <a type="button" class="btn btn-primary btn-sm" href="{{ path('inscription_benevole', {'id': activite.id, 'code': etablissement.username}) }}">Je souhaite aider <i class="fas fa-thumbs-up"></i></a>
                         {% else %}
                             <button type="button" class="btn btn-primary btn-sm" disabled>Désolé, nous sommes complets</button>
                         {% endif %}

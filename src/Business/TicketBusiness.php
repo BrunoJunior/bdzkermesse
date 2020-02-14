@@ -8,9 +8,9 @@
 
 namespace App\Business;
 
-
 use App\DataTransfer\TicketRow;
 use App\Entity\Depense;
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Entity\Remboursement;
 use App\Entity\Ticket;
@@ -86,12 +86,14 @@ class TicketBusiness
     }
 
     /**
-     * @param Kermesse $kermesse
+     * @param Kermesse|null $kermesse
+     * @param Etablissement $etablissement
      * @return string
      */
-    public function getDuplicataDir(Kermesse $kermesse)
+    public function getDuplicataDir(?Kermesse $kermesse, Etablissement $etablissement)
     {
-        return $this->container->getParameter('duplicata_dir') . '/' . $kermesse->getId();
+        $dir = $kermesse ? $kermesse->getId() : $etablissement->getUsername();
+        return $this->container->getParameter('duplicata_dir') . '/' . $dir;
     }
 
     /**
@@ -107,7 +109,7 @@ class TicketBusiness
     {
         $file = $ticket->getDuplicata();
         if ($file) {
-            $filename = $this->uploader->upload($file, $this->getDuplicataDir($ticket->getKermesse()));
+            $filename = $this->uploader->upload($file, $this->getDuplicataDir($ticket->getKermesse(), $ticket->getEtablissement()));
             $ticket->setDuplicata($filename);
         }
         $this->em->persist($ticket);
@@ -127,13 +129,13 @@ class TicketBusiness
      */
     public function modifier(Ticket $ticket, ?string $duplicataInitial)
     {
-        $kermesse = $ticket->getKermesse();
+        $dir = $this->getDuplicataDir($ticket->getKermesse(), $ticket->getEtablissement());
         $file = $ticket->getDuplicata();
         if ($file) {
-            $filename = $this->uploader->upload($file, $this->getDuplicataDir($kermesse));
+            $filename = $this->uploader->upload($file, $dir);
             $ticket->setDuplicata($filename);
             if ($duplicataInitial) {
-                unlink($this->getDuplicataDir($kermesse) . '/' . $duplicataInitial);
+                unlink($dir . '/' . $duplicataInitial);
             }
         } elseif ($duplicataInitial) {
             $ticket->setDuplicata($duplicataInitial);
@@ -184,7 +186,7 @@ class TicketBusiness
         if ($duplicata instanceof File) {
             return $duplicata->getRealPath();
         }
-        return $this->getDuplicataDir($ticket->getKermesse()) . '/' . $ticket->getDuplicata();
+        return $this->getDuplicataDir($ticket->getKermesse(), $ticket->getEtablissement()) . '/' . $ticket->getDuplicata();
     }
 
     /**

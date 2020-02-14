@@ -18,8 +18,9 @@ class DepenseType extends AbstractType
         $builder
             ->add('activite', EntityType::class, [
                 'class' => Activite::class,
-                'choices' => $kermesse->getActivites(),
-                'choice_label' => 'nom'
+                'choices' => $kermesse ? $kermesse->getActivites() : $options['actions'],
+                'choice_label' => 'nom',
+                'disabled' => $options['bloquee']
             ])
             ->add('montant', MoneyType::class, [
                 'divisor' => 100
@@ -31,9 +32,9 @@ class DepenseType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Depense::class,
-        ]);
-        $resolver->setRequired([
-            'kermesse'
+            'kermesse' => null,
+            'actions' => [],
+            'bloquee' => null
         ]);
     }
 }

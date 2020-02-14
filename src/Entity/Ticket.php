@@ -46,7 +46,7 @@ class Ticket extends MyEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Kermesse", inversedBy="tickets")
-     * @ORM\JoinColumn(name="kermesse_id", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="kermesse_id", referencedColumnName="id", nullable=true)
      */
     private $kermesse;
 

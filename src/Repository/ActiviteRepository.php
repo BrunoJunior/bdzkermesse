@@ -155,7 +155,7 @@ class ActiviteRepository extends ServiceEntityRepository
      * pour une année scolaire
      * @param Etablissement $etablissement
      * @param DateTimeInterface|null $date (null = année scolaire en cours)
-     * @return array
+     * @return array|Activite[]
      * @throws Exception
      */
     public function getListeAutres(Etablissement $etablissement, ?DateTimeInterface $date = null): array
@@ -167,6 +167,6 @@ class ActiviteRepository extends ServiceEntityRepository
             ->andWhere('a.date < :fin')->setParameter('fin', $anneeScolaire->getFin())
             ->andWhere('a.etablissement = :etab')->setParameter('etab', $etablissement)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 }

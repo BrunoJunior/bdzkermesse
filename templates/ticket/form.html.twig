@@ -2,7 +2,7 @@
 
 {% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/ticket_form.css') }}">{% endblock %}
 
-{% block title %}Dépense{% endblock %}
+{% block title %}Dépense{% if activite is not null %} - {{ activite.nom }} {% endif %}{% endblock %}
 
 {% block body %}
     {{ form_start(form) }}
@@ -10,7 +10,7 @@
         <div class="col-sm-10 col-md-8 col-xl-5">
             <div class="well">
                 <fieldset>
-                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Dépense</legend>
+                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Dépense{% if activite is not null %} - {{ activite.nom }} {% endif %}</legend>
                     {{ form_row(form.date) }}
                     {{ form_row(form.fournisseur) }}
                     {{ form_row(form.numero) }}
@@ -30,11 +30,15 @@
                         <legend class="d-none d-xl-block">Duplicata et activités</legend>
                     {% endif %}
                     {{ form_row(form.duplicata) }}
-                    {{ form_row(form.depenses) }}
+                    {% if activite is null %}
+                        {{ form_row(form.depenses) }}
+                    {% endif %}
                     <button class="btn btn-primary" type="submit">Enregistrer !</button>
-                    <button type="button"
-                            class="add-another-collection-widget btn btn-secondary"
-                            data-list="#ticket_depenses">Lier le ticket à une autre activité</button>
+                    {% if activite is null %}
+                        <button type="button"
+                                class="add-another-collection-widget btn btn-secondary"
+                                data-list="#ticket_depenses">Lier le ticket à une autre activité</button>
+                    {% endif %}
                 </fieldset>
             </div>
         </div>

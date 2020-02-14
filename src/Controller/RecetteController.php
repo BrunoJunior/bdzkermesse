@@ -53,8 +53,10 @@ class RecetteController extends MyController
             $em->persist($recette);
             $em->flush();
             $this->addFlash("success", "Recette enregistrée avec succès !");
-            $route = $activite === null ? 'liste_recettes' : ($kermesse === null ? 'lister_actions' : 'kermesse');
-            return $this->redirectToRoute($route, ['id' => $kermesse->getId()]);
+            if ($activite === null && $kermesse !== null) {
+                return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
+            }
+            return $this->redirectVersRecetteOuActions($kermesse);
         }
         return $this->render(
             'recette/nouvelle.html.twig',

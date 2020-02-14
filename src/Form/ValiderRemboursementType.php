@@ -34,11 +34,7 @@ class ValiderRemboursementType extends AbstractType
                 'divisor' => 100,
                 'disabled' => true,
             ])
-            ->add('date', DateType::class, [
-                'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'js-datepicker'],
-            ])
+            ->add('date', DatePickerType::class)
             ->add('mode', ChoiceType::class, [
                 'choices' => array_flip($modes),
                 'preferred_choices' => [RemboursementModeEnum::VIREMENT]
