@@ -2,12 +2,16 @@
 
 namespace App\DataTransfer;
 
-use App\Entity\Benevole;
 use App\Entity\Creneau;
 use App\Entity\InscriptionBenevole;
 
 class CreneauPlanning extends PlageHoraire
 {
+
+    /**
+     * @var int
+     */
+    private $id;
 
     /**
      * @var array|InfosBenevole[]
@@ -36,6 +40,7 @@ class CreneauPlanning extends PlageHoraire
     public static function createFromEntity(Creneau $entity): self
     {
         $creneau = (new self());
+        $creneau->id = $entity->getId();
         $creneau->nbRequis = $entity->getNbBenevolesRecquis();
         foreach ($entity->getInscriptionBenevoles() as $inscription) {
             $creneau->addBenevole($inscription, $inscription->getValidee());
@@ -115,5 +120,13 @@ class CreneauPlanning extends PlageHoraire
     public function getProportion(): string
     {
         return "$this->nbValides / $this->nbRequis";
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
