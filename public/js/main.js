@@ -72,7 +72,7 @@ $(function() {
     // Date picker
     $('.js-datepicker').datepicker({
         language: 'fr',
-        format: 'yyyy-mm-dd'
+        format: 'dd/mm/yyyy'
     });
 
     // Tooltip

@@ -3,11 +3,17 @@
 namespace App\Controller;
 
 use App\Business\TicketBusiness;
+use App\Entity\Activite;
+use App\Entity\Depense;
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Exception\BusinessException;
 use App\Form\TicketType;
+use App\Helper\Breadcrumb;
+use App\Repository\ActiviteRepository;
 use Doctrine\DBAL\DBALException;
+use Exception;
 use Psr\Log\LoggerInterface;
 use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
@@ -15,6 +21,7 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Twig\Error\LoaderError;
@@ -40,45 +47,128 @@ class TicketController extends MyController
     }
 
     /**
-     * @Route("/kermesses/{id}/ticket/new", name="nouveau_ticket")
-     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse|null $kermesse
+     * @return Response
+     */
+    private function redirectVersTicketsOuActions(?Kermesse $kermesse): Response
+    {
+        if ($kermesse !== null) {
+            return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
+        }
+        return  $this->redirectToRoute('lister_actions');
+    }
+
+    /**
+     * @param Kermesse|null $kermesse
+     * @return Breadcrumb
+     */
+    private function getMenuSuivantKermesse(?Kermesse $kermesse): Breadcrumb
+    {
+        if ($kermesse) {
+            return $this->getMenu($kermesse, static::MENU_TICKETS);
+        }
+        return $this->getMenu($kermesse, static::MENU_ACTIVITES_AUTRES);
+    }
+
+    /**
      * @param Request $request
-     * @param Kermesse $kermesse
-     * @return RedirectResponse|Response
+     * @param ActiviteRepository $rActivite
+     * @param Kermesse|null $kermesse
+     * @param Activite|null $activite
+     * @return Response
      * @throws DBALException
-     * @throws UnknownEumException
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws UnknownEumException
+     * @throws Exception
      */
-    public function nouveauTicket(Request $request, Kermesse $kermesse)
+    private function newTicket(Request $request, ActiviteRepository $rActivite, ?Kermesse $kermesse, ?Activite $activite = null): Response
     {
+        $etablissement = $this->getUser();
+        if (!$etablissement instanceof Etablissement) {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
         $ticket = new Ticket();
         $ticket->setKermesse($kermesse);
-        $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
+        $ticket->setEtablissement($etablissement);
+        if ($activite && count($ticket->getDepenses()) === 0) {
+            $ticket->addDepense((new Depense())
+                ->setEtablissement($etablissement)
+                ->setActivite($activite)
+                ->setMontant($ticket->getMontant() ?: 0));
+        }
+        $form = $this->createForm(TicketType::class, $ticket, [
+            'kermesse' => $kermesse,
+            'etablissement' => $etablissement,
+            'actions' => $rActivite->getListeAutres($etablissement),
+            'activite' => $activite
+        ]);
         $form->handleRequest($request);
+        // Une seule activité, montant dépense = montant ticket
+        if ($activite) {
+            $ticket->getDepenses()[0]->setMontant($ticket->getMontant() ?: 0);
+        }
         if ($form->isSubmitted() && $form->isValid()) {
             $this->business->creer($ticket);
             $this->addFlash("success", "Ticket enregistré avec succès !");
-            return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
+            return $this->redirectVersTicketsOuActions($kermesse);
         }
         return $this->render(
             'ticket/nouveau.html.twig',
             [
                 'form' => $form->createView(),
-                'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
+                'activite' => $activite,
+                'menu' => $this->getMenuSuivantKermesse($kermesse),
             ]
         );
     }
 
     /**
-     * @Route("/tickets/{id}/edit", name="editer_ticket")
+     * @Route("/kermesses/{id<\d+>}/ticket/new", name="nouveau_ticket")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Request $request
+     * @param Kermesse|null $kermesse
+     * @param ActiviteRepository $rActivite
+     * @return RedirectResponse|Response
+     * @throws DBALException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws UnknownEumException
+     */
+    public function nouveauTicket(Request $request, ?Kermesse $kermesse, ActiviteRepository $rActivite)
+    {
+        return $this->newTicket($request, $rActivite, $kermesse);
+    }
+
+    /**
+     * @Route("/actions/{id<\d+>}/ticket/new", name="nouveau_ticket_action")
+     * @param Activite $activite
+     * @param Request $request
+     * @param ActiviteRepository $rActivite
+     * @return RedirectResponse|Response
+     * @throws DBALException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws UnknownEumException
+     */
+    public function nouveauTicketActivite(Activite $activite, Request $request, ActiviteRepository $rActivite)
+    {
+        return $this->newTicket($request, $rActivite, $activite->getKermesse(), $activite);
+    }
+
+    /**
+     * @Route("/tickets/{id<\d+>}/edit", name="editer_ticket")
      * @Security("ticket.isProprietaire(user)")
      * @param Request $request
      * @param Ticket $ticket
-     * @return RedirectResponse|Response
+     * @param ActiviteRepository $rActivite
+     * @return Response
+     * @throws Exception
      */
-    public function editerTicket(Request $request, Ticket $ticket)
+    public function editerTicket(Request $request, Ticket $ticket, ActiviteRepository $rActivite): Response
     {
         $kermesse = $ticket->getKermesse();
         $prevDuplicata = $ticket->getDuplicata();
@@ -89,12 +179,22 @@ class TicketController extends MyController
                 $this->business->supprimerDuplicata($ticket);
             }
         }
-        $form = $this->createForm(TicketType::class, $ticket, ['kermesse' => $kermesse]);
+        $form = $this->createForm(TicketType::class, $ticket, [
+            'kermesse' => $kermesse,
+            'etablissement' => $this->getUser(),
+            'actions' => $rActivite->getListeAutres($ticket->getEtablissement())
+        ]);
         $form->handleRequest($request);
+        $activite = null;
+        if ($kermesse === null) {
+            $depenses = $ticket->getDepenses();
+            $activite = count($depenses) === 1 ? $depenses[0]->getActivite() : null;
+            $depenses[0]->setMontant($ticket->getMontant() ?: 0);
+        }
         if ($form->isSubmitted() && $form->isValid()) {
             $this->business->modifier($ticket, $prevDuplicata);
             $this->addFlash("success", "Ticket enregistré avec succès !");
-            return $this->redirectToRoute('liste_tickets', ['id' => $kermesse->getId()]);
+            return $this->redirectVersTicketsOuActions($kermesse);
         }
         return $this->render(
             'ticket/edition.html.twig',
@@ -103,18 +203,19 @@ class TicketController extends MyController
                 'form' => $form->createView(),
                 'duplicata' => $kermesse->getId() . '/' . $prevDuplicata,
                 'is_image' => $this->business->isDuplicataImage($ticket),
-                'menu' => $this->getMenu($kermesse, static::MENU_TICKETS)
+                'activite' => $activite,
+                'menu' => $this->getMenuSuivantKermesse($kermesse),
             ]
         );
     }
 
     /**
-     * @Route("/tickets/{id}/supprimer", name="supprimer_ticket")
+     * @Route("/tickets/{id<\d+>}/supprimer", name="supprimer_ticket")
      * @Security("ticket.isProprietaire(user)")
      * @param Ticket $ticket
-     * @return RedirectResponse
+     * @return Response
      */
-    public function supprimerTicket(Ticket $ticket)
+    public function supprimerTicket(Ticket $ticket): Response
     {
         try {
             $this->business->supprimer($ticket);
@@ -123,16 +224,16 @@ class TicketController extends MyController
             $this->addFlash("danger", $exc->getMessage());
         }
 
-        return $this->redirectToRoute('liste_tickets', ['id' => $ticket->getKermesse()->getId()]);
+        return $this->redirectVersTicketsOuActions($ticket->getKermesse());
     }
 
     /**
-     * @Route("/tickets/{id}/supprimer_duplicata", name="supprimer_duplicata")
+     * @Route("/tickets/{id<\d+>}/supprimer_duplicata", name="supprimer_duplicata")
      * @Security("ticket.isProprietaire(user)")
      * @param Ticket $ticket
-     * @return RedirectResponse
+     * @return Response
      */
-    public function supprimerDuplicata(Ticket $ticket)
+    public function supprimerDuplicata(Ticket $ticket): Response
     {
         $this->business->supprimerDuplicata($ticket);
         $this->addFlash("success", "Duplicata supprimé !");

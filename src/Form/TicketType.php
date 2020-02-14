@@ -2,13 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\Kermesse;
 use App\Entity\Membre;
 use App\Entity\Ticket;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -22,30 +20,18 @@ class TicketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $kermesse = $options['kermesse'];
+        $etablissement = $options['etablissement'];
         $builder
-            ->add('date', DateType::class, [
-                'widget' => 'single_text',
-                'html5' => false,
-                'attr' => ['class' => 'js-datepicker'],
-            ])
+            ->add('date', DatePickerType::class)
             ->add('fournisseur', TextType::class)
             ->add('numero', TextType::class)
             ->add('montant', MoneyType::class, ['divisor' => 100])
             ->add('membre', EntityType::class, [
                 'class' => Membre::class,
-                'choices' => $kermesse->getMembres(),
+                'choices' => $kermesse ? $kermesse->getMembres() : $etablissement->getMembres(),
                 'choice_label' => function (Membre $membre) {
                 return $membre->getPrenom() . ' ' . $membre->getNom();
             }])
-            ->add('depenses', CollectionType::class, [
-                'label' => 'Activités associées',
-                'by_reference' => false,
-                'entry_type' => DepenseType::class,
-                'entry_options' => ['kermesse' => $kermesse],
-                'allow_add' => true,
-                'allow_delete' => true,
-                'prototype' => true
-            ])
             ->add('duplicata', FileType::class, [
                 'required' => false,
                 //BUG #19 - On limite à 1Mo, c'est déjà pas mal pour un ticket ou une facture
@@ -56,17 +42,28 @@ class TicketType extends AbstractType
                     ])
                 ]
             ])
-            ->add('commentaire', TextareaType::class, ['required' => false])
-        ;
+            ->add('commentaire', TextareaType::class, ['required' => false]);
+        if ($options['activite'] === null) {
+            $builder->add('depenses', CollectionType::class, [
+                'label' => 'Activités associées',
+                'by_reference' => false,
+                'entry_type' => DepenseType::class,
+                'entry_options' => ['kermesse' => $kermesse, 'actions' => $options['actions'], 'bloquee' => $options['activite'] !== null],
+                'allow_add' => $options['activite'] === null,
+                'allow_delete' => $options['activite'] === null,
+                'prototype' => true,
+            ]);
+        }
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
             'data_class' => Ticket::class,
+            'kermesse' => null,
+            'actions' => [],
+            'activite' => null,
         ]);
-        $resolver->setRequired([
-            'kermesse'
-        ]);
+        $resolver->setRequired('etablissement');
     }
 }

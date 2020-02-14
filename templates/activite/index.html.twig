@@ -31,7 +31,7 @@
         </div>
     </fieldset>
     <fieldset>
-        <legend>Dépenses <span class="d-lg-none">(Total : {{ total_depenses }}) </span></legend>
+        <legend>Dépenses <span class="d-lg-none">(Total : {{ total_depenses }}) </span><a href="{{ path('nouveau_ticket_action', {'id': activite.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
             {% include "depense/table.html.twig" with {'depenses': depenses, 'total': total_depenses} only %}
         </div>
