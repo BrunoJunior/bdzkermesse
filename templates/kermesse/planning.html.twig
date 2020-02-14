@@ -62,7 +62,7 @@
                                              class="activite-creneau p-1 {% if not creneau.complet %}creneau-incomplet{% endif %}"
                                              style="width: {{ creneau.tailleRelative(planning) }}%">
                                             <a
-                                                    href="{% if creneau.complet %}#{% else %}{{ path('inscription_benevole', {'id': activite.id, 'code': codeEtablissement}) }}{% endif %}"
+                                                    href="{% if creneau.complet %}#{% else %}{{ path('inscription_benevole', {'id': activite.id, 'code': codeEtablissement, 'idCreneau': creneau.id}) }}{% endif %}"
                                                     type="button"
                                                     class="btn btn-lg btn-block btn-sm
                                                     {% if creneau.complet %}

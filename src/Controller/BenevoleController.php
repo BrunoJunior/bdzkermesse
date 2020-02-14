@@ -9,6 +9,7 @@ use App\DataTransfer\Inscription;
 use App\DataTransfer\Planning;
 use App\Entity\Activite;
 use App\Entity\Benevole;
+use App\Entity\Creneau;
 use App\Form\InscriptionType;
 use App\Repository\BenevoleRepository;
 use App\Repository\EtablissementRepository;
@@ -26,6 +27,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class BenevoleController extends AbstractController
 {
@@ -107,26 +111,45 @@ class BenevoleController extends AbstractController
     }
 
     /**
-     * @Route("/benevoles/{code<[a-zA-Z0-9_.-]+>}/{id<\d+>}", name="inscription_benevole")
+     * @Route("/benevoles/{code<[a-zA-Z0-9_.-]+>}/{id<\d+>}/creneau-{idCreneau<\d+>?0}", name="inscription_benevole")
      * @param string $code
      * @param Activite $activite
+     * @param int $idCreneau
      * @param Request $request
      * @param EtablissementRepository $rEtablissement
      * @param InscriptionBenevole $inscriptionSrv
      * @param MailgunSender $sender
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      * @throws Exception
      */
-    public function inscriptionBenevole(string $code, Activite $activite, Request $request, EtablissementRepository $rEtablissement, InscriptionBenevole $inscriptionSrv, MailgunSender $sender): Response
+    public function inscriptionBenevole(
+        string $code,
+        Activite $activite,
+        int $idCreneau,
+        Request $request,
+        EtablissementRepository $rEtablissement,
+        InscriptionBenevole $inscriptionSrv,
+        MailgunSender $sender
+    ): Response
     {
         $etablissement = $rEtablissement->findOneBy(['username' => $code]);
         if ($etablissement === null || $activite->getEtablissement() === null) {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
+        $creneau = $this->getDoctrine()->getManager()->find(Creneau::class, $idCreneau);
+        if ($idCreneau > 0 && ($creneau === null || $creneau->getActivite()->getId() !== $activite->getId())) {
             throw new NotFoundHttpException("La page demandée n'existe pas !");
         }
         if ($activite->getEtablissement()->getId() !== $etablissement->getId()) {
             throw new UnauthorizedHttpException("Vous n'êtes pas autorisée à voir cela !");
         }
         $inscription = new Inscription();
+        if ($creneau) {
+            $inscription->setCreneau($creneau);
+        }
         $form = $this->createForm(InscriptionType::class, $inscription, [
             'activite' => $activite,
             'findAjax' => $this->generateUrl('find_benevole')
