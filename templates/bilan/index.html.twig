@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bilan{% endblock %}
+
+{% block body %}
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center pagination-lg">
+            <li class="page-item">
+                <a class="page-link" href="{{ path('show_bilan', {'annee': annee - 1}) }}"><i class="fas fa-chevron-left"></i></a>
+            </li>
+            <li class="page-item" aria-current="page">
+                <span class="page-link">Actions {{ periode.debut|date('Y') }}-{{ periode.fin|date('Y') }}</span>
+            </li>
+            <li class="page-item">
+                <a class="page-link" href="{{ path('show_bilan', {'annee': annee + 1}) }}"><i class="fas fa-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+
+    <table class="table">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Activités / Actions</th>
+            <th scope="col">Dépenses</th>
+            <th scope="col">Recettes</th>
+            <th scope="col">Bénéfice</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ligneBilan in bilan.lignes %}
+            <tr class="{% if ligneBilan.montantBalance < 0 %}table-danger{% else %}table-success{% endif %}">
+                {% if ligneBilan.type > 0 %}<th scope="row">{{ ligneBilan.nom }}</th>{% else %}<td>{{ ligneBilan.nom }}</td>{% endif %}
+                <td>{{ ligneBilan.montantDepense|priceFromCents }}</td>
+                <td>{{ ligneBilan.montantRecette|priceFromCents }}</td>
+                <td>{{ ligneBilan.montantBalance|priceFromCents }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

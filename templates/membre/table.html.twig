@@ -11,7 +11,7 @@
     </thead>
     <tbody>
     {% for membre in membres %}
-        <tr>
+        <tr class="table-light">
             <th scope="row">{{ membre.id }}</th>
             <td>{% if membre.gestionnaire %}<i class="fas fa-user-tie"></i> {% endif %}{{ membre.identite }}</td>
             <td>{{ membre.email }}</td>
@@ -28,7 +28,7 @@
             </td>
         </tr>
     {% else %}
-        <tr><td colspan="5">Aucun membre</td></tr>
+        <tr class="table-light"><td colspan="5">Aucun membre</td></tr>
     {% endfor %}
     </tbody>
 </table>

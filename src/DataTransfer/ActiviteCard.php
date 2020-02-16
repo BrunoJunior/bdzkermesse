@@ -139,6 +139,14 @@ class ActiviteCard
     }
 
     /**
+     * @return int
+     */
+    public function getNombreTicketsInt(): int
+    {
+        return $this->nombreTickets ?: 0;
+    }
+
+    /**
      * Le total sous forme de HTML
      * Recette - Dépenses + (Nombres de tickets * Montant ticket)
      * @return string
@@ -206,5 +214,4 @@ class ActiviteCard
     {
         return $this->activite;
     }
-
 }

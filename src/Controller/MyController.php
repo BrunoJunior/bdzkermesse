@@ -8,11 +8,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Helper\Breadcrumb;
 use App\Helper\MenuLink;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class MyController extends AbstractController
 {
@@ -25,6 +27,7 @@ abstract class MyController extends AbstractController
     const MENU_REMBOURSEMENTS = 'Remboursements';
     const MENU_PLANNING = 'Planning';
     const MENU_ACTIVITES_AUTRES = 'Actions';
+    const MENU_BILAN = 'Bilan';
 
     /**
      * @var LoggerInterface
@@ -46,9 +49,14 @@ abstract class MyController extends AbstractController
      */
     protected function getKermessesMenuLink(?Kermesse $activeKermesse = null): MenuLink
     {
+        $etab = $this->getUser();
+        if (!$etab instanceof Etablissement)
+        {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
         $subMenu = Breadcrumb::getInstance(false);
         $kermesseRepo = $this->getDoctrine()->getRepository(Kermesse::class);
-        $kermesses = $kermesseRepo->findByEtablissementOrderByAnnee($this->getUser());
+        $kermesses = $kermesseRepo->findByEtablissementOrderByAnnee($etab);
         foreach ($kermesses as $kermesse) {
             $subMenu->addLink(MenuLink::getInstance($kermesse->getTheme() . ' (' . $kermesse->getAnnee() . ')', null, $this->generateUrl('kermesse', ['id' => $kermesse->getId()]))->setActive($activeKermesse !== null && $activeKermesse->getId() === $kermesse->getId()));
         }
@@ -91,6 +99,7 @@ abstract class MyController extends AbstractController
             $menu->addLink($this->getKermesseMenu($kermesse, $activeLink));
         }
         $menu->addLink(MenuLink::getInstance(static::MENU_ACTIVITES_AUTRES, 'stream', $this->generateUrl('lister_actions'))->setActive($activeLink === static::MENU_ACTIVITES_AUTRES));
+        $menu->addLink(MenuLink::getInstance(static::MENU_BILAN, 'chart-pie', $this->generateUrl('show_bilan'))->setActive($activeLink === static::MENU_BILAN));
         return $menu;
     }
 }

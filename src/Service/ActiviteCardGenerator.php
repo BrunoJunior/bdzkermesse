@@ -8,10 +8,8 @@
 
 namespace App\Service;
 
-
 use App\DataTransfer\ActiviteCard;
 use App\Entity\Activite;
-use App\Entity\Kermesse;
 use App\Repository\ActiviteRepository;
 
 class ActiviteCardGenerator
@@ -43,22 +41,5 @@ class ActiviteCardGenerator
         return $card->setDepense($depense)
             ->setRecette($recette)
             ->setNombreTickets($nbTickets);
-    }
-
-    /**
-     * @param Kermesse $kermesse
-     * @return array|ActiviteCard[]
-     */
-    public function generateList(Kermesse $kermesse): array
-    {
-        $totaux = $this->rActivite->getTotaux($kermesse);
-        $cards = array_map(function (Activite $activite) use($totaux) {
-            $key = '' . $activite->getId();
-            if ($totaux->containsKey($key)) {
-                return $this->generate($activite, $totaux->get($key)['depense'], $totaux->get($key)['recette'], $totaux->get($key)['nombre_ticket']);
-            }
-            return $this->generate($activite);
-        }, $this->rActivite->findByKermesseId($kermesse->getId()));
-        return $cards;
     }
 }

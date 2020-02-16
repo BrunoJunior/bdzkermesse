@@ -11,7 +11,7 @@
     </thead>
     <tbody>
     {% for depense in depenses %}
-        <tr>
+        <tr class="table-light">
             <th scope="row">{{ depense.id }}</th>
             <td>{{ depense.date }}</td>
             <td>{{ depense.acheteur }}</td>
@@ -20,12 +20,12 @@
             <td>{{ depense.montant }}</td>
         </tr>
     {% else %}
-        <tr><td colspan="6">Aucune dépense</td></tr>
+        <tr class="table-light"><td colspan="6">Aucune dépense</td></tr>
     {% endfor %}
     </tbody>
     {% if depenses is not empty %}
         <tfoot>
-            <tr>
+            <tr class="table-dark">
                 <th scope="row" colspan="5">Total</th>
                 <td>{{ total }}</td>
             </tr>
