@@ -11,7 +11,6 @@ namespace App\Business;
 use App\DataTransfer\LigneComptable;
 use App\Entity\Activite;
 use App\Entity\Creneau;
-use App\Entity\Etablissement;
 use App\Entity\InscriptionBenevole;
 use App\Entity\Kermesse;
 use App\Entity\Recette;
@@ -45,6 +44,8 @@ class KermesseBusiness
     /**
      * KermesseBusiness constructor.
      * @param ContainerInterface $container
+     * @param RecetteRepository $rRecette
+     * @param LigneComptableGenerator $lcGenerator
      */
     public function __construct(ContainerInterface $container, RecetteRepository $rRecette, LigneComptableGenerator $lcGenerator)
     {
@@ -147,5 +148,22 @@ class KermesseBusiness
                         })->count();
                 }, 0);
         }, 0);
+    }
+
+    public function getMontantTicketsNonUtilises(Kermesse $kermesse): int
+    {
+        $montant = 0;
+        $sommeRecettes = function (int $prev, Recette $recette) {return $prev + $recette->getMontant();};
+        $sommeTickets = function (int $prev, Recette $recette) {return $prev + $recette->getNombreTicket();};
+        // Montant tickets utilisés = Nombres de tickets utilisés * montant tickets
+        // Montant non utilisé = Montant caisse centrale - Montant tickets utilisés
+        foreach ($kermesse->getActivites() as $activite) {
+            if ($activite->isCaisseCentrale()) {
+                $montant += array_reduce($activite->getRecettes()->getValues(), $sommeRecettes, 0);
+            } elseif ($activite->isAccepteTickets()) {
+                $montant -= $kermesse->getMontantTicket() * array_reduce($activite->getRecettes()->getValues(), $sommeTickets, 0);
+            }
+        }
+        return $montant;
     }
 }

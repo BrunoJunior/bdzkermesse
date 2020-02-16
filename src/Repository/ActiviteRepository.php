@@ -10,6 +10,7 @@ use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
 
@@ -107,17 +108,7 @@ class ActiviteRepository extends ServiceEntityRepository
             ->getQuery()
             ->getArrayResult();
         // Regroupement
-        $resultat = new ArrayCollection();
-        foreach ($recettes as $recette){
-            foreach ($depenses as $index => $depense) {
-                if ($depense['id'] === $recette['id']) {
-                    $resultat->set("".$depense['id'], array_merge($recette, $depense));
-                    unset($depenses[$index]);
-                    break;
-                }
-            }
-        }
-        return $resultat;
+        return $this->regrouperDepensesRecettes($recettes, $depenses);
     }
 
     /**
@@ -160,13 +151,71 @@ class ActiviteRepository extends ServiceEntityRepository
      */
     public function getListeAutres(Etablissement $etablissement, ?DateTimeInterface $date = null): array
     {
-        $anneeScolaire = PlageHoraire::createAnneeScolaire($date);
-        return $this->createQueryBuilder('a')
-            ->andWhere('a.kermesse IS NULL')
-            ->andWhere('a.date >= :debut')->setParameter('debut', $anneeScolaire->getDebut())
-            ->andWhere('a.date < :fin')->setParameter('fin', $anneeScolaire->getFin())
-            ->andWhere('a.etablissement = :etab')->setParameter('etab', $etablissement)
+        return $this->andWheresActions($this->createQueryBuilder('a'), $etablissement, $date)
             ->getQuery()
             ->getResult();
+    }
+
+    /**
+     * @param QueryBuilder $qb
+     * @param Etablissement $etablissement
+     * @param DateTimeInterface|null $date
+     * @return QueryBuilder
+     * @throws Exception
+     */
+    private function andWheresActions(QueryBuilder $qb, Etablissement $etablissement, ?DateTimeInterface $date = null): QueryBuilder
+    {
+        $anneeScolaire = PlageHoraire::createAnneeScolaire($date);
+        return $qb->andWhere('a.kermesse IS NULL')
+        ->andWhere('a.date >= :debut')->setParameter('debut', $anneeScolaire->getDebut())
+        ->andWhere('a.date < :fin')->setParameter('fin', $anneeScolaire->getFin())
+        ->andWhere('a.etablissement = :etab')->setParameter('etab', $etablissement);
+    }
+
+    /**
+     * @param array $depenses
+     * @param array $recettes
+     * @return ArrayCollection
+     */
+    private function regrouperDepensesRecettes(array $depenses, array $recettes): ArrayCollection
+    {
+        $resultat = new ArrayCollection();
+        foreach ($recettes as $recette){
+            foreach ($depenses as $index => $depense) {
+                if ($depense['id'] === $recette['id']) {
+                    $resultat->set("".$depense['id'], array_merge($recette, $depense));
+                    unset($depenses[$index]);
+                    break;
+                }
+            }
+        }
+        return $resultat;
+    }
+
+    /**
+     * Résultats sous forme d'une liste de tableau contenant
+     * 'id', 'recette', 'nombre_ticket', 'depense'
+     * @param Etablissement $etablissement
+     * @param DateTimeInterface|null $date
+     * @return ArrayCollection
+     * @throws Exception
+     */
+    public function getTotauxActions(Etablissement $etablissement, ?DateTimeInterface $date = null): ArrayCollection
+    {
+        // Recettes
+        $recettes = $this->andWheresActions($this->createQueryBuilder('a')->leftJoin('a.recettes', 'r'), $etablissement, $date)
+            ->select('a.id, COALESCE(SUM(r.montant),0) as recette, COALESCE(SUM(r.nombre_ticket),0) as nombre_ticket')
+            ->orderBy('a.id')
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getArrayResult();
+        // Dépenses
+        $depenses = $this->andWheresActions($this->createQueryBuilder('a')->leftJoin('a.depenses', 'd'), $etablissement, $date)
+            ->select('a.id, COALESCE(SUM(d.montant),0) as depense')
+            ->groupBy('a.id')
+            ->getQuery()
+            ->getArrayResult();
+        // Regroupement
+        return $this->regrouperDepensesRecettes($recettes, $depenses);
     }
 }

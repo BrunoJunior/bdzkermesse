@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Etablissement;
 use App\Entity\Kermesse;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,13 +46,7 @@ class KermesseRepository extends ServiceEntityRepository
      */
     public function findCouranteByEtablissement(Etablissement $etablissement): ?Kermesse
     {
-        return $this->createQueryBuilder('k')
-            ->andWhere('k.etablissement = :etablissement')
-            ->andWhere('k.annee = :annee')
-            ->setParameter('etablissement', $etablissement)
-            ->setParameter('annee', date("Y"))
-            ->getQuery()
-            ->getOneOrNullResult();
+        return $this->findOneByDate($etablissement);
     }
 
     /**
@@ -71,5 +67,27 @@ class KermesseRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+    /**
+     * @param Etablissement $etablissement
+     * @param DateTimeInterface|null $date
+     * @return Kermesse|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByDate(Etablissement $etablissement, ?DateTimeInterface $date = null): ?Kermesse
+    {
+        $date = $date ?: new DateTime();
+        $annee = (int) $date->format('Y');
+        if ((int) $date->format('M') > 8) {
+            $annee += 1;
+        }
+        return $this->createQueryBuilder('k')
+            ->andWhere('k.etablissement = :etablissement')
+            ->andWhere('k.annee = :annee')
+            ->setParameter('etablissement', $etablissement)
+            ->setParameter('annee', $annee)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 }

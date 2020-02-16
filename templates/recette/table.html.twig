@@ -2,7 +2,7 @@
     {% include "header.html.twig" with {'colonnes': colonnes, 'order': order, 'search': search} only %}
     <tbody>
     {% for recette in recettes %}
-        <tr>
+        <tr class="table-light">
             <th scope="row">{{ recette.id }}</th>
             <td>{{ recette.date }}</td>
             {% if activite is not defined %}<td>{{ recette.activite }}</td>{% endif %}
@@ -15,12 +15,12 @@
             </td>
         </tr>
     {% else %}
-        <tr><td colspan="{% if activite is not defined %}7{% else %}6{% endif %}">Aucune recette</td></tr>
+        <tr class="table-light"><td colspan="{% if activite is not defined %}7{% else %}6{% endif %}">Aucune recette</td></tr>
     {% endfor %}
     </tbody>
     {% if recettes is not empty %}
         <tfoot>
-            <tr>
+            <tr class="table-dark">
                 <th scope="row" colspan="{% if activite is not defined %}4{% else %}3{% endif %}">Total</th>
                 <td>{{ total.nombre_ticket }}</td>
                 <td>{{ total.montant }}</td>

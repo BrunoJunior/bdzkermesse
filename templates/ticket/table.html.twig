@@ -2,7 +2,7 @@
         {% include "header.html.twig" with {'colonnes': colonnes, 'order': order, 'search': true} only %}
         <tbody>
         {% for row in rows %}
-            <tr {% if not row.completementAffecte %}class="table-danger"{% endif %}>
+            <tr class="{% if not row.completementAffecte %}table-danger{% else %}table-light{% endif %}">
                 <th class="align-middle" scope="row" {% if row.commentaire %}rowspan="2"{% endif %}>{{ row.id }}</th>
                 <td class="align-middle"><span data-toggle="tooltip" title="{{ row.etat }}">{{ row.pastilleEtat|raw }}</span></td>
                 <td class="align-middle">{{ row.date }}</td>
@@ -18,17 +18,17 @@
                 </td>
             </tr>
             {% if row.commentaire %}
-                <tr>
+                <tr class="table-light">
                     <td colspan="7" class="font-italic border-top-0">{{ row.commentaire }}</td>
                 </tr>
             {% endif %}
         {% else %}
-            <tr><td colspan="8">Aucune dépense</td></tr>
+            <tr class="table-light"><td colspan="8">Aucune dépense</td></tr>
         {% endfor %}
         </tbody>
         {% if total is defined %}
             <tfoot>
-                <tr>
+                <tr class="table-dark">
                     <th scope="row" colspan="6">Total</th>
                     <td>{{ total }}</td>
                     <td></td>
