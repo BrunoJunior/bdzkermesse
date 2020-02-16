@@ -69,7 +69,7 @@
             }],
             labels: [
                 {% for l in bilan.lignes([0]) %}
-                    '{{ l.nom }}',
+                    '{{ l.nom|e('js') }}',
                 {% endfor %}
             ]
         };
@@ -81,7 +81,9 @@
                 backgroundColor: colors
             }],
             labels: [
-                {{ bilan.lignes([0])|map(l => "'#{l.nom}'")|join(',')|raw }}
+                {% for l in bilan.lignes([0]) %}
+                '{{ l.nom|e('js') }}',
+                {% endfor %}
             ]
         };
         const depensesChart = new Chart(ctxD, {
