@@ -59,10 +59,17 @@ class BilanDto
     }
 
     /**
+     * @param array|null $typesAutorises
      * @return array|ILigneBilan[]
      */
-    public function getLignes(): array
+    public function getLignes(?array $typesAutorises = null): array
     {
-        return array_merge($this->lignes, [$this->total]);
+        $lignes = array_merge($this->lignes, [$this->total]);
+        if ($typesAutorises === null) {
+            return $lignes;
+        }
+        return array_filter($lignes, function (ILigneBilan $ligne) use ($typesAutorises) {
+            return in_array($ligne->getType(), $typesAutorises);
+        });
     }
 }
