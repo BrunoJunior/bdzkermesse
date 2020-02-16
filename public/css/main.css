@@ -76,25 +76,8 @@ header.navbar-dark,
 }
 
 body {
-    position: relative;
     padding-top: 56px;
-    height: 100%;
-}
-
-body::after {
-    content: "";
-    background: url("/imgs/bg_connexion.jpg");
-    opacity: 0.8;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    position: absolute;
-    z-index: -1;
-}
-
-html {
-    height: 100%;
+    background-image: url("/imgs/bg_defaut.jpg");
 }
 
 aside.fixed-top {

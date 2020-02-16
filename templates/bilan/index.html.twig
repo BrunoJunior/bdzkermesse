@@ -2,6 +2,8 @@
 
 {% block title %}Bilan{% endblock %}
 
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('js/Chart.min.css') }}">{% endblock %}
+
 {% block body %}
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center pagination-lg">
@@ -28,7 +30,10 @@
         </thead>
         <tbody>
         {% for ligneBilan in bilan.lignes %}
-            <tr class="{% if ligneBilan.montantBalance < 0 %}table-danger{% else %}table-success{% endif %}">
+            <tr class="{% if ligneBilan.type == 1 %}table-info
+                        {% elseif ligneBilan.type == 2 %}table-primary
+                        {% elseif ligneBilan.montantBalance < 0 %}table-danger
+                        {% else %}table-success{% endif %}">
                 {% if ligneBilan.type > 0 %}<th scope="row">{{ ligneBilan.nom }}</th>{% else %}<td>{{ ligneBilan.nom }}</td>{% endif %}
                 <td>{{ ligneBilan.montantDepense|priceFromCents }}</td>
                 <td>{{ ligneBilan.montantRecette|priceFromCents }}</td>
@@ -38,4 +43,84 @@
         </tbody>
     </table>
 
+    <div class="row bg-white-t75 rounded-lg">
+        <div class="col">
+            <canvas id="depenses_chart"></canvas>
+        </div>
+        <div class="col">
+            <canvas id="recettes_chart"></canvas>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/Chart.min.js') }}"></script>
+    <script>
+        const ctxD = document.getElementById('depenses_chart').getContext('2d');
+        const ctxR = document.getElementById('recettes_chart').getContext('2d');
+        const colors = [{{ bilan.lignes([0])|map(l => 1)|join(',') }}].map(getRandomColor);
+        const dataDepenses = {
+            datasets: [{
+                data: [
+                    {{ bilan.lignes([0])|map(l => l.montantDepense / 100)|join(',') }}
+                ],
+                backgroundColor: colors
+            }],
+            labels: [
+                {{ bilan.lignes([0])|map(l => "'#{l.nom}'")|join(',')|raw }}
+            ]
+        };
+        const dataRecettes = {
+            datasets: [{
+                data: [
+                    {{ bilan.lignes([0])|map(l => l.montantRecette / 100)|join(',') }}
+                ],
+                backgroundColor: colors
+            }],
+            labels: [
+                {{ bilan.lignes([0])|map(l => "'#{l.nom}'")|join(',')|raw }}
+            ]
+        };
+        const depensesChart = new Chart(ctxD, {
+            type: 'doughnut',
+            data: dataDepenses,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Dépenses'
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                circumference: Math.PI,
+                rotation: -Math.PI
+            }
+        });
+        var myDoughnutChart = new Chart(ctxR, {
+            type: 'doughnut',
+            data: dataRecettes,
+            options: {
+                responsive: true,
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Recettes'
+                },
+                animation: {
+                    animateScale: true,
+                    animateRotate: true
+                },
+                circumference: Math.PI,
+                rotation: -Math.PI
+            }
+        });
+    </script>
 {% endblock %}
