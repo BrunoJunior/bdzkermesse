@@ -68,7 +68,9 @@
                 backgroundColor: colors
             }],
             labels: [
-                {{ bilan.lignes([0])|map(l => "'#{l.nom}'")|join(',')|raw }}
+                {% for l in bilan.lignes([0]) %}
+                    '{{ l.nom }}',
+                {% endfor %}
             ]
         };
         const dataRecettes = {

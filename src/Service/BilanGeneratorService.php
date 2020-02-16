@@ -81,7 +81,7 @@ class BilanGeneratorService
             }
         }
         if ($montantTicketsRestants !== 0) {
-            $bilan->addLigne((new LigneBilanSimple("Tickets non utilisés", 0, $montantTicketsRestants)));
+            $bilan->addLigne((new LigneBilanSimple("Tickets non utilisés", ILigneBilan::TYPE_NORMALE, 0, $montantTicketsRestants)));
         }
         return $bilan;
     }
