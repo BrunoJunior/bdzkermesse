@@ -12,7 +12,6 @@
                 Merci de renseigner les informations suivantes :
             </p>
             {{ form_start(form) }}
-
             <fieldset>
                 <legend>Établissement</legend>
                 <div class="form-row">
@@ -42,6 +41,10 @@
                     </div>
                 </div>
                 {{ form_row(form.role) }}
+                <label class="hpfield" for="name"></label>
+                <input class="hpfield" autocomplete="off" type="text" id="name" name="name" placeholder="Your name here">
+                <label class="hpfield" for="phone"></label>
+                <input class="hpfield" autocomplete="off" type="tel" id="phone" name="phone" placeholder="Your phone number here">
             </fieldset>
 
             <button class="btn btn-primary" type="submit">Demander mon inscription</button>

@@ -96,7 +96,10 @@ class RegistrationController extends MyController
         $form = $this->createForm(DemandeInscriptionType::class, $demande);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($envoiDemande->run($demande) > 0) {
+            // Honeypot
+            $isSpam = $request->get('name') || $request->get('phone');
+            // Si c'est du spam, on fait croire que c'est OK, mais on ne fait rien
+            if ($isSpam || $envoiDemande->run($demande) > 0) {
                 $this->addFlash('success', "Votre demande a bien été transmise ! Nous vous contacterons dans les plus brefs délais !");
                 return $this->redirectToRoute('security_login');
             } else {
