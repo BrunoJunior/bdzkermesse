@@ -1,21 +1,27 @@
 <div class="card text-center">
-    <div class="card-body">
-        <h5 class="card-title">{{ card.titre }}</h5>
-        <p class="card-text" data-toggle="tooltip" title="Dépenses"><i class="fas fa-receipt"></i> {{ card.depense }}</p>
-        {% if card.recette is not empty %}
-            <p class="card-text" data-toggle="tooltip" title="Recette"><i class="fas fa-money-bill-wave-alt"></i> {{ card.recette }}</p>
-        {% endif %}
-        {% if card.nombreTickets is not empty %}
-            <p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ card.nombreTickets }}</p>
-        {% endif %}
-        {% if card.nombreBenevolesRequis > 0 %}
-            <p class="card-text" data-toggle="tooltip" title="Bénévoles requis">
-                <i class="fas fa-users"></i> {{ card.nombreBenevolesInscrits }} / {{ card.nombreBenevolesRequis }}
-            {% if card.nombreBenevolesEnAttente > 0 %} <i class="fas fa-user-clock"></i> {{card.nombreBenevolesEnAttente}}{% endif %}
-            </p>
-        {% endif %}
-        <hr />
-        <p class="card-text">Total : {{ card.total }}</p>
+    <div class="card-header">
+        <h5>{{ card.titre }}</h5>
+    </div>
+    <div class="card-body d-flex flex-column justify-content-between" style="min-height: 205px;">
+        <div>
+            <p class="card-text" data-toggle="tooltip" title="Dépenses"><i class="fas fa-receipt"></i> {{ card.depense }}</p>
+            {% if card.recette is not empty %}
+                <p class="card-text" data-toggle="tooltip" title="Recette"><i class="fas fa-money-bill-wave-alt"></i> {{ card.recette }}</p>
+            {% endif %}
+            {% if card.nombreTickets is not empty %}
+                <p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ card.nombreTickets }}</p>
+            {% endif %}
+            {% if card.nombreBenevolesRequis > 0 %}
+                <p class="card-text" data-toggle="tooltip" title="Bénévoles requis">
+                    <i class="fas fa-users"></i> {{ card.nombreBenevolesInscrits }} / {{ card.nombreBenevolesRequis }}
+                    {% if card.nombreBenevolesEnAttente > 0 %} <i class="fas fa-user-clock"></i> {{card.nombreBenevolesEnAttente}}{% endif %}
+                </p>
+            {% endif %}
+        </div>
+        <div>
+            <hr />
+            <p class="card-text">Total : {{ card.total }}</p>
+        </div>
     </div>
     <div class="card-footer">
         <div class="btn-group" role="group" aria-label="Actions">
