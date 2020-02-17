@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+
+    <div class="jumbotron jumbotron-fluid bg-white-t50">
+        <div class="container">
+            <h1 class="display-4">Inscription</h1>
+            <p class="lead">
+                Vous souhaitez vous inscrire sur LA Kermesse.<br />
+                Merci de renseigner les informations suivantes :
+            </p>
+            {{ form_start(form) }}
+
+            <fieldset>
+                <legend>Établissement</legend>
+                <div class="form-row">
+                    <div class="col-md-7">
+                        {{ form_row(form.etablissement) }}
+                    </div>
+                    <div class="col-md-2">
+                        {{ form_row(form.codePostal) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ form_row(form.localite) }}
+                    </div>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Contact</legend>
+                <div class="form-row">
+                    <div class="col">
+                        {{ form_row(form.contact) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.email) }}
+                    </div>
+                    <div class="col">
+                        {{ form_row(form.mobile) }}
+                    </div>
+                </div>
+                {{ form_row(form.role) }}
+            </fieldset>
+
+            <button class="btn btn-primary" type="submit">Demander mon inscription</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

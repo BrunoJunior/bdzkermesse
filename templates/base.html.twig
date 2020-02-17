@@ -36,6 +36,7 @@
         <aside class="col-md-2 d-none d-lg-block px-0 sidebar-sticky fixed-top">
             <nav class="sidebar-nav">
                 {% include "menu.html.twig" with {'menu': menu, 'menu_main': true} only %}
+                <div style="position: absolute;bottom: 10px; left: 10px;">{% include "tipee.html.twig" with {'texte': ' Donner'} only %}</div>
             </nav>
         </aside>
         {% include "menu_slim.html.twig" with {'menu': menu} only %}

@@ -17,6 +17,17 @@
     </div>
 {% endif %}
 
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }} fixed-top alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endfor %}
+{% endfor %}
+
 <a class="fixed-bottom bg-white-t25" href="https://www.freepik.com/free-photos-vectors/people">People photo created by jcomp - www.freepik.com</a>
 
 <div class="h-100 row align-items-center justify-content-center">
@@ -32,8 +43,11 @@
             </div>
             <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"/>
             <button type="submit" class="btn btn-primary mb-2">
-                <i class="fa fa-sign-in"></i> Connexion
+                <i class="fa fa-sign-in-alt"></i> Connexion
             </button>
+            <a href="{{ path('demande_inscription') }}" class="btn btn-secondary mb-2 ml-2">
+                <i class="fas fa-user-plus"></i> S'inscrire
+            </a>
         </form>
     </div>
 </div>

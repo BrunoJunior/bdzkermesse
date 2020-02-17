@@ -1,0 +1,10 @@
+Demande d'inscriptionsur kermesse.web-project.fr
+
+Établissement
+    {{ demande.etablissement }} {{ demande.codePostal }} {{ demande.localite }}
+
+Contact
+    {{ demande.contact }} ({{ demande.role }}) - {{ demande.email }} - {{ demande.mobile }}
+
+Créer le compte:
+{{ app.request.getSchemeAndHttpHost() ~ path('registration') }}

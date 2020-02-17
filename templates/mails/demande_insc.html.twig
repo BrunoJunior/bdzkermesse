@@ -1,0 +1,9 @@
+<h3>Demande d'inscriptionsur kermesse.web-project.fr</h3>
+<dl>
+    <dt>Établissement</dt>
+    <dd>{{ demande.etablissement }} {{ demande.codePostal }} {{ demande.localite }}</dd>
+
+    <dt>Contact</dt>
+    <dd>{{ demande.contact }} ({{ demande.role }}) - {{ demande.email }} - {{ demande.mobile }}</dd>
+</dl>
+<a href="{{ app.request.getSchemeAndHttpHost() ~  path('registration') }}">Créer le compte</a>
