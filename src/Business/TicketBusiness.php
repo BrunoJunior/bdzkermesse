@@ -21,13 +21,12 @@ use App\Service\FileUploader;
 use App\Service\TicketRowGenerator;
 use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
+use Psr\Log\LoggerInterface;
 use SimpleEnum\Exception\UnknownEumException;
 use Stringy\Stringy;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class TicketBusiness
 {
@@ -57,20 +56,33 @@ class TicketBusiness
     private $generator;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * RemboursementBusiness constructor.
      * @param EntityManagerInterface $entityManager
      * @param ContainerInterface $container
      * @param FileUploader $uploader
      * @param MembreBusiness $bMembre
      * @param TicketRowGenerator $generator
+     * @param LoggerInterface $logger
      */
-    public function __construct(EntityManagerInterface $entityManager, ContainerInterface $container, FileUploader $uploader, MembreBusiness $bMembre, TicketRowGenerator $generator)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        ContainerInterface $container,
+        FileUploader $uploader,
+        MembreBusiness $bMembre,
+        TicketRowGenerator $generator,
+        LoggerInterface $logger
+    ) {
         $this->em = $entityManager;
         $this->container = $container;
         $this->uploader = $uploader;
         $this->bMembre = $bMembre;
         $this->generator = $generator;
+        $this->logger = $logger;
     }
 
     /**
@@ -99,11 +111,6 @@ class TicketBusiness
     /**
      * Créer ticket
      * @param Ticket $ticket
-     * @throws DBALException
-     * @throws UnknownEumException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
      */
     public function creer(Ticket $ticket)
     {
@@ -115,11 +122,15 @@ class TicketBusiness
         $this->em->persist($ticket);
         $this->em->flush();
 
-        $this->bMembre->envoyerEmail($ticket->getMembre(), "Kermesse - Dépense créée", 'bdzkermesse@bdesprez.com', 'ticket_cree', [
-            'ticket' => $this->generator->generate($ticket, 0, array_map(function (Depense $depense) {
-                return $depense->getActivite()->getNom();
-            }, $ticket->getDepenses()->toArray()))
-        ], $this->bMembre->getGestionnaires($ticket->getEtablissement()));
+        try {
+            $this->bMembre->envoyerEmail($ticket->getMembre(), "Kermesse - Dépense créée", 'bdzkermesse@bdesprez.com', 'ticket_cree', [
+                'ticket' => $this->generator->generate($ticket, 0, array_map(function (Depense $depense) {
+                    return $depense->getActivite()->getNom();
+                }, $ticket->getDepenses()->toArray()))
+            ], $this->bMembre->getGestionnaires($ticket->getEtablissement()));
+        } catch (Exception $exception) {
+            $this->logger->warning("Erreur lors de l'envoi à " . $ticket->getMembre()->getEmail() . " de l'email de création de dépense !", $exception->getTrace());
+        }
     }
 
     /**
