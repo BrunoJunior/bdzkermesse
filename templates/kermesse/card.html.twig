@@ -1,25 +1,35 @@
 <div class="card text-center">
-    <div class="card-body">
+    <div class="card-header">
         <h5 class="card-title"><i class="fas fa-calendar"></i> {{ card.titre }}</h5>
-        {% if card.montantTicket is not empty %}
-            <p class="card-text" data-toggle="tooltip" title="Montant d'un ticket"><i class="fas fa-ticket-alt"></i> {{ card.montantTicket }}</p>
-        {% endif %}
-        <p class="card-text" data-toggle="tooltip" title="Recette"><i class="fas fa-plus"></i> {{ card.recette }}</p>
-        <p class="card-text" data-toggle="tooltip" title="Dépenses"><i class="fas fa-minus"></i> {{ card.depense }}</p>
-        <hr />
-        <p class="card-text" data-toggle="tooltip" title="Balance"><i class="fas fa-balance-scale"></i> {{ card.balance }}</p>
     </div>
-    <div class="card-footer">
-        <div class="btn-group" role="group" aria-label="Actions">
+    <div class="card-body d-flex flex-column justify-content-between" style="min-height: 205px;">
+        <div>
+            {% if card.montantTicket is not empty %}
+                <p class="card-text" data-toggle="tooltip" title="Montant d'un ticket"><i class="fas fa-ticket-alt"></i> {{ card.montantTicket }}</p>
+            {% endif %}
+            <p class="card-text" data-toggle="tooltip" title="Recette"><i class="fas fa-plus"></i> {{ card.recette }}</p>
+            <p class="card-text" data-toggle="tooltip" title="Dépenses"><i class="fas fa-minus"></i> {{ card.depense }}</p>
+        </div>
+        <div>
+            <hr />
+            <p class="card-text" data-toggle="tooltip" title="Balance"><i class="fas fa-balance-scale"></i> {{ card.balance }}</p>
+        </div>
+    </div>
+    <div class="card-footer pb-0">
+        <div class="btn-group mb-3" role="group" aria-label="Actions">
             <a href="{{ path('kermesse', {'id': card.kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Détail"><i class="fas fa-eye"></i></a>
             <a href="{{ path('editer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
+        </div>
+        <div class="btn-group mb-3" role="group" aria-label="Actions comptables">
             <a href="{{ path('nouveau_ticket', {'id': card.kermesse.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-receipt"></i></a>
             <a href="{{ path('nouvelle_recette', {'id': card.kermesse.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-donate"></i></a>
             <a href="{{ path('export_comptable', {'id': card.kermesse.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Export comptable"><i class="fas fa-file-download"></i></a>
-            {% if card.derniere %}
+        </div>
+        {% if card.derniere %}
+            <div class="btn-group mb-3" role="group" aria-label="Actions kermesse en cours">
                 <a href="{{ path('dupliquer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Dupliquer"><i class="fas fa-clone"></i></a>
                 <a href="{{ path('planning_benevoles', {'id': card.kermesse.id}) }}" class="btn btn-info" data-toggle="tooltip" title="Planning"><i class="fas fa-calendar-alt"></i></a>
-            {% endif %}
-        </div>
+            </div>
+        {% endif %}
     </div>
 </div>

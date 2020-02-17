@@ -30,8 +30,8 @@
         </thead>
         <tbody>
         {% for ligneBilan in bilan.lignes %}
-            <tr class="{% if ligneBilan.type == 1 %}table-info
-                        {% elseif ligneBilan.type == 2 %}table-primary
+            <tr class="{% if ligneBilan.type == 1 %}table-info font-weight-bold
+                        {% elseif ligneBilan.type == 2 %}table-primary font-weight-bold
                         {% elseif ligneBilan.montantBalance < 0 %}table-danger
                         {% else %}table-success{% endif %}">
                 {% if ligneBilan.type > 0 %}<th scope="row">{{ ligneBilan.nom }}</th>{% else %}<td>{{ ligneBilan.nom }}</td>{% endif %}
