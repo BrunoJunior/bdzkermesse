@@ -5,7 +5,7 @@
 {% block stylesheets %}<link rel="stylesheet" href="{{ asset('js/Chart.min.css') }}">{% endblock %}
 
 {% block body %}
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Année scolaire">
         <ul class="pagination justify-content-center pagination-lg">
             <li class="page-item">
                 <a class="page-link" href="{{ path('show_bilan', {'annee': annee - 1}) }}"><i class="fas fa-chevron-left"></i></a>
@@ -42,6 +42,8 @@
         {% endfor %}
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-center mb-3">{% include "tipee.html.twig" with {'texte': ' Je souhaite soutenir le développement de LA Kermesse'} only %}</div>
 
     <div class="row bg-white-t75 rounded-lg">
         <div class="col">
