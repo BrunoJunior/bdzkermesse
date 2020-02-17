@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Kermesses - {{ status_code }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        body {
+            background: white;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="card mb-3">
+        <div class="row no-gutters">
+            <div class="col-md-4">
+                <img src="{{ asset('imgs/error.jpg') }}" class="card-img" alt="boy doing stop sign">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h2 class="card-title">{{ status_text }}</h2>
+                    <p class="card-text">Quelque chose est cassé ! Merci de transmettre le problème à l'équipe !</p>
+                    <a href="https://github.com/BrunoJunior/bdzkermesse/issues/new" class="btn btn-primary" target="_blank">Créer un ticket d'anomalie sur GitHub</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a class="fixed-bottom bg-white-t25" href="https://www.freepik.com/free-photos-vectors/people">People photo created by master1305 - www.freepik.com</a>
+{% endblock %}
