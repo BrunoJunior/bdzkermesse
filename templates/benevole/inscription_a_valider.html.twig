@@ -11,6 +11,7 @@
                 Merci de cliquer sur le lien présent dans cet email !<br />
                 Cette validation permet d'éviter d'inscrire quelqu'un sans son accord !
             </p>
+            <a type="button" class="btn btn-primary btn-lg" href="{{ path('benevoles_planning', {'code': etablissement.username}) }}"><i class="fas fa-hand-point-left"></i> Revenir au planning</a>
         </div>
     </div>
 {% endblock %}
