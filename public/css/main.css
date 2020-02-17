@@ -93,3 +93,8 @@ table thead th a {
 table thead th input {
     max-width: 100px;
 }
+
+/* Honeypot */
+.hpfield {
+    display: none;
+}
