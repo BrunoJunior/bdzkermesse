@@ -207,9 +207,10 @@ class TicketController extends MyController
         }
         $duplicata = $ticketBusiness->getDuplicataPath($ticket);
         $response = new BinaryFileResponse($duplicata);
+        $numero = preg_replace("/[^a-zA-Z0-9._-]/", "-", $ticket->getNumero());
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_INLINE,
-            "Ticket_{$ticket->getNumero()}.{$response->getFile()->getExtension()}"
+            "Ticket_{$numero}.{$response->getFile()->getExtension()}"
         );
         return $response;
     }
