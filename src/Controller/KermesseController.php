@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Business\KermesseBusiness;
 use App\DataTransfer\Colonne;
+use App\DataTransfer\ContactDTO;
 use App\DataTransfer\Planning;
+use App\DataTransfer\RecapitulatifBenevole;
+use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Exception\BusinessException;
 use App\Exception\ServiceException;
@@ -12,6 +15,7 @@ use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
 use App\Repository\RecetteRepository;
+use App\Service\EmailSender;
 use App\Service\KermesseCardGenerator;
 use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
@@ -28,6 +32,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -48,6 +53,19 @@ class KermesseController extends MyController
         parent::__construct($logger);
         $this->business = $business;
     }
+
+    /**
+     * @return Etablissement
+     */
+    private function getEtablissement(): Etablissement
+    {
+        $etab = $this->getUser();
+        if (!$etab instanceof Etablissement) {
+            throw new NotFoundHttpException("La page demandée n'existe pas !");
+        }
+        return $etab;
+    }
+
     /**
      * @Route("/kermesses/new", name="nouvelle_kermesse")
      * @param Request $request
@@ -59,7 +77,7 @@ class KermesseController extends MyController
     public function nouvelleKermesse(Request $request, KermesseService $sKermesse): Response
     {
         $kermesse = new Kermesse();
-        $kermesse->setEtablissement($this->getUser());
+        $kermesse->setEtablissement($this->getEtablissement());
         $form = $this->createForm(KermesseType::class, $kermesse);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -87,10 +105,10 @@ class KermesseController extends MyController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager, LoggerInterface $logger): Response
+    public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager): Response
     {
         $nouvelleKermesse = new Kermesse();
-        $nouvelleKermesse->setEtablissement($this->getUser());
+        $nouvelleKermesse->setEtablissement($this->getEtablissement());
         $nouvelleKermesse->setMontantTicket($kermesse->getMontantTicket());
         $form = $this->createForm(KermesseType::class, $nouvelleKermesse);
         $form->handleRequest($request);
@@ -107,7 +125,7 @@ class KermesseController extends MyController
             } catch (Exception $exc) {
                 $entityManager->rollback();
                 $this->addFlash('danger', $exc->getMessage());
-                $logger->critical($exc->getTraceAsString());
+                $this->logger->critical($exc->getTraceAsString());
             }
         }
         return $this->render(
@@ -132,7 +150,7 @@ class KermesseController extends MyController
     public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse): Response
     {
         $form = $this->createForm(KermesseType::class, $kermesse);
-        $kermesse->setEtablissement($this->getUser());
+        $kermesse->setEtablissement($this->getEtablissement());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // On enregistre l'utilisateur dans la base
@@ -238,6 +256,7 @@ class KermesseController extends MyController
      * @param Kermesse $kermesse
      * @param RecetteRepository $rRecette
      * @param RecetteRowGenerator $rowGenerator
+     * @param Request $request
      * @return Response
      * @throws NoResultException
      * @throws NonUniqueResultException
@@ -340,5 +359,49 @@ class KermesseController extends MyController
             'codeEtablissement' => $kermesse->getEtablissement()->getUsername(),
             'nbCols' => round($planning->getTaillePlage() / 1800)
         ]);
+    }
+
+    /**
+     * Validation du planning des bénévoles
+     * @Route("/kermesses/{id}/planning/valider", name="planning_valider")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param EmailSender $sender
+     * @return Response
+     */
+    public function validerPlanning(Kermesse $kermesse, EmailSender $sender): Response
+    {
+        // Regroupement par adresse email
+        $creneauxParEmail = [];
+        foreach ($kermesse->getActivites() as $activite) {
+            foreach ($activite->getCreneaux() as $creneau) {
+                $inscriptions = $creneau->getInscriptionBenevoles();
+                if ($creneau->getNbBenevolesRecquis() !== $inscriptions->count()) {
+                    continue;
+                }
+                foreach ($inscriptions as $inscription) {
+                    if (!$inscription->getValidee()) {
+                        continue;
+                    }
+                    $benevole = $inscription->getBenevole();
+                    if (!array_key_exists($benevole->getEmail(), $creneauxParEmail)) {
+                        $creneauxParEmail[$benevole->getEmail()] = new RecapitulatifBenevole($benevole);
+                    }
+                    $creneauxParEmail[$benevole->getEmail()]->addCreneau($creneau);
+                }
+            }
+        }
+        // Envoi des emails
+        foreach ($creneauxParEmail as $email => $recapBenevole) {
+            try {
+                $sender
+                    ->setTemplate('creneaux_arretes')->setTemplateVars(['racap' => $recapBenevole, 'code' => $kermesse->getEtablissement()->getUsername()])
+                    ->envoyer((new ContactDTO())->setTitre("Kermesse - Planification bénévoles")->setDestinataire($email));
+            } catch (Exception $exception) {
+                $this->logger->error("Erreur lors de l'envoi de l'email à $email", $exception->getTrace());
+            }
+        }
+        $this->addFlash('success', "Les bénévoles des créneaux complets ont été prévenus apr email !");
+        return $this->showPlanning($kermesse);
     }
 }

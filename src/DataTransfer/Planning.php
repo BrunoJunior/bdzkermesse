@@ -17,12 +17,18 @@ class Planning extends PlageHoraire
     private $lignes = [];
 
     /**
+     * @var int
+     */
+    private $idKermesse;
+
+    /**
      * @param Kermesse $kermesse
      * @return static
      */
     public static function createFromKermesse(Kermesse $kermesse): self
     {
         $planning = new self();
+        $planning->idKermesse = $kermesse->getId();
         foreach ($kermesse->getActivites() as $activite) {
             if ($activite->getDate() === null) {
                 continue;
@@ -45,5 +51,13 @@ class Planning extends PlageHoraire
     public function getLignes(): array
     {
         return $this->lignes;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdKermesse(): int
+    {
+        return $this->idKermesse;
     }
 }
