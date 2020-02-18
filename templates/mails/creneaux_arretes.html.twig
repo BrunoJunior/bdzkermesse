@@ -1,0 +1,26 @@
+<h3>Bonjour {{ racap.benevole.identite }},</h3>
+<p>La planification de la kermesse a été validée.</p>
+<p>
+    Vous vous êtes inscrit comme bénévole pour nous aider et nous vous en remercions.<br />
+    Voici votre récapitulatif d'inscription :
+</p>
+<ul>
+    {% for recapActivite in racap.activites %}
+        <li>
+            {{ recapActivite.activite.nom }} le {{  recapActivite.activite.date|date("d/m/Y") }}
+            <ul>
+                {% for creneau in recapActivite.creneaux %}
+                    <li>De {{ creneau.debut|date("H:i") }} à {{ creneau.fin|date("H:i") }}</li>
+                {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+</ul>
+<p>
+    Pour visualiser le planning générale de la kermesse, cliquez sur le lien ci dessous :<br />
+    <a href="{{ app.request.getSchemeAndHttpHost() ~ path('benevoles_planning', {'code': code}) }}">Visualiser le planning</a>
+</p>
+<p>
+    Merci,<br />
+    L'équipe de la kermesse
+</p>

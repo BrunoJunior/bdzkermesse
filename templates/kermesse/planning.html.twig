@@ -12,6 +12,9 @@
             <input type="checkbox" class="custom-control-input" id="afficherIncomplets">
             <label class="custom-control-label" for="afficherIncomplets">Masquer les créneaux incomplets</label>
         </div>
+        {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+            <a href="{{ path('planning_valider', {'id': planning.idKermesse}) }}" class="btn btn-primary" role="button"><i class="far fa-calendar-check"></i> Valider le planning</a>
+        {% endif %}
         <div>
             Code couleur par taux d'inscription :
             <div class="btn-group" role="group" aria-label="Code couleur">
