@@ -7,7 +7,6 @@ use App\DataTransfer\Colonne;
 use App\DataTransfer\ContactDTO;
 use App\DataTransfer\Planning;
 use App\DataTransfer\RecapitulatifBenevole;
-use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Exception\BusinessException;
 use App\Exception\ServiceException;
@@ -32,7 +31,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -52,18 +50,6 @@ class KermesseController extends MyController
     {
         parent::__construct($logger);
         $this->business = $business;
-    }
-
-    /**
-     * @return Etablissement
-     */
-    private function getEtablissement(): Etablissement
-    {
-        $etab = $this->getUser();
-        if (!$etab instanceof Etablissement) {
-            throw new NotFoundHttpException("La page demandée n'existe pas !");
-        }
-        return $etab;
     }
 
     /**

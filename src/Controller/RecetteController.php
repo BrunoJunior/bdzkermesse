@@ -145,7 +145,7 @@ class RecetteController extends MyController
      * @Route("/recettes/{id}/supprimer", name="supprimer_recette")
      * @Security("recette.isProprietaire(user)")
      * @param Recette $recette
-     * @return RedirectResponse
+     * @return Response
      */
     public function supprimerRecette(Recette $recette)
     {

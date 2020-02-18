@@ -15,6 +15,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MembreController extends MyController
 {
@@ -31,6 +34,7 @@ class MembreController extends MyController
      * MembreController constructor.
      * @param MembreBusiness $business
      * @param MembreRepository $repo
+     * @param LoggerInterface $logger
      */
     public function __construct(MembreBusiness $business, MembreRepository $repo, LoggerInterface $logger)
     {
@@ -41,10 +45,12 @@ class MembreController extends MyController
 
     /**
      * @Route("/membres", name="membres")
+     * @param RemboursementRepository $rRemboursement
+     * @return Response
      */
     public function index(RemboursementRepository $rRemboursement):Response
     {
-        $etablissement = $this->getUser();
+        $etablissement = $this->getEtablissement();
         $montantParMembre = $this->repo->getMontantsNonRemboursesParMembre($etablissement);
         $montantEnAttenteParMembre = $this->repo->getMontantsAttenteRemboursementParMembre($etablissement);
         $premiersRbsts = $rRemboursement->findPremierEnAttenteParMembre($etablissement);
@@ -67,7 +73,7 @@ class MembreController extends MyController
     public function nouveauMembre(Request $request):Response
     {
         $membre = new Membre();
-        $membre->setEtablissement($this->getUser());
+        $membre->setEtablissement($this->getEtablissement());
         $form = $this->createForm(MembreType::class, $membre);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -117,6 +123,9 @@ class MembreController extends MyController
      * @param Membre $membre
      * @param Request $request
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function contacterMembre(Membre $membre, Request $request): Response
     {

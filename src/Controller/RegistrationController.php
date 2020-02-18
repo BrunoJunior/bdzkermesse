@@ -53,8 +53,12 @@ class RegistrationController extends MyController
             array('form' => $form->createView())
         );
     }
+
     /**
      * @Route("/etablissement/edit", name="editer_etablissement")
+     * @param Request $request
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return RedirectResponse|Response
      */
     public function editer(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {

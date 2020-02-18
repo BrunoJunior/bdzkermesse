@@ -102,4 +102,16 @@ abstract class MyController extends AbstractController
         $menu->addLink(MenuLink::getInstance(static::MENU_BILAN, 'chart-pie', $this->generateUrl('show_bilan'))->setActive($activeLink === static::MENU_BILAN));
         return $menu;
     }
+
+    /**
+     * @return Etablissement
+     */
+    protected function getEtablissement(): Etablissement
+    {
+        $etablissement = $this->getUser();
+        if (!$etablissement instanceof Etablissement) {
+            throw new NotFoundHttpException("La page ne semble pas exister !");
+        }
+        return $etablissement;
+    }
 }

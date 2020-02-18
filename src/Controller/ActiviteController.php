@@ -70,14 +70,10 @@ class ActiviteController extends MyController
      */
     public function nouvelleAutreActivite(Request $request): Response
     {
-        $etablissement = $this->getUser();
-        if (!$etablissement instanceof Etablissement) {
-            throw new NotFoundHttpException("La page demandée n'existe pas !");
-        }
         $activite = new Activite();
         $activite->setCaisseCentrale(false);
         $activite->setAccepteSeulementMonnaie();
-        $activite->setEtablissement($etablissement);
+        $activite->setEtablissement($this->getEtablissement());
         $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => false]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

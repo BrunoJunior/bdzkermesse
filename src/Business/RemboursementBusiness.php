@@ -8,8 +8,6 @@
 
 namespace App\Business;
 
-
-use App\DataTransfer\RemboursementDTO;
 use App\DataTransfer\ContactDTO;
 use App\DataTransfer\RemboursementRow;
 use App\Entity\Kermesse;
@@ -18,7 +16,15 @@ use App\Entity\Remboursement;
 use App\Enum\RemboursementEtatEnum;
 use App\Exception\BusinessException;
 use App\Service\MailgunSender;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use SimpleEnum\Exception\UnknownEumException;
+use Swift_Attachment;
+use Swift_Message;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class RemboursementBusiness
 {
@@ -58,13 +64,13 @@ class RemboursementBusiness
      * @param Remboursement $remboursement
      * @param Membre $membre
      * @return Remboursement
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws NonUniqueResultException
      */
     public function initialiserDemandeRemboursement(Remboursement $remboursement, Membre $membre):Remboursement
     {
         $remboursement->setMembre($membre);
         $remboursement->setEtat(RemboursementEtatEnum::EN_ATTENTE);
-        $remboursement->setDate(new \DateTime());
+        $remboursement->setDate(new DateTime());
         $remboursement->setNumeroSuivi($this->bMembre->getProchainNumeroSuivi($membre));
         return $remboursement;
     }
@@ -73,10 +79,10 @@ class RemboursementBusiness
      * Création de la demande en BDD
      * @param Remboursement $remboursement
      * @throws BusinessException
-     * @throws \SimpleEnum\Exception\UnknownEumException
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws UnknownEumException
      */
     public function creerDemande(Remboursement $remboursement)
     {
@@ -94,7 +100,7 @@ class RemboursementBusiness
     /**
      * Validation d'un remboursement
      * @param Remboursement $remboursement
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws UnknownEumException
      */
     public function valider(Remboursement $remboursement)
     {
@@ -109,10 +115,10 @@ class RemboursementBusiness
     /**
      * @param Remboursement $remboursement
      * @throws BusinessException
-     * @throws \SimpleEnum\Exception\UnknownEumException
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
+     * @throws UnknownEumException
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function envoyerMailDemande(Remboursement $remboursement)
     {
@@ -127,11 +133,11 @@ class RemboursementBusiness
         $retour = $this->sender
             ->setTemplate('remboursement_demande')
             ->setTemplateVars(['demande' => new RemboursementRow($remboursement, $this->bTicket)])
-            ->envoyer($contact, function (\Swift_Message $message) use ($remboursement) {
+            ->envoyer($contact, function (Swift_Message $message) use ($remboursement) {
                 foreach ($remboursement->getTickets() as $ticket) {
                     if ($ticket->getDuplicata()) {
                         $filepath = $this->bTicket->getDuplicataPath($ticket);
-                        $message->attach(\Swift_Attachment::fromPath($filepath)->setFilename($ticket->getNumero() . '.' . pathinfo($filepath,PATHINFO_EXTENSION)));
+                        $message->attach(Swift_Attachment::fromPath($filepath)->setFilename($ticket->getNumero() . '.' . pathinfo($filepath,PATHINFO_EXTENSION)));
                     }
                 }
             });
