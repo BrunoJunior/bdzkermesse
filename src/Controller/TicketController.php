@@ -12,21 +12,18 @@ use App\Exception\BusinessException;
 use App\Form\TicketType;
 use App\Helper\Breadcrumb;
 use App\Repository\ActiviteRepository;
-use Doctrine\DBAL\DBALException;
 use Exception;
 use Psr\Log\LoggerInterface;
-use SimpleEnum\Exception\UnknownEumException;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
 
 class TicketController extends MyController
 {
@@ -76,11 +73,6 @@ class TicketController extends MyController
      * @param Kermesse|null $kermesse
      * @param Activite|null $activite
      * @return Response
-     * @throws DBALException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws UnknownEumException
      * @throws Exception
      */
     private function newTicket(Request $request, ActiviteRepository $rActivite, ?Kermesse $kermesse, ?Activite $activite = null): Response
@@ -131,11 +123,7 @@ class TicketController extends MyController
      * @param Kermesse|null $kermesse
      * @param ActiviteRepository $rActivite
      * @return RedirectResponse|Response
-     * @throws DBALException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws UnknownEumException
+     * @throws Exception
      */
     public function nouveauTicket(Request $request, ?Kermesse $kermesse, ActiviteRepository $rActivite)
     {
@@ -148,11 +136,7 @@ class TicketController extends MyController
      * @param Request $request
      * @param ActiviteRepository $rActivite
      * @return RedirectResponse|Response
-     * @throws DBALException
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     * @throws UnknownEumException
+     * @throws Exception
      */
     public function nouveauTicketActivite(Activite $activite, Request $request, ActiviteRepository $rActivite)
     {
@@ -207,6 +191,27 @@ class TicketController extends MyController
                 'menu' => $this->getMenuSuivantKermesse($kermesse),
             ]
         );
+    }
+
+    /**
+     * @Route("/tickets/{id<\d+>}/duplicata", name="ticket_duplicata", methods={"GET"})
+     * @Security("ticket.isProprietaire(user)")
+     * @param Ticket $ticket
+     * @param TicketBusiness $ticketBusiness
+     * @return Response
+     */
+    public function afficherDuplicata(Ticket $ticket, TicketBusiness $ticketBusiness): Response
+    {
+        if (!$ticket->getDuplicata()) {
+            throw new NotFoundHttpException("Aucun duplicata pour ce ticket");
+        }
+        $duplicata = $ticketBusiness->getDuplicataPath($ticket);
+        $response = new BinaryFileResponse($duplicata);
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            "Ticket_{$ticket->getNumero()}.{$response->getFile()->getExtension()}"
+        );
+        return $response;
     }
 
     /**

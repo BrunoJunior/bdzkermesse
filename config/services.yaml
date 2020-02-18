@@ -5,8 +5,8 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'fr'
-    duplicata_dir: '%kernel.project_dir%/public/uploads/tickets'
-    exports_dir: '%kernel.project_dir%/public/exports'
+    duplicata_dir: '%kernel.project_dir%/data/tickets'
+    exports_dir: '%kernel.project_dir%/data/exports'
 
 services:
     # default configuration for services in *this* file

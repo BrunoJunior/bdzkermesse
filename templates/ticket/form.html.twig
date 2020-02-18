@@ -25,7 +25,7 @@
                 <fieldset>
                     {% if duplicata is defined and duplicata is not empty and is_image %}
                         <legend><i class="fas fa-file-image"></i> Duplicata <a href="{{ path('supprimer_duplicata', {'id': id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer duplicata"><i class="fas fa-trash-alt"></i></a></legend>
-                        <img src="{{ asset('uploads/tickets/' ~ duplicata) }}" class="img-fluid" alt="Duplicata" />
+                        <img src="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': id}) }}" class="img-fluid" alt="Duplicata" />
                     {% else %}
                         <legend class="d-none d-xl-block">Duplicata et activités</legend>
                     {% endif %}
