@@ -43,7 +43,7 @@ class TicketType extends AbstractType
                 ]
             ])
             ->add('commentaire', TextareaType::class, ['required' => false]);
-        if ($options['activite'] === null) {
+        if (!$options['activite']) {
             $builder->add('depenses', CollectionType::class, [
                 'label' => 'Activités associées',
                 'by_reference' => false,

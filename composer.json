@@ -4,7 +4,7 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.1.3",
+        "php": "^7.3.0",
         "ext-iconv": "*",
         "barbieswimcrew/zip-code-validator": "^1.3",
         "brunojunior/simple-enum": "^v1.0",

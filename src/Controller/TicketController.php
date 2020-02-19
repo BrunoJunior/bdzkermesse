@@ -154,6 +154,7 @@ class TicketController extends MyController
      */
     public function editerTicket(Request $request, Ticket $ticket, ActiviteRepository $rActivite): Response
     {
+        $etab = $this->getEtablissement();
         $kermesse = $ticket->getKermesse();
         $prevDuplicata = $ticket->getDuplicata();
         if ($prevDuplicata) {
@@ -163,18 +164,20 @@ class TicketController extends MyController
                 $this->business->supprimerDuplicata($ticket);
             }
         }
-        $form = $this->createForm(TicketType::class, $ticket, [
-            'kermesse' => $kermesse,
-            'etablissement' => $this->getUser(),
-            'actions' => $rActivite->getListeAutres($ticket->getEtablissement())
-        ]);
-        $form->handleRequest($request);
         $activite = null;
         if ($kermesse === null) {
             $depenses = $ticket->getDepenses();
             $activite = count($depenses) === 1 ? $depenses[0]->getActivite() : null;
             $depenses[0]->setMontant($ticket->getMontant() ?: 0);
         }
+        $form = $this->createForm(TicketType::class, $ticket, [
+            'kermesse' => $kermesse,
+            'etablissement' => $etab,
+            'actions' => $rActivite->getListeAutres($etab),
+            'activite' => $activite
+        ]);
+        $form->handleRequest($request);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $this->business->modifier($ticket, $prevDuplicata);
             $this->addFlash("success", "Ticket enregistré avec succès !");
@@ -185,7 +188,7 @@ class TicketController extends MyController
             [
                 'id' => $ticket->getId(),
                 'form' => $form->createView(),
-                'duplicata' => $kermesse->getId() . '/' . $prevDuplicata,
+                'duplicata' => ($kermesse ? $kermesse->getId() : $etab->getUsername()) . '/' . $prevDuplicata,
                 'is_image' => $this->business->isDuplicataImage($ticket),
                 'activite' => $activite,
                 'menu' => $this->getMenuSuivantKermesse($kermesse),

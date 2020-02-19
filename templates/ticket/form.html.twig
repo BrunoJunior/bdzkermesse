@@ -30,11 +30,11 @@
                         <legend class="d-none d-xl-block">Duplicata et activités</legend>
                     {% endif %}
                     {{ form_row(form.duplicata) }}
-                    {% if activite is null %}
+                    {% if not activite %}
                         {{ form_row(form.depenses) }}
                     {% endif %}
                     <button class="btn btn-primary" type="submit">Enregistrer !</button>
-                    {% if activite is null %}
+                    {% if not activite %}
                         <button type="button"
                                 class="add-another-collection-widget btn btn-secondary"
                                 data-list="#ticket_depenses">Lier le ticket à une autre activité</button>

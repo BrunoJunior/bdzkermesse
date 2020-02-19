@@ -10,9 +10,8 @@ namespace App\DataTransfer;
 
 
 use App\Entity\Depense;
-use App\Entity\Ticket;
+use App\Entity\Kermesse;
 use App\Helper\HFloat;
-use Doctrine\Common\Collections\ArrayCollection;
 
 class DepenseRow
 {
@@ -77,5 +76,21 @@ class DepenseRow
     public function getId(): int
     {
         return $this->depense->getId();
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdTicket(): int
+    {
+        return $this->depense->getTicket()->getId();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForKermesse(): bool
+    {
+        return $this->depense->getTicket()->getKermesse() instanceof Kermesse;
     }
 }

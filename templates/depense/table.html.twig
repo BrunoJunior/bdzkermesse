@@ -7,6 +7,7 @@
         <th scope="col"><i class="fas fa-barcode"></i> N°</th>
         <th scope="col"><i class="fas fa-truck"></i> Fournisseur</th>
         <th scope="col"><i class="fas fa-receipt"></i> Montant</th>
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
     </tr>
     </thead>
     <tbody>
@@ -18,16 +19,22 @@
             <td>{{ depense.numero }}</td>
             <td>{{ depense.fournisseur }}</td>
             <td>{{ depense.montant }}</td>
+            <td>
+                <a href="{{ path('editer_ticket', {'id': depense.idTicket}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
+                {% if not depense.forKermesse %}
+                    <a href="{{ path('supprimer_ticket', {'id': depense.idTicket}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                {% endif %}
+            </td>
         </tr>
     {% else %}
-        <tr class="table-light"><td colspan="6">Aucune dépense</td></tr>
+        <tr class="table-light"><td colspan="7">Aucune dépense</td></tr>
     {% endfor %}
     </tbody>
     {% if depenses is not empty %}
         <tfoot>
             <tr class="table-dark">
                 <th scope="row" colspan="5">Total</th>
-                <td>{{ total }}</td>
+                <td>{{ total }}</td><td></td>
             </tr>
         </tfoot>
     {% endif %}
