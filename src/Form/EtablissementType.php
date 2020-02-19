@@ -16,7 +16,7 @@ class EtablissementType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class)
-            ->add('username', TextType::class, ['label' => 'Code'])
+            ->add('username', TextType::class, ['label' => 'Code', 'disabled' => true])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options'  => ['label' => 'Mot de passe'],
