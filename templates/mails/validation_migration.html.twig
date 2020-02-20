@@ -1,0 +1,12 @@
+<h3>Bonjour {{ identite }},</h3>
+<p>
+    Vous souhaitiez participer à l'activité «{{ from.activite.nom }}», le {{ from.activite.date|date("d/m/Y") }}, de {{ from.debut|date("H:i") }} à {{ from.fin|date("H:i") }}.<br />
+    Pour des raisons d'organisation, nous vous proposons de participer à l'activité «{{ to.activite.nom }}», le {{ to.activite.date|date("d/m/Y") }}, de {{ to.debut|date("H:i") }} à {{ to.fin|date("H:i") }}.<br />
+    Êtes-vous d'accord ?
+    <a href="{{ app.request.getSchemeAndHttpHost() ~ path('valider_migration', {'id': id, 'code': code, 'reponse': 'oui'}) }}">Oui</a>
+    / <a href="{{ app.request.getSchemeAndHttpHost() ~ path('valider_migration', {'id': id, 'code': code, 'reponse': 'non'}) }}">Non</a>
+</p>
+<p>
+    Cordialement,<br />
+    L'équipe de la kermesse
+</p>

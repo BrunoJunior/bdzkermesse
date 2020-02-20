@@ -74,6 +74,17 @@ $(function() {
         format: 'dd/mm/yyyy'
     });
 
+    $('.draggable').draggable({
+        revert: true,
+        handle: '.drag-grip',
+        helper: 'clone'
+    });
+
+    $('.droppable').droppable({
+        accept : '.draggable',
+        tolerance: "pointer"
+    });
+
     // Tooltip
     $('[data-toggle="tooltip"]').tooltip();
 

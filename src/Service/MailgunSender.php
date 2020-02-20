@@ -108,7 +108,7 @@ class MailgunSender extends AbstractEmailSender
             $retour = $this->mailgun->messages()->send(getenv('MAILGUN_DOMAIN'), $params);
             return $retour->getId() == '' ? 0 : 1;
         } catch (Exception $exception) {
-            $this->logger->critical("Erreur lors de l'envoi du mail via mailgun !", $exception->getTrace());
+            $this->logger->critical("Erreur lors de l'envoi du mail via mailgun !", [$exception->getCode(), $exception->getMessage()]);
             // On essaye avec le mailer standard
             return $this->emailSender->setTemplate($this->template)->setTemplateVars($this->templateVars)->envoyer($contact, $completer);
         }

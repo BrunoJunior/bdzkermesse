@@ -60,25 +60,42 @@
                                             <div style="width: {{ creneau.offset(planning) }}%"></div>
                                         {% endif %}
                                         <div data-toggle="tooltip" data-placement="top"
+                                             data-creneau="{{ creneau.id }}"
+                                             data-migration-url="{{ path('demande_migration', {'code': codeEtablissement, 'id': creneau.id, 'to': '__to__'}) }}"
                                              title="De {{ creneau.debut|date('H:i') }} à {{ creneau.fin|date('H:i') }}"
-                                             class="activite-creneau p-1 {% if not creneau.complet %}creneau-incomplet{% endif %}"
+                                             class="activite-creneau p-1
+                                                    {% if not creneau.complet %}creneau-incomplet{% endif %}
+                                                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                        droppable
+                                                        {% if not creneau.complet and (creneau.benevoles(false) or creneau.benevoles) %}
+                                                            draggable
+                                                        {%  endif %}
+                                                    {% endif %}
+                                                    {% if not creneau.tauxBenevoles %}
+                                                        creneau-vide
+                                                    {% elseif creneau.complet %}
+                                                        creneau-complet
+                                                    {% endif %}
+"
                                              style="width: {{ creneau.tailleRelative(planning) }}%">
                                             <a
                                                     href="{% if creneau.complet %}#{% else %}{{ path('inscription_benevole', {'id': activite.id, 'code': codeEtablissement, 'idCreneau': creneau.id}) }}{% endif %}"
                                                     type="button"
-                                                    class="btn btn-lg btn-block btn-sm
+                                                    class="btn btn-block
                                                     {% if creneau.complet %}
                                                         btn-success
-                                                     {% elseif creneau.tauxBenevoles >= 75 %}
+                                                    {% elseif creneau.tauxBenevoles >= 75 %}
                                                         btn-primary
-                                                     {% elseif creneau.tauxBenevoles >= 50 %}
+                                                    {% elseif creneau.tauxBenevoles >= 50 %}
                                                         btn-warning
-                                                     {% else %}
+                                                    {% else %}
                                                         btn-danger
-                                                     {% endif %}">
+                                                    {% endif %}">
+
                                                 {% for benevole in creneau.benevoles %}
                                                     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                                                        <span data-toggle="tooltip" data-placement="bottom" data-html="true"
+                                                        <span class="identite-benevole" data-benevole-id="{{ benevole.id }}"
+                                                              data-toggle="tooltip" data-placement="bottom" data-html="true"
                                                               title="<div><i class='fas fa-envelope'></i> {{ benevole.email }}</div><div><i class='fas fa-mobile'></i> {{ benevole.tel }}</div>">{{ benevole.identite }}</span>
                                                     {% else %}
                                                         {{ benevole.identite }}
@@ -86,6 +103,18 @@
                                                     {% if not loop.last %}, {% endif %}
                                                 {% endfor %}
                                                 ({{ creneau.proportion }})
+                                                {% if is_granted('IS_AUTHENTICATED_FULLY') and not creneau.complet and (creneau.benevoles(false) or creneau.benevoles) %}
+                                                    <span class="drag-grip"><i class="fas fa-grip-horizontal"></i></span>
+                                                {% endif %}
+                                                {% if creneau.benevoles(false) and is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                    <br /><i class="fas fa-user-clock"></i>
+                                                    {% for benevole in creneau.benevoles(false) %}
+                                                        <span class="identite-benevole" data-benevole-id="{{ benevole.id }}"
+                                                              data-toggle="tooltip" data-placement="bottom" data-html="true"
+                                                              title="<div><i class='fas fa-envelope'></i> {{ benevole.email }}</div><div><i class='fas fa-mobile'></i> {{ benevole.tel }}</div>">{{ benevole.identite }}</span>
+                                                        {% if not loop.last %}, {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
                                             </a>
                                         </div>
                                     {% endfor %}
@@ -118,6 +147,7 @@
             >Copier le lien à fournir aux bénévoles</button>
             <a href="{{ path('planning_valider', {'id': planning.idKermesse}) }}" class="btn btn-primary" role="button"><i class="far fa-calendar-check"></i> Valider le planning</a>
         </div>
+        <div id="modal-migration" class="modal" tabindex="-1" role="dialog"></div>
     {% endif %}
 {% endblock %}
 

@@ -3,6 +3,10 @@
     text-align: center;
 }
 
+.activite-creneau.draggable a.btn {
+    padding-left: 20px;
+}
+
 .planning-heure {
     position: absolute;
 }
@@ -14,4 +18,39 @@
 
 body {
     background: url("/imgs/blackboard.jpg");
+}
+
+.draggable {
+    position: relative;
+}
+
+.draggable .drag-grip {
+    position: absolute;
+    top: 10px;
+    left: 6px;
+}
+
+.activite-creneau {
+    z-index: 2;
+}
+
+.droppable.ui-droppable-active .btn,
+.draggable.ui-draggable-disabled .btn {
+    cursor: pointer;
+}
+
+.droppable.dragging:not(.ui-droppable-active) .btn {
+    cursor: no-drop;
+}
+
+.draggable:not(.ui-draggable-disabled) .drag-grip {
+    cursor: grab;
+}
+
+.draggable.ui-draggable-dragging .drag-grip {
+    cursor: grabbing;
+}
+
+.draggable.ui-draggable-dragging {
+    z-index: 1;
 }

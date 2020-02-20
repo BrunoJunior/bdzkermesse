@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -9,6 +9,9 @@
         <link rel="stylesheet" href="{{ asset('bootstrap-datepicker/css/bootstrap-datepicker3.standalone.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/jquery-ui/jquery-ui.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/jquery-ui/jquery-ui.structure.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('js/jquery-ui/jquery-ui.theme.min.css') }}">
         <title>{% block title %}LA kermesse{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
     </head>
@@ -66,7 +69,7 @@
                     <div class="container-fluid pt-3">
                         {% for label, messages in app.flashes %}
                             {% for message in messages %}
-                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert" style="z-index: 1000;">
                                     {{ message }}
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                         <span aria-hidden="true">&times;</span>
@@ -80,6 +83,7 @@
             </div>
         </div>
         <script src="{{ asset('js/jquery.min.js') }}"></script>
+        <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.js"></script>

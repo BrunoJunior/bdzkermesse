@@ -27,6 +27,11 @@ class InfosBenevole
     private $tel;
 
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
      * @param InscriptionBenevole $entity
      * @return static
      */
@@ -38,6 +43,7 @@ class InfosBenevole
         $infos->identite = $benevole->getIdentite();
         $infos->email = $benevole->getEmail();
         $infos->tel = $benevole->getPortable();
+        $infos->id = $benevole->getId();
         return $infos;
     }
 
@@ -71,5 +77,13 @@ class InfosBenevole
     public function getIdInscription(): int
     {
         return $this->idInscription;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
     }
 }
