@@ -17,7 +17,7 @@
     </head>
     <body>
     <header class="navbar navbar-expand navbar-dark flex-row bd-navbar fixed-top justify-content-between">
-        <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="Kermesse">{% block headertitle %}LA Kermesse{% endblock %}</a>
+        <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="Kermesse">{% block headertitle %}<img id="logo" src="{{ asset('imgs/logo_texte64.png') }}"  alt="logo" />{% endblock %}</a>
         {% if menu is defined %}
             <a class="btn btn-secondary d-lg-none" href="#" id="show-menu-slim"><i class="fas fa-bars"></i></a>
         {% endif %}
