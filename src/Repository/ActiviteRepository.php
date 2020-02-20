@@ -152,6 +152,7 @@ class ActiviteRepository extends ServiceEntityRepository
     public function getListeAutres(Etablissement $etablissement, ?DateTimeInterface $date = null): array
     {
         return $this->andWheresActions($this->createQueryBuilder('a'), $etablissement, $date)
+            ->orderBy('a.date')
             ->getQuery()
             ->getResult();
     }
