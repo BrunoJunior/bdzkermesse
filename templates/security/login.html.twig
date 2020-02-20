@@ -32,7 +32,7 @@
 
 <div class="h-100 row align-items-center justify-content-center">
     <div class="p-3 rounded-lg bg-white-t50">
-        <h2 class="mb-3">LA Kermesse - Connexion</h2>
+        <h2 class="mb-3 d-flex justify-content-center"><img id="logo" src="{{ asset('imgs/logo_texte_inv.png') }}"  alt="logo" /></h2>
         <form class="form-inline" action="{{ path('security_login') }}" method="post">
             <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control mb-2 mr-sm-2" placeholder="Code"/>
             <div class="input-group mb-2 mr-sm-2">
