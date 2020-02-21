@@ -37,6 +37,11 @@ function searchInTable(table) {
     });
 }
 
+function addAlert(message, type="success") {
+    $('#alerts-container').append('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert" style="z-index: 1000;">' +
+        message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+}
+
 $(function() {
     $("#menu").metisMenu();
 
@@ -102,6 +107,62 @@ $(function() {
             $(this).html(html);
         })
     });
+
+    // ==================== MODAL =========================
+    const modaleForm = $('#main-modal-form');
+    // La modale de formulaire est cachée
+    modaleForm.on('hidden.bs.modal', function () {$('head .ajax-stylesheet').remove();});
+    modaleForm.on('submit', 'form', function (e) {
+        const form = $(this);
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        const formData = new FormData(form.get(0));
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            error: function(jqXHR, textStatus, errorMessage) {
+                addAlert(errorMessage, "danger");
+            },
+            success: function(data) {
+                if (typeof data === 'object' && data.action === 'close') {
+                    modaleForm.modal('hide');
+                    addAlert(data.message || "Enregistrement effectué avec succès");
+                } else {
+                    modaleForm.html(data);
+                }
+            }
+        });
+    });
+    const body = $('body');
+    body.on('click', '.modal .dismiss', function () {
+        $(this).closest('.modal').modal('hide');
+    });
+    body.on('click', '[data-ajax]', function () {
+        $('head .ajax-stylesheet').remove();
+        const btn = $(this);
+        const destination = $(btn.data('ajax-destination'));
+        const url = btn.data('ajax');
+        if (url === undefined || destination.length === 0) {
+            return;
+        }
+        if (destination.is('.modal')) {
+            destination.html('<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body text-center"><div class="spinner-grow" role="status" style="width: 3rem; height: 3rem;"><span class="sr-only">Chargement en cours</span></div></div></div></div>');
+            destination.modal('show');
+        }
+        $.ajax({
+            url: url,
+            context: btn[0],
+        }).done(function(html) {
+            const content = $(html);
+            const associatedStylesheets = content.find('#modal-stylesheets').children();
+            associatedStylesheets.addClass('ajax-stylesheet');
+            $('head').append(associatedStylesheets);
+            destination.html(html);
+        })
+    });
+    // ==================== /MODAL =========================
 
     // Afficher / Cacher le menu slim
     $('#show-menu-slim').on('click', function () {

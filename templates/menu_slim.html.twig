@@ -6,7 +6,7 @@
                     <a href="#" aria-expanded="true">{% include "icon.html.twig" with {'icon': 'user'} only %} {{ app.user.nom }}</a>
                     <ul>
                         <li class="">
-                            <a href="{{ path('editer_etablissement') }}" aria-expanded="false">{% include "icon.html.twig" with {'icon': 'edit'} only %} Éditer</a>
+                            <a data-ajax="{{ path('editer_etablissement') }}" data-ajax-destination="#main-modal-form" href="#" aria-expanded="false">{% include "icon.html.twig" with {'icon': 'edit'} only %} Éditer</a>
                             <a href="{{ path('security_logout') }}" aria-expanded="false">{% include "icon.html.twig" with {'icon': 'sign-out-alt'} only %} Déconnexion</a>
                         </li>
                     </ul>
