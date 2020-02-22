@@ -1,0 +1,9 @@
+{% extends 'modal.html.twig' %}
+
+{% block title %}{% if edition %}Édition kermesse{% else %}Création kermesse{% endif %}{% endblock %}
+
+{% block body %}
+    {{ form_row(form.theme) }}
+    {{ form_row(form.annee) }}
+    {{ form_row(form.montant_ticket) }}
+{% endblock %}

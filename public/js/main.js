@@ -42,6 +42,20 @@ function addAlert(message, type="success") {
         message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
 }
 
+function reloadAjaxElement(element) {
+    const url = element.data('ajax-url');
+    if (!element.is('.ajax') || url === undefined) {
+        return;
+    }
+    element.html('<div class="d-flex justify-content-center align-items-center loader"><div class="spinner-grow" role="status" style="width: 4rem; height: 4rem;"><span class="sr-only">Chargement en cours</span></div>');
+    $.ajax({
+        url: url,
+        context: element[0]
+    }).done(function(html) {
+        element.html(html);
+    })
+}
+
 $(function() {
     $("#menu").metisMenu();
 
@@ -94,19 +108,7 @@ $(function() {
     $('[data-toggle="tooltip"]').tooltip();
 
     // Ajax simple
-    $('.ajax').each(function () {
-        const element = $(this);
-        const url = element.data('ajax-url');
-        if (url === undefined) {
-            return;
-        }
-        $.ajax({
-            url: url,
-            context: element[0]
-        }).done(function(html) {
-            $(this).html(html);
-        })
-    });
+    $('.ajax').each(function () {reloadAjaxElement($(this));});
 
     // ==================== MODAL =========================
     const modaleForm = $('#main-modal-form');
@@ -127,6 +129,11 @@ $(function() {
             },
             success: function(data) {
                 if (typeof data === 'object' && data.action === 'close') {
+                    const origin = modaleForm.data('origin');
+                    modaleForm.trigger('form-modal:valide', [origin]);
+                    if (origin) {
+                        $(origin).trigger('ajax:success');
+                    }
                     modaleForm.modal('hide');
                     addAlert(data.message || "Enregistrement effectué avec succès");
                 } else {
@@ -142,11 +149,12 @@ $(function() {
     body.on('click', '[data-ajax]', function () {
         $('head .ajax-stylesheet').remove();
         const btn = $(this);
-        const destination = $(btn.data('ajax-destination'));
+        const destination = $(btn.data('ajax-destination') || '#main-modal-form');
         const url = btn.data('ajax');
         if (url === undefined || destination.length === 0) {
             return;
         }
+        destination.data('origin', btn);
         if (destination.is('.modal')) {
             destination.html('<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body text-center"><div class="spinner-grow" role="status" style="width: 3rem; height: 3rem;"><span class="sr-only">Chargement en cours</span></div></div></div></div>');
             destination.modal('show');

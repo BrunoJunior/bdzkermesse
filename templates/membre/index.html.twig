@@ -4,7 +4,7 @@
 
 {% block body %}
     <fieldset>
-        <legend>Nos membres <a href="{{ path('nouveau_membre') }}" class="btn btn-primary" data-toggle="tooltip" title="Nouveau membre"><i class="fas fa-plus"></i></a></legend>
+        <legend>Nos membres <a href="#" data-ajax="{{ path('save_membre') }}" data-role="add" class="btn btn-primary" data-toggle="tooltip" title="Nouveau membre"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
             {% include "membre/table.html.twig" with {'membres': membres} only %}
         </div>
@@ -25,4 +25,12 @@
             {% endfor %}
         </div>
     </fieldset>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="application/javascript">
+        $(function () {
+            $('[data-ajax]').on('ajax:success', function () {document.location.reload();});
+        });
+    </script>
 {% endblock %}

@@ -1,5 +1,11 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}<style>
+    .loader {
+        height: 310px;
+    }
+</style>{% endblock %}
+
 {% block title %}Kermesse{% endblock %}
 
 {% block body %}
@@ -15,9 +21,6 @@
             {% endif %}
             {% for activite in activites %}
                 <div class="col-sm-6 col-md-4 col-lg-3 mb-3 ajax" data-ajax-url="{{ path('carte_activite', {'id': activite.id}) }}">
-                    <div class="d-flex justify-content-center align-items-center" style="height: 310px;">
-                        <i class="fas fa-circle-notch fa-spin fa-4x"></i>
-                    </div>
                 </div>
             {% endfor %}
         </div>

@@ -53,6 +53,32 @@ class KermesseController extends MyController
     }
 
     /**
+     * @param Request $request
+     * @param KermesseService $sKermesse
+     * @param Kermesse $kermesse
+     * @return Response
+     * @throws NonUniqueResultException
+     * @throws ServiceException
+     */
+    private function saveKermesse(Request $request, KermesseService $sKermesse, Kermesse $kermesse): Response
+    {
+        $route = $kermesse->getId() ? 'editer_kermesse' : 'nouvelle_kermesse';
+        $params = $kermesse->getId() ? ['id' => $kermesse->getId()] : [];
+        $kermesse->setEtablissement($this->getEtablissement());
+        $form = $this->createForm(KermesseType::class, $kermesse, ['action' => $this->generateUrl($route, $params)]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // On enregistre l'utilisateur dans la base
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($kermesse);
+            $em->flush();
+            $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
+            return $this->reponseModal();
+        }
+        return $this->render('kermesse/form.html.twig', ['form' => $form->createView(), 'edition' => $kermesse->getId()]);
+    }
+
+    /**
      * @Route("/kermesses/new", name="nouvelle_kermesse")
      * @param Request $request
      * @param KermesseService $sKermesse
@@ -62,24 +88,22 @@ class KermesseController extends MyController
      */
     public function nouvelleKermesse(Request $request, KermesseService $sKermesse): Response
     {
-        $kermesse = new Kermesse();
-        $kermesse->setEtablissement($this->getEtablissement());
-        $form = $this->createForm(KermesseType::class, $kermesse);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // On enregistre l'utilisateur dans la base
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($kermesse);
-            $em->flush();
-            $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
-            $this->addFlash("success", "Kermesse " . $kermesse->getAnnee() . ' créée !');
-            return $this->redirectToRoute('index');
-        }
-        return $this->render(
-            'kermesse/nouvelle.html.twig',
-            array('form' => $form->createView(),
-                'menu' => $this->getMenu(null, static::MENU_ACCUEIL))
-        );
+        return $this->saveKermesse($request, $sKermesse, new Kermesse());
+    }
+
+    /**
+     * @Route("/kermesses/{id}/edit", name="editer_kermesse")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param Request $request
+     * @param KermesseService $sKermesse
+     * @return Response
+     * @throws ServiceException
+     * @throws NonUniqueResultException
+     */
+    public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse): Response
+    {
+        return $this->saveKermesse($request, $sKermesse, $kermesse);
     }
 
     /**
@@ -90,6 +114,7 @@ class KermesseController extends MyController
      * @param KermesseService $sKermesse
      * @param EntityManagerInterface $entityManager
      * @return Response
+     * @throws Exception
      */
     public function dupliquerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse, EntityManagerInterface $entityManager): Response
     {
@@ -106,52 +131,13 @@ class KermesseController extends MyController
                 $entityManager->flush();
                 $sKermesse->setKermesse($nouvelleKermesse)->dupliquerInfos($kermesse);
                 $entityManager->commit();
-                $this->addFlash("success", "Kermesse " . $nouvelleKermesse->getAnnee() . ' créée à partir de la kermesse ' . $kermesse->getAnnee() . ' !');
-                return $this->redirectToRoute('index');
+                return $this->reponseModal("Kermesse " . $nouvelleKermesse->getAnnee() . ' créée à partir de la kermesse ' . $kermesse->getAnnee());
             } catch (Exception $exc) {
                 $entityManager->rollback();
-                $this->addFlash('danger', $exc->getMessage());
-                $this->logger->critical($exc->getTraceAsString());
+                throw $exc;
             }
         }
-        return $this->render(
-            'kermesse/edition.html.twig',
-            [
-                'form' => $form->createView(),
-                'menu' => $this->getMenu(null, static::MENU_ACCUEIL)
-            ]
-        );
-    }
-
-    /**
-     * @Route("/kermesses/{id}/edit", name="editer_kermesse")
-     * @Security("kermesse.isProprietaire(user)")
-     * @param Kermesse $kermesse
-     * @param Request $request
-     * @param KermesseService $sKermesse
-     * @return Response
-     * @throws ServiceException
-     * @throws NonUniqueResultException
-     */
-    public function editerKermesse(Kermesse $kermesse, Request $request, KermesseService $sKermesse): Response
-    {
-        $form = $this->createForm(KermesseType::class, $kermesse);
-        $kermesse->setEtablissement($this->getEtablissement());
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // On enregistre l'utilisateur dans la base
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($kermesse);
-            $em->flush();
-            $sKermesse->setKermesse($kermesse)->gererCaisseCentrale();
-            $this->addFlash("success", "Kermesse " . $kermesse->getAnnee() . ' mise à jour !');
-            return $this->redirectToRoute('index');
-        }
-        return $this->render(
-            'kermesse/edition.html.twig',
-            array('form' => $form->createView(),
-                'menu' => $this->getMenu($kermesse))
-        );
+        return $this->render('kermesse/form.html.twig', ['form' => $form->createView()]);
     }
 
     /**

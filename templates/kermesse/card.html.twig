@@ -18,7 +18,7 @@
     <div class="card-footer pb-0">
         <div class="btn-group mb-3" role="group" aria-label="Actions">
             <a href="{{ path('kermesse', {'id': card.kermesse.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Détail"><i class="fas fa-eye"></i></a>
-            <a href="{{ path('editer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
+            <a href="#" data-ajax="{{ path('editer_kermesse', {'id': card.kermesse.id}) }}" data-role="edit" class="btn btn-secondary" data-toggle="tooltip" title="Modifier"><i class="fas fa-edit"></i></a>
         </div>
         <div class="btn-group mb-3" role="group" aria-label="Actions comptables">
             <a href="{{ path('nouveau_ticket', {'id': card.kermesse.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-receipt"></i></a>
@@ -27,7 +27,7 @@
         </div>
         {% if card.derniere %}
             <div class="btn-group mb-3" role="group" aria-label="Actions kermesse en cours">
-                <a href="{{ path('dupliquer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Dupliquer"><i class="fas fa-clone"></i></a>
+                <a href="#" data-ajax="{{ path('dupliquer_kermesse', {'id': card.kermesse.id}) }}" data-role="duplicate" class="btn btn-warning" data-toggle="tooltip" title="Dupliquer"><i class="fas fa-clone"></i></a>
                 <a href="{{ path('planning_benevoles', {'id': card.kermesse.id}) }}" class="btn btn-info" data-toggle="tooltip" title="Planning"><i class="fas fa-calendar-alt"></i></a>
             </div>
         {% endif %}

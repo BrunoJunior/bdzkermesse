@@ -66,55 +66,25 @@ class MembreController extends MyController
     }
 
     /**
-     * @Route("/membres/new", name="nouveau_membre")
+     * @Route("/membres/save/{id<\d+>?}", name="save_membre")
      * @param Request $request
+     * @param Membre|null $membre
      * @return Response
      */
-    public function nouveauMembre(Request $request):Response
+    public function saveMembre(Request $request, ?Membre $membre = null): Response
     {
-        $membre = new Membre();
+        $membre = $membre ?: new Membre();
         $membre->setEtablissement($this->getEtablissement());
-        $form = $this->createForm(MembreType::class, $membre);
+        $form = $this->createForm(MembreType::class, $membre, ['action' => $this->generateUrl('save_membre', ['id' => $membre->getId()])]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             // On enregistre l'utilisateur dans la base
             $em = $this->getDoctrine()->getManager();
             $em->persist($membre);
             $em->flush();
-            $this->addFlash("success", "Membre  " . $this->business->getIdentite($membre) . ' créé !');
-            return $this->redirectToRoute('membres');
+            return $this->reponseModal();
         }
-        return $this->render(
-            'membre/nouveau.html.twig',
-            array('form' => $form->createView(),
-                'menu' => $this->getMenu(null, static::MENU_MEMBRES))
-        );
-    }
-
-    /**
-     * @Route("/membres/{id}/edit", name="editer_membre")
-     * @Security("membre.isProprietaire(user)")
-     * @param Membre $membre
-     * @param Request $request
-     * @return Response
-     */
-    public function editerMembre(Membre $membre, Request $request):Response
-    {
-        $form = $this->createForm(MembreType::class, $membre);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // On enregistre l'utilisateur dans la base
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($membre);
-            $em->flush();
-            $this->addFlash("success", "Membre  " . $this->business->getIdentite($membre) . ' mis à jour !');
-            return $this->redirectToRoute('membres');
-        }
-        return $this->render(
-            'membre/edition.html.twig',
-            array('form' => $form->createView(),
-                'menu' => $this->getMenu(null, static::MENU_MEMBRES))
-        );
+        return $this->render('membre/form.html.twig', ['form' => $form->createView(), 'edition' => $membre->getId()]);
     }
 
     /**
