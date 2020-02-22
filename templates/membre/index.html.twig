@@ -26,11 +26,3 @@
         </div>
     </fieldset>
 {% endblock %}
-
-{% block javascripts %}
-    <script type="application/javascript">
-        $(function () {
-            $('[data-ajax]').on('ajax:success', function () {document.location.reload();});
-        });
-    </script>
-{% endblock %}

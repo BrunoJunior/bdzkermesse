@@ -17,6 +17,7 @@ use App\Entity\Ticket;
 use App\Enum\RemboursementEtatEnum;
 use App\Enum\TicketEtatEnum;
 use App\Exception\BusinessException;
+use App\Service\DuplicataDirectoryGenerator;
 use App\Service\FileUploader;
 use App\Service\TicketRowGenerator;
 use Doctrine\DBAL\DBALException;
@@ -25,7 +26,6 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use SimpleEnum\Exception\UnknownEumException;
 use Stringy\Stringy;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\File\File;
 
 class TicketBusiness
@@ -34,11 +34,6 @@ class TicketBusiness
      * @var EntityManagerInterface
      */
     private $em;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     /**
      * @var FileUploader
@@ -61,28 +56,33 @@ class TicketBusiness
     private $logger;
 
     /**
+     * @var DuplicataDirectoryGenerator
+     */
+    private $duplicataDirGen;
+
+    /**
      * RemboursementBusiness constructor.
      * @param EntityManagerInterface $entityManager
-     * @param ContainerInterface $container
      * @param FileUploader $uploader
      * @param MembreBusiness $bMembre
      * @param TicketRowGenerator $generator
      * @param LoggerInterface $logger
+     * @param DuplicataDirectoryGenerator $duplicataDirGen
      */
     public function __construct(
         EntityManagerInterface $entityManager,
-        ContainerInterface $container,
         FileUploader $uploader,
         MembreBusiness $bMembre,
         TicketRowGenerator $generator,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        DuplicataDirectoryGenerator $duplicataDirGen
     ) {
         $this->em = $entityManager;
-        $this->container = $container;
         $this->uploader = $uploader;
         $this->bMembre = $bMembre;
         $this->generator = $generator;
         $this->logger = $logger;
+        $this->duplicataDirGen = $duplicataDirGen;
     }
 
     /**
@@ -104,8 +104,7 @@ class TicketBusiness
      */
     public function getDuplicataDir(?Kermesse $kermesse, Etablissement $etablissement)
     {
-        $dir = $kermesse ? $kermesse->getId() : $etablissement->getUsername();
-        return $this->container->getParameter('duplicata_dir') . '/' . $dir;
+        return $this->duplicataDirGen->getDuplicataDir($kermesse, $etablissement);
     }
 
     /**
@@ -193,11 +192,7 @@ class TicketBusiness
      */
     public function getDuplicataPath(Ticket $ticket)
     {
-        $duplicata = $ticket->getDuplicata();
-        if ($duplicata instanceof File) {
-            return $duplicata->getRealPath();
-        }
-        return $this->getDuplicataDir($ticket->getKermesse(), $ticket->getEtablissement()) . '/' . $ticket->getDuplicata();
+        return $this->duplicataDirGen->getDuplicataPath($ticket);
     }
 
     /**

@@ -29,6 +29,15 @@ $(function() {
     const droppables = $('.droppable');
     const draggables = $('.draggable');
 
+    draggables.draggable({
+        cursor: 'grabbing',
+        zIndex: 100,
+        cursorAt: { left: 0, top: 0},
+        helper: function () {
+            return '<span class="badge badge-pill badge-info">Transférer les bénévoles</span>';
+        }
+    });
+
     $('.drag-grip').on('click', function( evt ) {
         evt.preventDefault();
         evt.stopPropagation();

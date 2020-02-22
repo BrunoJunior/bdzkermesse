@@ -8,7 +8,7 @@
         <li>Montant : {{ ticket.montant }}</li>
         <li>Fournisseur : {{ ticket.fournisseur }}</li>
         {% if ticket.cheminFichier is not empty %}
-            <li><a href="{{ app.request.getSchemeAndHttpHost() ~ asset('uploads/tickets/' ~ ticket.cheminFichier) }}">Duplicata</a></li>
+            <li><a href="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': ticket.id}) }}">Duplicata</a></li>
         {% endif %}
         <li>Activités liées :
             <ul>

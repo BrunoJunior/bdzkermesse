@@ -110,6 +110,8 @@ $(function() {
     // Ajax simple
     $('.ajax').each(function () {reloadAjaxElement($(this));});
 
+    $('.ajax-reload').on('ajax:success', function () {document.location.reload();});
+
     // ==================== MODAL =========================
     const modaleForm = $('#main-modal-form');
     // La modale de formulaire est cachée
@@ -156,18 +158,35 @@ $(function() {
         }
         destination.data('origin', btn);
         if (destination.is('.modal')) {
-            destination.html('<div class="modal-dialog" role="document"><div class="modal-content"><div class="modal-body text-center"><div class="spinner-grow" role="status" style="width: 3rem; height: 3rem;"><span class="sr-only">Chargement en cours</span></div></div></div></div>');
+            destination.html('<div class="modal-dialog" role="document"><div class="modal-content">' +
+                '<div class="modal-body d-flex flex-column justify-content-center"><div class="text-center">Chargement en cours</div>' +
+                '<div class="text-center"><div class="spinner-grow" role="status" style="width: 3rem; height: 3rem;"></div></div></div>' +
+                '</div></div>');
             destination.modal('show');
         }
         $.ajax({
             url: url,
             context: btn[0],
-        }).done(function(html) {
-            const content = $(html);
-            const associatedStylesheets = content.find('#modal-stylesheets').children();
-            associatedStylesheets.addClass('ajax-stylesheet');
-            $('head').append(associatedStylesheets);
-            destination.html(html);
+            error: function(jqXHR, textStatus, errorMessage) {
+                addAlert(errorMessage, "danger");
+            },
+            success: function(data) {
+                if (typeof data === 'object' && data.action === 'close') {
+                    const origin = modaleForm.data('origin');
+                    modaleForm.trigger('form-modal:valide', [origin]);
+                    if (origin) {
+                        $(origin).trigger('ajax:success');
+                    }
+                    modaleForm.modal('hide');
+                    addAlert(data.message || "Traitement effectué avec succès");
+                } else {
+                    const content = $(data);
+                    const associatedStylesheets = content.find('#modal-stylesheets').children();
+                    associatedStylesheets.addClass('ajax-stylesheet');
+                    $('head').append(associatedStylesheets);
+                    destination.html(data);
+                }
+            }
         })
     });
     // ==================== /MODAL =========================

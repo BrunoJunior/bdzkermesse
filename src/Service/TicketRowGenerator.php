@@ -8,12 +8,13 @@
 
 namespace App\Service;
 
-
 use App\DataTransfer\TicketRow;
 use App\Entity\Kermesse;
 use App\Entity\Ticket;
 use App\Repository\TicketRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\DBAL\DBALException;
+use SimpleEnum\Exception\UnknownEumException;
 
 class TicketRowGenerator
 {
@@ -23,12 +24,19 @@ class TicketRowGenerator
     private $rTicket;
 
     /**
+     * @var DuplicataDirectoryGenerator
+     */
+    private $duplicataDirGen;
+
+    /**
      * TicketRowGenerator constructor.
      * @param TicketRepository $rTicket
+     * @param DuplicataDirectoryGenerator $duplicataDirGen
      */
-    public function __construct(TicketRepository $rTicket)
+    public function __construct(TicketRepository $rTicket, DuplicataDirectoryGenerator $duplicataDirGen)
     {
         $this->rTicket = $rTicket;
+        $this->duplicataDirGen = $duplicataDirGen;
     }
 
     /**
@@ -36,12 +44,12 @@ class TicketRowGenerator
      * @param int $montantAffecte
      * @param array $activitesLiees
      * @return TicketRow
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws DBALException
+     * @throws UnknownEumException
      */
     public function generate(Ticket $ticket, int $montantAffecte = null, array $activitesLiees = null): TicketRow
     {
-        $row = new TicketRow($ticket);
+        $row = new TicketRow($ticket, $this->duplicataDirGen);
         if ($montantAffecte === null && $activitesLiees === null) {
             $totaux = $this->rTicket->getTotauxByTicket($ticket);
             $activitesLiees = explode(', ', $totaux['activites_liees']);
@@ -56,8 +64,8 @@ class TicketRowGenerator
      * @param Kermesse $kermesse
      * @param string $order
      * @return ArrayCollection|TicketRow[]
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @throws DBALException
+     * @throws UnknownEumException
      */
     public function generateList(Kermesse $kermesse, string $order): ArrayCollection
     {

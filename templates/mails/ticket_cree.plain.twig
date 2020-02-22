@@ -7,7 +7,7 @@ Voici son récapitulatif :
     * Montant : {{ ticket.montant }}
     * Fournisseur : {{ ticket.fournisseur }}
     {% if ticket.cheminFichier is not empty %}
-    * Duplicata : {{ app.request.getSchemeAndHttpHost() ~ asset('uploads/tickets/' ~ ticket.cheminFichier) }}
+    * Duplicata : {{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': ticket.id}) }}
     {% endif %}
     * Activités liées :
     {% for activite in ticket.activites %}

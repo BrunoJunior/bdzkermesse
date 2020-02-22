@@ -10,7 +10,7 @@
     Tickets associés :<br />
     <ul>
         {% for ticket in demande.tickets %}
-            <li>Ticket n° {{ ticket.numero }} du {{ ticket.date }} d'un montant de {{ ticket.montant }}. (Fournisseur : {{ ticket.fournisseur }}{% if ticket.cheminFichier is not empty %} - <a href="{{ app.request.getSchemeAndHttpHost() ~ asset('uploads/tickets/' ~ ticket.cheminFichier) }}">Duplicata</a>{% endif %})</li>
+            <li>Ticket n° {{ ticket.numero }} du {{ ticket.date }} d'un montant de {{ ticket.montant }}. (Fournisseur : {{ ticket.fournisseur }}{% if ticket.cheminFichier is not empty %} - <a href="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': ticket.id}) }}">Duplicata</a>{% endif %})</li>
         {% endfor %}
     </ul>
 </p>

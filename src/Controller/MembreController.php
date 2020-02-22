@@ -13,6 +13,7 @@ use App\Repository\RemboursementRepository;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Twig\Error\LoaderError;
@@ -100,20 +101,16 @@ class MembreController extends MyController
     public function contacterMembre(Membre $membre, Request $request): Response
     {
         $contact = $this->business->initialiserContact($membre, new ContactDTO());
-        $form = $this->createForm(ContactType::class, $contact);
+        $form = $this->createForm(ContactType::class, $contact, [
+            'action' => $this->generateUrl('contacter_membre', ['id' => $membre->getId()])
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($this->business->contacter($membre, $contact) > 0) {
-                $this->addFlash("success", "E-mail envoyé !");
-            } else {
-                $this->addFlash("danger", "Erreur lors de l'envoi du message !");
+            if ($this->business->contacter($membre, $contact) === 0) {
+                throw new ServiceUnavailableHttpException("Erreur lors de l'envoi du message !");
             }
-            return $this->redirectToRoute('membres');
+            return $this->reponseModal('E-mail envoyé !');
         }
-        return $this->render(
-            'membre/contact_form.html.twig',
-            array('form' => $form->createView(),
-                'menu' => $this->getMenu(null, static::MENU_MEMBRES))
-        );
+        return $this->render('membre/contact_form.html.twig', ['form' => $form->createView()]);
     }
 }
