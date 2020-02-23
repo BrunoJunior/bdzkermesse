@@ -32,34 +32,52 @@ class ActiviteController extends MyController
 {
 
     /**
+     * @param Request $request
+     * @param string $action
+     * @param Activite|null $activite
+     * @param Kermesse|null $kermesse
+     * @return Response
+     */
+    private function saveActivite(Request $request, string $action, ?Activite $activite = null, ?Kermesse $kermesse = null): Response
+    {
+        $activite = $activite ?: new Activite();
+        $kermesse = $activite->getKermesse() ?: $kermesse;
+        $activite->setCaisseCentrale($activite->isCaisseCentrale() ?: false);
+        $activite->setKermesse($kermesse);
+        $activite->setEtablissement($this->getEtablissement());
+        if ($activite->getKermesse()) {
+            $activite->setAccepteMonnaie(true);
+        } else {
+            $activite->setAccepteSeulementMonnaie();
+        }
+        $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => $kermesse !== null, 'action' => $action]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($activite);
+            $em->flush();
+            return $this->reponseModal();
+        }
+        return $this->render(
+            'activite/form.html.twig',
+            ['form' => $form->createView(), 'kermesse' => $kermesse]
+        );
+    }
+
+    /**
      * @Route("/kermesses/{id<\d+>}/activites/new", name="nouvelle_activite")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
      * @return Response
      */
-    public function nouvelleActivite(?Kermesse $kermesse, Request $request): Response
+    public function nouvelleActivite(Kermesse $kermesse, Request $request): Response
     {
-        $activite = new Activite();
-        $activite->setCaisseCentrale(false);
-        $activite->setKermesse($kermesse);
-        $activite->setAccepteMonnaie(true);
-        $form = $this->createForm(ActiviteType::class, $activite);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($activite);
-            $em->flush();
-            $this->addFlash("success", "Activité " . $activite->getNom() . ' créée !');
-            return $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()]);
-        }
-        return $this->render(
-            'activite/nouvelle.html.twig',
-            [
-                'form' => $form->createView(),
-                'kermesse' => $kermesse,
-                'menu' => $this->getMenuKermesseOuAutre($kermesse)
-            ]
+        return $this->saveActivite(
+            $request,
+            $this->generateUrl('nouvelle_activite', ['id' => $kermesse->getId()]),
+            null,
+            $kermesse
         );
     }
 
@@ -70,27 +88,7 @@ class ActiviteController extends MyController
      */
     public function nouvelleAutreActivite(Request $request): Response
     {
-        $activite = new Activite();
-        $activite->setCaisseCentrale(false);
-        $activite->setAccepteSeulementMonnaie();
-        $activite->setEtablissement($this->getEtablissement());
-        $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => false]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($activite);
-            $em->flush();
-            $this->addFlash("success", "Activité " . $activite->getNom() . ' créée !');
-            return $this->redirectToRoute('lister_actions');
-        }
-        return $this->render(
-            'activite/nouvelle.html.twig',
-            [
-                'form' => $form->createView(),
-                'kermesse' => null,
-                'menu' => $this->getMenuKermesseOuAutre(null)
-            ]
-        );
+        return $this->saveActivite($request, $this->generateUrl('nouvelle_autre_activite'));
     }
 
     /**
@@ -102,28 +100,7 @@ class ActiviteController extends MyController
      */
     public function editerActivite(Activite $activite, Request $request): Response
     {
-        if ($activite->isCaisseCentrale()) {
-            $this->redirectToRoute('kermesse', ['id' => $activite->getKermesse()->getId()]);
-        }
-        $activite->setAccepteMonnaie(true);
-        $kermesse = $activite->getKermesse();
-        $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => $activite->getKermesse() !== null]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($activite);
-            $em->flush();
-            $this->addFlash("success", "Activité " . $activite->getNom() . ' mise à jour !');
-            return $this->redirectToKermesseOuAutre($kermesse);
-        }
-        return $this->render(
-            'activite/edition.html.twig',
-            [
-                'form' => $form->createView(),
-                'kermesse' => $kermesse,
-                'menu' => $this->getMenuKermesseOuAutre($kermesse)
-            ]
-        );
+        return $this->saveActivite($request, $this->generateUrl('editer_activite', ['id' => $activite->getId()]), $activite);
     }
 
     /**

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0fc81c15ec98871f26be6dae731463d",
+    "content-hash": "a2689d674ffd89885f5abd875aea45f3",
     "packages": [
         {
             "name": "barbieswimcrew/zip-code-validator",
@@ -7972,7 +7972,8 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.3.0",
-        "ext-iconv": "*"
+        "ext-iconv": "*",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

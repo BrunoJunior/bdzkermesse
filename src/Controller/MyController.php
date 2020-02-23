@@ -14,6 +14,7 @@ use App\Helper\Breadcrumb;
 use App\Helper\MenuLink;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class MyController extends AbstractController
@@ -113,5 +114,14 @@ abstract class MyController extends AbstractController
             throw new NotFoundHttpException("La page ne semble pas exister !");
         }
         return $etablissement;
+    }
+
+    /**
+     * @param string|null $message
+     * @return Response
+     */
+    protected function reponseModal(?string $message = null): Response
+    {
+        return $this->json(['action' => 'close', 'message' => $message]);
     }
 }

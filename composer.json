@@ -6,6 +6,7 @@
     "require": {
         "php": "^7.3.0",
         "ext-iconv": "*",
+        "ext-json": "*",
         "barbieswimcrew/zip-code-validator": "^1.3",
         "brunojunior/simple-enum": "^v1.0",
         "danielstjules/stringy": "^3.1",

@@ -23,11 +23,11 @@ class RecetteType extends AbstractType
                 'choices' => $kermesse->getActivites(),
                 'choice_label' => 'nom',
                 'disabled' => $options['activite'] instanceof Activite
+            ])->add('report_stock', CheckboxType::class , [
+                'required' => false
             ]);
         }
-        $builder->add('report_stock', CheckboxType::class , [
-                'required' => false
-            ])
+        $builder
             ->add('libelle')
             ->add('date', DatePickerType::class)
             ->add('montant', MoneyType::class, [

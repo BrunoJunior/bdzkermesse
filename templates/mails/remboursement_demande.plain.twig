@@ -9,7 +9,7 @@ Voici le récapitulatif de votre demande :
 
 Tickets associés :
 {% for ticket in demande.tickets %}
-    * Ticket n° {{ ticket.numero }} du {{ ticket.date }} d'un montant de {{ ticket.montant }}. (Fournisseur : {{ ticket.fournisseur }}{% if ticket.cheminFichier is not empty %} - Duplicata : {{ app.request.getSchemeAndHttpHost() ~ asset('uploads/tickets/' ~ ticket.cheminFichier) }}{% endif %})
+    * Ticket n° {{ ticket.numero }} du {{ ticket.date }} d'un montant de {{ ticket.montant }}. (Fournisseur : {{ ticket.fournisseur }}{% if ticket.cheminFichier is not empty %} - Duplicata : {{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': ticket.id}) }}{% endif %})
 {% endfor %}
 
     Cordialement,

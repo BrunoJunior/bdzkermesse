@@ -7,12 +7,15 @@
         body {
             background-image: url("/imgs/accueil_bg.jpg");
         }
+        .loader {
+            height: 310px;
+        }
     </style>
 {% endblock %}
 
 {% block body %}
-    <fieldset>
-        <legend>Nos kermesses <a href="{{ path('nouvelle_kermesse') }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle kermesse"><i class="fas fa-plus"></i></a></legend>
+    <fieldset id="kermesses-list">
+        <legend>Nos kermesses <a id="add-kermesse" href="#" data-ajax="{{ path('nouvelle_kermesse') }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle kermesse"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
             {% if kermesses is empty %}
                 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -25,9 +28,6 @@
             {% endif %}
             {% for kermesse in kermesses %}
                 <div class="col-sm-6 col-md-4 col-lg-3 mb-3 ajax" data-ajax-url="{{ path('carte_kermesse', {'id': kermesse.id}) }}">
-                    <div class="d-flex justify-content-center align-items-center" style="height: 310px;">
-                        <i class="fas fa-circle-notch fa-spin fa-4x"></i>
-                    </div>
                 </div>
             {% endfor %}
         </div>

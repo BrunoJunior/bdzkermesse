@@ -28,7 +28,7 @@
                         {% include "icon.html.twig" with {'icon': 'user'} only %} {{ app.user.nom }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="user-infos">
-                        <a class="dropdown-item" href="{{ path('editer_etablissement') }}">{% include "icon.html.twig" with {'icon': 'edit'} only %} Éditer</a>
+                        <a class="dropdown-item" data-ajax="{{ path('editer_etablissement') }}" data-ajax-destination="#main-modal-form" href="#">{% include "icon.html.twig" with {'icon': 'edit'} only %} Éditer</a>
                         <a class="dropdown-item" href="{{ path('security_logout') }}">{% include "icon.html.twig" with {'icon': 'sign-out-alt'} only %} Déconnexion</a>
                     </div>
                 </li>
@@ -67,21 +67,27 @@
             <div class="row justify-content-end">
                 <div class="col-lg-{% if menu is defined %}10{% else %}12{% endif %}">
                     <div class="container-fluid pt-3">
-                        {% for label, messages in app.flashes %}
-                            {% for message in messages %}
-                                <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert" style="z-index: 1000;">
-                                    {{ message }}
-                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
+                        <div id="alerts-container">
+                            {% for label, messages in app.flashes %}
+                                {% for message in messages %}
+                                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert" style="z-index: 1000;">
+                                        {{ message }}
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                {% endfor %}
                             {% endfor %}
-                        {% endfor %}
+                        </div>
                         {% block body %}{% endblock %}
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="main-modal-form" tabindex="-1" role="dialog" aria-labelledby="main-modal-form-title" aria-hidden="true">
+        </div>
+
         <script src="{{ asset('js/jquery.min.js') }}"></script>
         <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>

@@ -10,8 +10,8 @@
             <td>{{ recette.nombreTickets }}</td>
             <td>{{ recette.montant }}</td>
             <td>
-                <a href="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
-                <a href="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                <a href="#" data-ajax="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary ajax-reload"><i class="fas fa-edit"></i> Éditer</a>
+                <a href="#" data-ajax="{{ path('supprimer_recette', {'id': recette.id}) }}" class="btn btn-danger ajax-reload" data-ajax-validation="true"><i class="fas fa-trash-alt"></i> Supprimer</a>
             </td>
         </tr>
     {% else %}

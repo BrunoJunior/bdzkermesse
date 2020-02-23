@@ -64,7 +64,7 @@ class RegistrationController extends MyController
     {
         $etablissement = $this->getUser();
         $oldPassword = $etablissement->getPassword();
-        $form = $this->createForm(EtablissementType::class, $etablissement);
+        $form = $this->createForm(EtablissementType::class, $etablissement, ['action' => $this->generateUrl('editer_etablissement')]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             if ($etablissement->getPassword() === '') {
@@ -77,11 +77,11 @@ class RegistrationController extends MyController
             $em = $this->getDoctrine()->getManager();
             $em->persist($etablissement);
             $em->flush();
-            return $this->redirectToRoute('index');
+            return $this->reponseModal();
         }
         return $this->render(
-            'registration/edition.html.twig',
-            array('form' => $form->createView(), 'menu' => $this->getMenu(null, static::MENU_ACCUEIL))
+            'registration/edition_modal.html.twig',
+            array('form' => $form->createView())
         );
     }
 

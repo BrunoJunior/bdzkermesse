@@ -30,10 +30,6 @@ body {
     left: 6px;
 }
 
-.activite-creneau {
-    z-index: 2;
-}
-
 .droppable.ui-droppable-active .btn,
 .draggable.ui-draggable-disabled .btn {
     cursor: pointer;
@@ -45,12 +41,4 @@ body {
 
 .draggable:not(.ui-draggable-disabled) .drag-grip {
     cursor: grab;
-}
-
-.draggable.ui-draggable-dragging .drag-grip {
-    cursor: grabbing;
-}
-
-.draggable.ui-draggable-dragging {
-    z-index: 1;
 }

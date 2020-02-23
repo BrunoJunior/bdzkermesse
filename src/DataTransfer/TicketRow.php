@@ -8,12 +8,11 @@
 
 namespace App\DataTransfer;
 
-
-use App\Entity\Depense;
 use App\Entity\Ticket;
 use App\Enum\TicketEtatEnum;
 use App\Helper\HFloat;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\DuplicataDirectoryGenerator;
+use SimpleEnum\Exception\UnknownEumException;
 
 class TicketRow
 {
@@ -43,15 +42,22 @@ class TicketRow
     private $etat;
 
     /**
+     * @var DuplicataDirectoryGenerator
+     */
+    private $duplicataDirGen;
+
+    /**
      * TicketRow constructor.
      * @param Ticket $ticket
-     * @throws \SimpleEnum\Exception\UnknownEumException
+     * @param DuplicataDirectoryGenerator $duplicataDirGen
+     * @throws UnknownEumException
      */
-    public function __construct(Ticket $ticket)
+    public function __construct(Ticket $ticket, DuplicataDirectoryGenerator $duplicataDirGen)
     {
         $this->ticket = $ticket;
         $this->montant = $this->ticket->getMontant() ?? 0;
         $this->etat = TicketEtatEnum::getInstance($this->ticket->getEtat());
+        $this->duplicataDirGen = $duplicataDirGen;
     }
 
     /**
@@ -168,7 +174,7 @@ class TicketRow
     {
         $duplicata = $this->ticket->getDuplicata();
         if ($duplicata) {
-            return $this->ticket->getKermesse()->getId() . '/' . $duplicata;
+            return $this->duplicataDirGen->getDuplicataPath($this->ticket);
         }
         return null;
     }

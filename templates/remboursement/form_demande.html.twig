@@ -1,24 +1,13 @@
-{% extends 'base.html.twig' %}
+{% extends 'modal.html.twig' %}
 
 {% block title %}Demande de remboursement{% endblock %}
 
 {% block body %}
-    <div class="row justify-content-center">
-        <div class="col-sm-10 col-md-8 col-xl-5">
-            <div class="well">
-                <fieldset>
-                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Demande de remboursement</legend>
-                    {{ form_start(form) }}
-                    {{ form_row(form.membre) }}
-                    {{ form_row(form.numero_suivi) }}
-                    {{ form_row(form.montant) }}
-                    {{ form_row(form.tickets) }}
-                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
-                    {{ form_end(form) }}
-                </fieldset>
-            </div>
-        </div>
-    </div>
+    {{ form_row(form.membre) }}
+    {{ form_row(form.numero_suivi) }}
+    {{ form_row(form.montant) }}
+    {{ form_row(form.tickets) }}
 {% endblock %}
+
 
 {% block javascripts %}<script src="{{ asset('js/demande_remboursement.js') }}"></script>{% endblock %}

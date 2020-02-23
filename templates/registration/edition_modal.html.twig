@@ -1,0 +1,10 @@
+{% extends 'modal.html.twig' %}
+
+{% block title %}{{ app.user.nom }} - Informations établissement{% endblock %}
+
+{% block body %}
+    {{ form_row(form.username) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.password.first) }}
+    {{ form_row(form.password.second) }}
+{% endblock %}

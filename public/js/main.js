@@ -37,11 +37,58 @@ function searchInTable(table) {
     });
 }
 
+function addAlert(message, type="success") {
+    $('#alerts-container').append('<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert" style="z-index: 1000;">' +
+        message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>');
+}
+
+function reloadAjaxElement(element) {
+    const url = element.data('ajax-url');
+    if (!element.is('.ajax') || url === undefined) {
+        return;
+    }
+    element.html('<div class="d-flex justify-content-center align-items-center loader"><div class="spinner-grow" role="status" style="width: 4rem; height: 4rem;"><span class="sr-only">Chargement en cours</span></div>');
+    $.ajax({
+        url: url,
+        context: element[0]
+    }).done(function(html) {
+        element.html(html);
+    })
+}
+function initialize() {
+    // Date picker
+    $('.js-datepicker').datepicker({
+        language: 'fr',
+        format: 'dd/mm/yyyy'
+    });
+
+    $('.draggable').draggable({
+        revert: true,
+        handle: '.drag-grip',
+        helper: 'clone'
+    });
+
+    $('.droppable').droppable({
+        accept : '.draggable',
+        tolerance: "pointer"
+    });
+
+    // Tooltip
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('.ajax-reload').on('ajax:success', function () {document.location.reload();});
+    $('.ajax-reload-element').on('ajax:success', function () {reloadAjaxElement($(this).closest('.ajax'));});
+}
+
 $(function() {
+
+    initialize();
+
     $("#menu").metisMenu();
 
+    const body = $('body');
     // add-collection-widget.js
-    $('.add-another-collection-widget').click(function () {
+    body.on('click', '.add-another-collection-widget', function () {
         const list = $($(this).attr('data-list'));
         // Try to find the counter of the list
         let counter = list.data('widget-counter') | list.children().length;
@@ -68,40 +115,92 @@ $(function() {
         addRemoveLinkCollectionWidget(element);
     });
 
-    // Date picker
-    $('.js-datepicker').datepicker({
-        language: 'fr',
-        format: 'dd/mm/yyyy'
-    });
-
-    $('.draggable').draggable({
-        revert: true,
-        handle: '.drag-grip',
-        helper: 'clone'
-    });
-
-    $('.droppable').droppable({
-        accept : '.draggable',
-        tolerance: "pointer"
-    });
-
-    // Tooltip
-    $('[data-toggle="tooltip"]').tooltip();
-
     // Ajax simple
-    $('.ajax').each(function () {
-        const element = $(this);
-        const url = element.data('ajax-url');
-        if (url === undefined) {
+    $('.ajax').each(function () {reloadAjaxElement($(this));});
+
+    // ==================== MODAL =========================
+    const modaleForm = $('#main-modal-form');
+    // La modale de formulaire est cachée
+    modaleForm.on('hidden.bs.modal', function () {$('head .ajax-stylesheet').remove();});
+    modaleForm.on('submit', 'form', function (e) {
+        const form = $(this);
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+        const formData = new FormData(form.get(0));
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            error: function(jqXHR, textStatus, errorMessage) {
+                addAlert(errorMessage, "danger");
+            },
+            success: function(data) {
+                if (typeof data === 'object' && data.action === 'close') {
+                    const origin = modaleForm.data('origin');
+                    modaleForm.trigger('form-modal:valide', [origin]);
+                    if (origin) {
+                        $(origin).trigger('ajax:success');
+                    }
+                    modaleForm.modal('hide');
+                    addAlert(data.message || "Enregistrement effectué avec succès");
+                } else {
+                    modaleForm.html(data);
+                    initialize();
+                }
+            }
+        });
+    });
+    body.on('click', '.modal .dismiss', function () {
+        $(this).closest('.modal').modal('hide');
+    });
+    body.on('click', '[data-ajax]', function () {
+        $('head .ajax-stylesheet').remove();
+        const btn = $(this);
+        const destination = $(btn.data('ajax-destination') || '#main-modal-form');
+        const url = btn.data('ajax');
+        let validation = btn.data('ajax-validation');
+        if (typeof validation === 'boolean') {
+            validation = 'Êtes-vous sûr ?';
+        }
+        if (url === undefined || destination.length === 0 || (!!validation && !confirm(validation))) {
             return;
+        }
+        destination.data('origin', btn);
+        if (destination.is('.modal')) {
+            destination.html('<div class="modal-dialog" role="document"><div class="modal-content">' +
+                '<div class="modal-body d-flex flex-column justify-content-center"><div class="text-center">Chargement en cours</div>' +
+                '<div class="text-center"><div class="spinner-grow" role="status" style="width: 3rem; height: 3rem;"></div></div></div>' +
+                '</div></div>');
+            destination.modal('show');
         }
         $.ajax({
             url: url,
-            context: element[0]
-        }).done(function(html) {
-            $(this).html(html);
+            context: btn[0],
+            error: function(jqXHR, textStatus, errorMessage) {
+                addAlert(errorMessage, "danger");
+            },
+            success: function(data) {
+                if (typeof data === 'object' && data.action === 'close') {
+                    const origin = modaleForm.data('origin');
+                    modaleForm.trigger('form-modal:valide', [origin]);
+                    if (origin) {
+                        $(origin).trigger('ajax:success');
+                    }
+                    modaleForm.modal('hide');
+                    addAlert(data.message || "Traitement effectué avec succès");
+                } else {
+                    const content = $(data);
+                    const associatedStylesheets = content.find('#modal-stylesheets').children();
+                    associatedStylesheets.addClass('ajax-stylesheet');
+                    $('head').append(associatedStylesheets);
+                    destination.html(data);
+                    initialize();
+                }
+            }
         })
     });
+    // ==================== /MODAL =========================
 
     // Afficher / Cacher le menu slim
     $('#show-menu-slim').on('click', function () {
