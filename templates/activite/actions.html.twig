@@ -29,7 +29,7 @@
     </nav>
     {% if courante %}
         <div class="d-flex flex-row justify-content-center mb-3">
-            <a href="{{ path('nouvelle_autre_activite') }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle action"><i class="fas fa-plus"></i> Nouvelle action</a>
+            <a href="#" data-ajax="{{ path('nouvelle_autre_activite') }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle action"><i class="fas fa-plus"></i> Nouvelle action</a>
         </div>
     {% endif %}
     <div class="row">

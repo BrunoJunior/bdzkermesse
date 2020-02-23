@@ -55,12 +55,40 @@ function reloadAjaxElement(element) {
         element.html(html);
     })
 }
+function initialize() {
+    // Date picker
+    $('.js-datepicker').datepicker({
+        language: 'fr',
+        format: 'dd/mm/yyyy'
+    });
+
+    $('.draggable').draggable({
+        revert: true,
+        handle: '.drag-grip',
+        helper: 'clone'
+    });
+
+    $('.droppable').droppable({
+        accept : '.draggable',
+        tolerance: "pointer"
+    });
+
+    // Tooltip
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('.ajax-reload').on('ajax:success', function () {document.location.reload();});
+    $('.ajax-reload-element').on('ajax:success', function () {reloadAjaxElement($(this).closest('.ajax'));});
+}
 
 $(function() {
+
+    initialize();
+
     $("#menu").metisMenu();
 
+    const body = $('body');
     // add-collection-widget.js
-    $('.add-another-collection-widget').click(function () {
+    body.on('click', '.add-another-collection-widget', function () {
         const list = $($(this).attr('data-list'));
         // Try to find the counter of the list
         let counter = list.data('widget-counter') | list.children().length;
@@ -87,30 +115,8 @@ $(function() {
         addRemoveLinkCollectionWidget(element);
     });
 
-    // Date picker
-    $('.js-datepicker').datepicker({
-        language: 'fr',
-        format: 'dd/mm/yyyy'
-    });
-
-    $('.draggable').draggable({
-        revert: true,
-        handle: '.drag-grip',
-        helper: 'clone'
-    });
-
-    $('.droppable').droppable({
-        accept : '.draggable',
-        tolerance: "pointer"
-    });
-
-    // Tooltip
-    $('[data-toggle="tooltip"]').tooltip();
-
     // Ajax simple
     $('.ajax').each(function () {reloadAjaxElement($(this));});
-
-    $('.ajax-reload').on('ajax:success', function () {document.location.reload();});
 
     // ==================== MODAL =========================
     const modaleForm = $('#main-modal-form');
@@ -140,11 +146,11 @@ $(function() {
                     addAlert(data.message || "Enregistrement effectué avec succès");
                 } else {
                     modaleForm.html(data);
+                    initialize();
                 }
             }
         });
     });
-    const body = $('body');
     body.on('click', '.modal .dismiss', function () {
         $(this).closest('.modal').modal('hide');
     });
@@ -185,6 +191,7 @@ $(function() {
                     associatedStylesheets.addClass('ajax-stylesheet');
                     $('head').append(associatedStylesheets);
                     destination.html(data);
+                    initialize();
                 }
             }
         })

@@ -27,7 +27,7 @@
         </div>
         {% if card.derniere %}
             <div class="btn-group mb-3" role="group" aria-label="Actions kermesse en cours">
-                <a href="#" data-ajax="{{ path('dupliquer_kermesse', {'id': card.kermesse.id}) }}" data-role="duplicate" class="btn btn-warning" data-toggle="tooltip" title="Dupliquer"><i class="fas fa-clone"></i></a>
+                <a href="#" data-ajax="{{ path('dupliquer_kermesse', {'id': card.kermesse.id}) }}" class="btn btn-warning ajax-reload" data-toggle="tooltip" title="Dupliquer"><i class="fas fa-clone"></i></a>
                 <a href="{{ path('planning_benevoles', {'id': card.kermesse.id}) }}" class="btn btn-info" data-toggle="tooltip" title="Planning"><i class="fas fa-calendar-alt"></i></a>
             </div>
         {% endif %}

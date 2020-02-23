@@ -15,7 +15,7 @@
 
 {% block body %}
     <fieldset id="kermesses-list">
-        <legend>Nos kermesses <a id="add-kermesse" href="#" data-ajax="{{ path('nouvelle_kermesse') }}" class="btn btn-primary" data-toggle="tooltip" title="Nouvelle kermesse"><i class="fas fa-plus"></i></a></legend>
+        <legend>Nos kermesses <a id="add-kermesse" href="#" data-ajax="{{ path('nouvelle_kermesse') }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle kermesse"><i class="fas fa-plus"></i></a></legend>
         <div class="row">
             {% if kermesses is empty %}
                 <div class="col-sm-6 col-md-4 col-lg-3 col-xl-2">
@@ -32,18 +32,4 @@
             {% endfor %}
         </div>
     </fieldset>
-{% endblock %}
-
-{% block javascripts %}
-    <script type="application/javascript">
-        $(function () {
-            const liste = $('#kermesses-list');
-            liste.on('ajax:success', '#add-kermesse, [data-role="duplicate"]', function () {
-                document.location.reload();
-            });
-            liste.on('ajax:success', '[data-role="edit"]', function () {
-                reloadAjaxElement($(this).closest('.ajax'));
-            });
-        });
-    </script>
 {% endblock %}
