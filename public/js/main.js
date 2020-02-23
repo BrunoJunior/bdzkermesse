@@ -159,7 +159,11 @@ $(function() {
         const btn = $(this);
         const destination = $(btn.data('ajax-destination') || '#main-modal-form');
         const url = btn.data('ajax');
-        if (url === undefined || destination.length === 0) {
+        let validation = btn.data('ajax-validation');
+        if (typeof validation === 'boolean') {
+            validation = 'Êtes-vous sûr ?';
+        }
+        if (url === undefined || destination.length === 0 || (!!validation && !confirm(validation))) {
             return;
         }
         destination.data('origin', btn);

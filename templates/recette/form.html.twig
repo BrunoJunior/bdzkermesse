@@ -1,28 +1,16 @@
-{% extends 'base.html.twig' %}
+{% extends 'modal.html.twig' %}
 
-{% block title %}Recette{% endblock %}
+{% block title %}Recette{% if activite is not null %} - {{ activite.nom }}{% endif %}{% endblock %}
 
 {% block body %}
-    <div class="row justify-content-center">
-        <div class="col-sm-10 col-md-8 col-xl-5">
-            <div class="well">
-                <fieldset>
-                    <legend><i class="{% block legend_icon %}fas fa-plus-circle{% endblock %}"></i> Recette{% if activite is not null %} - {{ activite.nom }}{% endif %}</legend>
-                    {{ form_start(form) }}
-                    {{ form_row(form.date) }}
-                    {% if kermesse is not null %}
-                        {{ form_row(form.activite) }}
-                    {% endif %}
-                    {{ form_row(form.report_stock) }}
-                    {{ form_row(form.libelle) }}
-                    {{ form_row(form.montant) }}
-                    {{ form_row(form.nombre_ticket) }}
-                    <button class="btn btn-primary" type="submit">Enregistrer !</button>
-                    {{ form_end(form) }}
-                </fieldset>
-            </div>
-        </div>
-    </div>
+    {{ form_row(form.date) }}
+    {% if kermesse is not null %}
+        {{ form_row(form.activite) }}
+        {{ form_row(form.report_stock) }}
+    {% endif %}
+    {{ form_row(form.libelle) }}
+    {{ form_row(form.montant) }}
+    {{ form_row(form.nombre_ticket) }}
 {% endblock %}
 
 {% block javascripts %}<script src="{{ asset('js/recette_form.js') }}"></script>{% endblock %}

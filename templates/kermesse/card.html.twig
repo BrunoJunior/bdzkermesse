@@ -22,7 +22,7 @@
         </div>
         <div class="btn-group mb-3" role="group" aria-label="Actions comptables">
             <a href="{{ path('nouveau_ticket', {'id': card.kermesse.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-receipt"></i></a>
-            <a href="{{ path('nouvelle_recette', {'id': card.kermesse.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-donate"></i></a>
+            <a href="#" data-ajax="{{ path('nouvelle_recette', {'id': card.kermesse.id}) }}" class="btn btn-success ajax-reload-element" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-donate"></i></a>
             <a href="{{ path('export_comptable', {'id': card.kermesse.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Export comptable"><i class="fas fa-file-download"></i></a>
         </div>
         {% if card.derniere %}

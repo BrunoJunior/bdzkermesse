@@ -9,7 +9,7 @@
             <fieldset>
                 <legend>Tickets associés</legend>
                 <div class="row">
-                    {% include "ticket/table.html.twig" with {'rows': remboursement.tickets, 'total': remboursement.montant} only %}
+                    {% include "ticket/table.html.twig" with {'order': order, 'colonnes': colonnes, 'rows': remboursement.tickets, 'total': remboursement.montant} only %}
                 </div>
             </fieldset>
         </div>

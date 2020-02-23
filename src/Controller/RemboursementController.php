@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Business\RemboursementBusiness;
 use App\Business\TicketBusiness;
+use App\DataTransfer\Colonne;
 use App\DataTransfer\RemboursementRow;
 use App\Entity\Membre;
 use App\Entity\Remboursement;
@@ -46,18 +47,33 @@ class RemboursementController extends MyController
     /**
      * @Route("/remboursements/{id}", name="remboursement", requirements={"id"="\d+"})
      * @Security("remboursement.isProprietaire(user)")
+     * @param Request $request
      * @param Remboursement $remboursement
      * @param TicketBusiness $bTicket
      * @return Response
      * @throws UnknownEumException
      */
-    public function details(Remboursement $remboursement, TicketBusiness $bTicket): Response
+    public function details(Request $request, Remboursement $remboursement, TicketBusiness $bTicket): Response
     {
+        $order = $request->get('order', 'date');
+        $colonnes = [
+            new Colonne('id', '#', '', true),
+            new Colonne('etat', 'État', 'fas fa-question-circle', true),
+            new Colonne('date', 'Date', 'fas fa-calendar', true),
+            new Colonne('membre', 'Acheteur', 'fas fa-user', true, true),
+            new Colonne('numero', 'N°', 'fas fa-barcode', true, true),
+            new Colonne('fournisseur', 'Fournisseur', 'fas fa-truck', true, true),
+            new Colonne('montant', 'Montant', 'fas fa-receipt', true, true),
+            new Colonne('activites', 'Activités liées', 'fas fa-link'),
+            new Colonne('actions', 'Actions', 'fab fa-telegram-plane'),
+        ];
         return $this->render(
             'remboursement/index.html.twig',
             [
                 'remboursement' => new RemboursementRow($remboursement, $bTicket),
-                'menu' => $this->getMenu($this->business->getKermesse($remboursement), static::MENU_REMBOURSEMENTS)
+                'menu' => $this->getMenu($this->business->getKermesse($remboursement), static::MENU_REMBOURSEMENTS),
+                'colonnes' => $colonnes,
+                'order' => $order
             ]
         );
     }
