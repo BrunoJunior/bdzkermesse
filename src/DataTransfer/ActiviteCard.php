@@ -149,12 +149,11 @@ class ActiviteCard
     /**
      * Le total sous forme de HTML
      * Recette - Dépenses + (Nombres de tickets * Montant ticket)
-     * @return string
+     * @return int
      */
-    public function getTotal(): string
+    public function getTotal(): int
     {
-        $total = ($this->recette ?? 0) - $this->depense + (($this->nombreTickets ?? 0) * $this->getMontantTicket());
-        return HFloat::getInstance($total / 100.00)->getMontantFormatFrancais();
+        return ($this->recette ?? 0) - $this->depense + (($this->nombreTickets ?? 0) * $this->getMontantTicket());
     }
 
     /**

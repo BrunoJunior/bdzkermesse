@@ -8,6 +8,7 @@ use App\DataTransfer\PlageHoraire;
 use App\Entity\Activite;
 use App\Entity\Etablissement;
 use App\Entity\Kermesse;
+use App\Exception\ServiceException;
 use App\Form\ActiviteType;
 use App\Helper\Breadcrumb;
 use App\Helper\HFloat;
@@ -105,17 +106,6 @@ class ActiviteController extends MyController
 
     /**
      * @param Kermesse|null $kermesse
-     * @return Response
-     */
-    private function redirectToKermesseOuAutre(?Kermesse $kermesse): Response
-    {
-        return $kermesse
-            ? $this->redirectToRoute('kermesse', ['id' => $kermesse->getId()])
-            : $this->redirectToRoute('lister_actions');
-    }
-
-    /**
-     * @param Kermesse|null $kermesse
      * @return Breadcrumb
      */
     private function getMenuKermesseOuAutre(?Kermesse $kermesse): Breadcrumb
@@ -128,17 +118,17 @@ class ActiviteController extends MyController
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @return Response
+     * @throws ServiceException
      */
     public function supprimerActivite(Activite $activite): Response
     {
-        $kermesse = $activite->getKermesse();
-        if (!$activite->isCaisseCentrale()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($activite);
-            $em->flush();
-            $this->addFlash("success", "Activité " . $activite->getNom() . ' supprimée !');
+        if ($activite->isCaisseCentrale()) {
+            throw new ServiceException("Vous n'êtes pas autorisé à faire cela !");
         }
-        return $this->redirectToKermesseOuAutre($kermesse);
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($activite);
+        $em->flush();
+        return $this->reponseModal("Activité " . $activite->getNom() . ' supprimée !');
     }
 
     /**

@@ -10,7 +10,7 @@
         <div class="btn-group" role="group" aria-label="Actions">
             <a href="{{ path('editer_ticket', {'id': depense.idTicket}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
             {% if not depense.forKermesse %}
-                <a href="{{ path('supprimer_ticket', {'id': depense.idTicket}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>
+                <a href="#" data-ajax="{{ path('supprimer_ticket', {'id': depense.idTicket}) }}" class="btn btn-danger ajax-remove" data-toggle="tooltip" title="Supprimer" data-ajax-validation="true"><i class="fas fa-trash-alt"></i></a>
             {% endif %}
         </div>
     </div>

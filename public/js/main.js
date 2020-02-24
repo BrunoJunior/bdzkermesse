@@ -53,6 +53,7 @@ function reloadAjaxElement(element) {
         context: element[0]
     }).done(function(html) {
         element.html(html);
+        initialize();
     })
 }
 function initialize() {
@@ -78,6 +79,11 @@ function initialize() {
 
     $('.ajax-reload').on('ajax:success', function () {document.location.reload();});
     $('.ajax-reload-element').on('ajax:success', function () {reloadAjaxElement($(this).closest('.ajax'));});
+    $('.ajax-remove').on('ajax:success', function () {
+        const toRemove = $(this).closest('.ajax');
+        console.log("Try to remove", toRemove);
+        toRemove.remove();
+    });
 }
 
 $(function() {
@@ -182,12 +188,16 @@ $(function() {
             },
             success: function(data) {
                 if (typeof data === 'object' && data.action === 'close') {
-                    const origin = modaleForm.data('origin');
-                    modaleForm.trigger('form-modal:valide', [origin]);
-                    if (origin) {
-                        $(origin).trigger('ajax:success');
+                    if (destination.is('.modal')) {
+                        destination.trigger('form-modal:valide', [btn]);
+                        const hide = function () {destination.modal('hide');};
+                        hide();
+                        destination.on('shown.bs.modal', hide);
+                        destination.on('hide.bs.modal', function () {
+                            destination.off('shown.bs.modal', hide);
+                        })
                     }
-                    modaleForm.modal('hide');
+                    btn.trigger('ajax:success');
                     addAlert(data.message || "Traitement effectué avec succès");
                 } else {
                     const content = $(data);

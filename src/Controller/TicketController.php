@@ -223,17 +223,12 @@ class TicketController extends MyController
      * @Security("ticket.isProprietaire(user)")
      * @param Ticket $ticket
      * @return Response
+     * @throws BusinessException
      */
     public function supprimerTicket(Ticket $ticket): Response
     {
-        try {
-            $this->business->supprimer($ticket);
-            $this->addFlash("success", "Ticket supprimé !");
-        } catch (BusinessException $exc) {
-            $this->addFlash("danger", $exc->getMessage());
-        }
-
-        return $this->redirectVersTicketsOuActions($ticket->getKermesse());
+        $this->business->supprimer($ticket);
+        return $this->reponseModal("Ticket supprimé !");
     }
 
     /**

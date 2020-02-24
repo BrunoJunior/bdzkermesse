@@ -10,8 +10,8 @@
     <div class="card-footer">
         <div class="btn-group" role="group" aria-label="Actions">
             <a href="{{ path('editer_ticket', {'id': ticket.id}) }}" class="btn btn-primary" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
-            {% if ticket.cheminFichier is not empty %}<a href="{{ asset('uploads/tickets/' ~ ticket.cheminFichier) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
-            {% if ticket.entity.etat == 0 %}<a href="{{ path('supprimer_ticket', {'id': ticket.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Supprimer" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i></a>{% endif %}
+            {% if ticket.cheminFichier is not empty %}<a href="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': ticket.id}) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>{% endif %}
+            {% if ticket.entity.etat == 0 %}<a href="#" data-ajax="{{ path('supprimer_ticket', {'id': ticket.id}) }}" class="btn btn-danger ajax-remove" data-toggle="tooltip" title="Supprimer" data-ajax-validation="true"><i class="fas fa-trash-alt"></i></a>{% endif %}
         </div>
     </div>
 </div>

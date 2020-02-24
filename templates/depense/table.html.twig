@@ -12,7 +12,7 @@
     </thead>
     <tbody>
     {% for depense in depenses %}
-        <tr class="table-light">
+        <tr class="table-light ajax">
             <th scope="row">{{ depense.id }}</th>
             <td>{{ depense.date }}</td>
             <td>{{ depense.acheteur }}</td>
@@ -22,7 +22,7 @@
             <td>
                 <a href="{{ path('editer_ticket', {'id': depense.idTicket}) }}" class="btn btn-primary"><i class="fas fa-edit"></i> Éditer</a>
                 {% if not depense.forKermesse %}
-                    <a href="{{ path('supprimer_ticket', {'id': depense.idTicket}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr ?.');"><i class="fas fa-trash-alt"></i> Supprimer</a>
+                    <a href="#" data-ajax="{{ path('supprimer_ticket', {'id': depense.idTicket}) }}" class="btn btn-danger ajax-remove" data-ajax-validation="true"><i class="fas fa-trash-alt"></i> Supprimer</a>
                 {% endif %}
             </td>
         </tr>
