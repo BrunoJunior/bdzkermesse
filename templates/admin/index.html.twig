@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zone d'administration{% endblock %}
+
+{% block body %}
+    <div class="list-group">
+        <a href="{{ path('registration') }}" class="list-group-item list-group-item-action">Création établissement</a>
+        <a href="{{ path('infos_php') }}" class="list-group-item list-group-item-action">Infos serveur</a>
+    </div>
+{% endblock %}

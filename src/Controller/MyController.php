@@ -29,6 +29,7 @@ abstract class MyController extends AbstractController
     const MENU_PLANNING = 'Planning';
     const MENU_ACTIVITES_AUTRES = 'Actions';
     const MENU_BILAN = 'Bilan';
+    const MENU_ADMIN = 'Administration';
 
     /**
      * @var LoggerInterface
@@ -101,6 +102,11 @@ abstract class MyController extends AbstractController
         }
         $menu->addLink(MenuLink::getInstance(static::MENU_ACTIVITES_AUTRES, 'stream', $this->generateUrl('lister_actions'))->setActive($activeLink === static::MENU_ACTIVITES_AUTRES));
         $menu->addLink(MenuLink::getInstance(static::MENU_BILAN, 'chart-pie', $this->generateUrl('show_bilan'))->setActive($activeLink === static::MENU_BILAN));
+
+        if ($this->getEtablissement() && $this->getEtablissement()->isAdmin()) {
+            $menu->addLink(MenuLink::getInstance(static::MENU_ADMIN, 'fa-tools', $this->generateUrl('show_bilan'))->setActive($activeLink === static::MENU_BILAN));
+        }
+
         return $menu;
     }
 

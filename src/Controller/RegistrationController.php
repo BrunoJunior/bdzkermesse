@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\DataTransfer\DemandeInscription;
-use App\Entity\Etablissement;
-use App\Entity\Membre;
 use App\Form\DemandeInscriptionType;
 use App\Form\EtablissementType;
 use App\Service\EnvoyerDemandeInscription;
@@ -19,40 +17,6 @@ use Twig\Error\SyntaxError;
 
 class RegistrationController extends MyController
 {
-    /**
-     * @Route("/registration", name="registration")
-     * @param Request $request
-     * @param UserPasswordEncoderInterface $passwordEncoder
-     * @return RedirectResponse|Response
-     */
-    public function index(Request $request, UserPasswordEncoderInterface $passwordEncoder)
-    {
-        $etablissement = new Etablissement();
-        $form = $this->createForm(EtablissementType::class, $etablissement);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $passwordEncoder->encodePassword($etablissement, $etablissement->getPassword());
-            $etablissement->setPassword($password);
-            // Ajout d'un membre par défaut (Membre établissement)
-            $partiesNom = explode(' ', $etablissement->getNom());
-            $dftMembre = new Membre();
-            $dftMembre->setDefaut(true);
-            $dftMembre->setEmail("");
-            $dftMembre->setPrenom(array_shift($partiesNom));
-            $dftMembre->setNom(implode(' ', $partiesNom));
-            $etablissement->addMembre($dftMembre);
-            // On enregistre l'utilisateur dans la base
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($dftMembre);
-            $em->persist($etablissement);
-            $em->flush();
-            return $this->redirectToRoute('security_login');
-        }
-        return $this->render(
-            'registration/nouveau.html.twig',
-            array('form' => $form->createView())
-        );
-    }
 
     /**
      * @Route("/etablissement/edit", name="editer_etablissement")

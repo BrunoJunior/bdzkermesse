@@ -4,7 +4,8 @@
 }
 
 header.navbar-dark,
-.sidebar-sticky
+.sidebar-sticky,
+#menu-slim
 {
     background-color: rgba(33, 37, 41, 0.8);
 }
