@@ -50,7 +50,7 @@ class AdminController extends MyController
     public function registration(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
         $etablissement = new Etablissement();
-        $form = $this->createForm(EtablissementType::class, $etablissement);
+        $form = $this->createForm(EtablissementType::class, $etablissement, ['isAdmin' => true]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $passwordEncoder->encodePassword($etablissement, $etablissement->getPassword());

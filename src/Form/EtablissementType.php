@@ -16,7 +16,7 @@ class EtablissementType extends AbstractType
     {
         $builder
             ->add('nom', TextType::class)
-            ->add('username', TextType::class, ['label' => 'Code', 'disabled' => true])
+            ->add('username', TextType::class, ['label' => 'Code', 'disabled' => !$options['isAdmin']])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'first_options'  => ['label' => 'Mot de passe'],
@@ -29,6 +29,7 @@ class EtablissementType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Etablissement::class,
+            'isAdmin' => false
         ]);
     }
 }
