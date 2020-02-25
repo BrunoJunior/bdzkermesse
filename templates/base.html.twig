@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
         <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.css">
+        <link rel="stylesheet" href="{{ asset('css/metisMenu.min.css') }}">
         <link rel="stylesheet" href="{{ asset('bootstrap-datepicker/css/bootstrap-datepicker3.standalone.min.css') }}">
         <link rel="stylesheet" href="{{ asset('css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
@@ -88,14 +88,14 @@
         <div class="modal fade" id="main-modal-form" tabindex="-1" role="dialog" aria-labelledby="main-modal-form-title" aria-hidden="true">
         </div>
 
-        <script src="{{ asset('js/jquery.min.js') }}"></script>
-        <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-        <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/metisMenu/2.7.9/metisMenu.min.js"></script>
+        <script src="{{ asset('js/jquery.min.js') }}" charset="UTF-8"></script>
+        <script src="{{ asset('js/jquery-ui/jquery-ui.min.js') }}" charset="UTF-8"></script>
+        <script src="{{ asset('js/popper.min.js') }}" charset="UTF-8"></script>
+        <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}" charset="UTF-8"></script>
+        <script src="{{ asset('js/metisMenu.min.js') }}" charset="UTF-8"></script>
         <script src="{{ asset('bootstrap-datepicker/js/bootstrap-datepicker.min.js') }}" charset="UTF-8"></script>
         <script src="{{ asset('bootstrap-datepicker/locales/bootstrap-datepicker.fr.min.js') }}" charset="UTF-8"></script>
-        <script src="{{ asset('js/main.js') }}"></script>
+        <script src="{{ asset('js/main.js') }}" charset="UTF-8"></script>
         {% block javascripts %}{% endblock %}
     </body>
 </html>
