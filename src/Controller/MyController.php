@@ -104,7 +104,7 @@ abstract class MyController extends AbstractController
         $menu->addLink(MenuLink::getInstance(static::MENU_BILAN, 'chart-pie', $this->generateUrl('show_bilan'))->setActive($activeLink === static::MENU_BILAN));
 
         if ($this->getEtablissement() && $this->getEtablissement()->isAdmin()) {
-            $menu->addLink(MenuLink::getInstance(static::MENU_ADMIN, 'fa-tools', $this->generateUrl('show_bilan'))->setActive($activeLink === static::MENU_BILAN));
+            $menu->addLink(MenuLink::getInstance(static::MENU_ADMIN, 'tools', $this->generateUrl('admin'))->setActive($activeLink === static::MENU_ADMIN));
         }
 
         return $menu;
