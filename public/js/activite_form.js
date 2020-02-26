@@ -6,7 +6,7 @@ $(function() {
         var nbFieldest = $('#activite_creneaux fieldset').length;
         var noCreneau = $('#no_creneau');
         if (nbFieldest === 0) {
-            $('#activite_creneaux').append('<fieldset class="form-group" id="no_creneau">Aucun chréneau horaire</fieldset>');
+            $('#activite_creneaux').append('<fieldset class="form-group" id="no_creneau">Aucun créneau horaire</fieldset>');
         } else if (noCreneau.length > 0) {
             noCreneau.remove();
         }
