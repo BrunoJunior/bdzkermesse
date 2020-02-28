@@ -3,10 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="{{ asset('bootstrap/css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/registration.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/colors.css') }}">
+    {{ encore_entry_link_tags('login') }}
     <title>{% block title %}LA kermesse{% endblock %}</title>
 </head>
 <body class="h-100">
@@ -32,7 +29,7 @@
 
 <div class="h-100 row align-items-center justify-content-center">
     <div class="p-3 rounded-lg bg-white-t50">
-        <h2 class="mb-3 d-flex justify-content-center"><img id="logo" src="{{ asset('imgs/logo_texte_inv.png') }}"  alt="logo" /></h2>
+        <h2 class="mb-3 d-flex justify-content-center"><img src="{{ asset('imgs/logo_texte_inv.png') }}"  alt="logo" /></h2>
         <form class="form-inline" action="{{ path('security_login') }}" method="post">
             <input type="text" id="username" name="_username" value="{{ last_username }}" class="form-control mb-2 mr-sm-2" placeholder="Code"/>
             <div class="input-group mb-2 mr-sm-2">
@@ -52,7 +49,7 @@
     </div>
 </div>
 
-<script src="{{ asset('js/jquery.min.js') }}"></script>
-<script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+{{ encore_entry_script_tags('login') }}
+
 </body>
 </html>

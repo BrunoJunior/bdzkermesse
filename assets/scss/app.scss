@@ -1,0 +1,106 @@
+@import "~bootstrap/scss/bootstrap";
+.bg-white-t50 {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.bg-white-t25 {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.bg-white-t75 {
+    background-color: rgba(255, 255, 255, 0.75);
+}
+
+.sidebar-nav {
+    ul {
+        padding: 0;
+        margin: 0;
+        list-style: none;
+    }
+    .metismenu {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-orient: vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        li + li, li:first-child {
+            margin-top: 5px;
+        }
+        li:last-child {
+            margin-bottom: 5px;
+        }
+        > li {
+            /*-webkit-box-flex: 1;
+            -ms-flex: 1 1 0%;
+            flex: 1 1 0%;*/
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -ms-flex-direction: column;
+            flex-direction: column;
+            position: relative;
+        }
+        a {
+            position: relative;
+            display: block;
+            padding: 13px 15px;
+            color: #adb5bd;
+            outline-width: 0;
+            transition: all .3s ease-out;
+        }
+        ul {
+            a {
+                padding: 10px 15px 10px 30px;
+            }
+            ul a {
+                padding: 10px 15px 10px 45px;
+            }
+        }
+        a:hover, a:focus, a:active, li.active > a {
+            color: #f8f9fa;
+            text-decoration: none;
+            background: #0b7285;
+        }
+    }
+}
+
+header.navbar-dark,
+.sidebar-sticky,
+#menu-slim
+{
+    background-color: rgba(33, 37, 41, 0.8);
+}
+
+body {
+    padding-top: 56px;
+    background-image: url("../images/bg_defaut.jpg");
+}
+
+aside.fixed-top {
+    padding-top: 56px;
+    height: 100%;
+    z-index: 1029;
+}
+
+table thead th a {
+    color: white;
+}
+
+table thead th input {
+    max-width: 100px;
+}
+
+/* Honeypot */
+.hpfield {
+    display: none;
+}
+
+#logo {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+}
