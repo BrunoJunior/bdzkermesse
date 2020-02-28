@@ -1,5 +1,6 @@
-$(function() {
+const $ = require('jquery');
 
+$(function() {
     $("#inscription_email").on('change', function () {
         const champ = $(this);
         const nom = $("#inscription_nom");
@@ -15,6 +16,4 @@ $(function() {
             nom.prop('disabled', false);
         });
     });
-
-
 });

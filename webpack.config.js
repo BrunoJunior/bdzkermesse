@@ -23,11 +23,23 @@ Encore
      * Each entry will result in one JavaScript file (e.g. app.js)
      * and one CSS file (e.g. app.scss) if your JavaScript imports CSS.
      */
+    .addEntry('accueil', './assets/js/accueil.js')
+    .addEntry('actions', './assets/js/actions.js')
+    .addEntry('activite_form', './assets/js/activite_form.js')
     .addEntry('app', './assets/js/app.js')
-    .addEntry('login', './assets/js/login.js')
+    .addEntry('benevole_index', './assets/js/benevole_index.js')
+    .addEntry('benevole_inscription', './assets/js/benevole_inscription.js')
+    .addEntry('benevole_migration', './assets/js/benevole_migration.js')
     .addEntry('bilan', './assets/js/bilan.js')
+    .addEntry('demande_remboursement', './assets/js/demande_remboursement.js')
+    .addEntry('error', './assets/js/error.js')
+    .addEntry('kermesse_index', './assets/js/kermesse_index.js')
+    .addEntry('login', './assets/js/login.js')
+    .addEntry('planning', './assets/js/planning.js')
+    .addEntry('recette_form', './assets/js/recette_form.js')
+    .addEntry('ticket_form', './assets/js/ticket_form.js')
 
-    .copyFiles({from: './assets/images'})
+    .copyFiles({from: './assets/images', to: 'images/[path][name].[hash:8].[ext]'})
 
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()

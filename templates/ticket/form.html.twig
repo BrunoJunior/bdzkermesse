@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
-
-{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/ticket_form.css') }}">{% endblock %}
+{% block stylesheets %}{{ encore_entry_link_tags('ticket_form') }}{% endblock %}
+{% block javascripts %}{{ encore_entry_script_tags('ticket_form') }}{% endblock %}
 
 {% block title %}Dépense{% if activite is not null %} - {{ activite.nom }} {% endif %}{% endblock %}
 
@@ -45,5 +45,3 @@
     </div>
     {{ form_end(form) }}
 {% endblock %}
-
-{% block javascripts %}<script src="{{ asset('js/ticket_form.js') }}"></script>{% endblock %}

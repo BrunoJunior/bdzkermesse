@@ -1,9 +1,8 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}{{ encore_entry_link_tags('benevole_index') }}{% endblock %}
+{% block javascripts %}{{ encore_entry_script_tags('benevole_index') }}{% endblock %}
 
 {% block headertitle %}Kermesse - {{ etablissement.nom }} - Accès bénévoles{% endblock %}
-
-{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/registration.css') }}">{% endblock %}
-
 {% block body %}
     <div class="jumbotron jumbotron-fluid bg-white-t50">
         <div class="container">

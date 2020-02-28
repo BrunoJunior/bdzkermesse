@@ -1,3 +1,6 @@
+import '../scss/planning.scss';
+const $ = require('jquery');
+
 $(function() {
     const hauteurEnteteInit = $(".planning-entete").height();
     const fnDisplayCreneaux = function () {

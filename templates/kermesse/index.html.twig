@@ -1,10 +1,6 @@
 {% extends 'base.html.twig' %}
-
-{% block stylesheets %}<style>
-    .loader {
-        height: 310px;
-    }
-</style>{% endblock %}
+{% block stylesheets %}{{ encore_entry_link_tags('kermesse_index') }}{% endblock %}
+{% block javascripts %}{{ encore_entry_script_tags('kermesse_index') }}{% endblock %}
 
 {% block title %}Kermesse{% endblock %}
 

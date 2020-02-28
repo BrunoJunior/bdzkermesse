@@ -2,16 +2,7 @@
 
 {% block title %}Actions{% endblock %}
 
-{% block stylesheets %}
-    <style>
-        body {
-            background: url("/imgs/actions_bg.jpg");
-        }
-        .loader {
-            height: 310px;
-        }
-    </style>
-{% endblock %}
+{% block stylesheets %}{{ encore_entry_link_tags('actions') }}{% endblock %}
 
 {% block body %}
     <nav aria-label="Page navigation example">
@@ -46,3 +37,5 @@
         {% endfor %}
     </div>
 {% endblock %}
+
+{% block javascripts %}{{ encore_entry_script_tags('actions') }}{% endblock %}

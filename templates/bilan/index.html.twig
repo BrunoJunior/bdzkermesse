@@ -1,8 +1,8 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}{{ encore_entry_link_tags('bilan') }}{% endblock %}
+{% block javascripts %}{{ encore_entry_script_tags('bilan') }}{% endblock %}
 
 {% block title %}Bilan{% endblock %}
-
-{% block stylesheets %}{{ encore_entry_link_tags('bilan') }}{% endblock %}
 
 {% block body %}
     <nav aria-label="Année scolaire">
@@ -56,5 +56,3 @@
     </div>
 
 {% endblock %}
-
-{% block javascripts %}{{ encore_entry_script_tags('bilan') }}{% endblock %}

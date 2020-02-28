@@ -1,4 +1,5 @@
 {% extends 'modal.html.twig' %}
+{% block javascripts %}{{ encore_entry_script_tags('recette_form') }}{% endblock %}
 
 {% block title %}Recette{% if activite is not null %} - {{ activite.nom }}{% endif %}{% endblock %}
 
@@ -12,5 +13,3 @@
     {{ form_row(form.montant) }}
     {{ form_row(form.nombre_ticket) }}
 {% endblock %}
-
-{% block javascripts %}<script src="{{ asset('js/recette_form.js') }}"></script>{% endblock %}

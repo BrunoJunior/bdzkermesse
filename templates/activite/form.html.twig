@@ -2,7 +2,7 @@
 
 {% block title %}Activité{% endblock %}
 
-{% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/activite_form.css') }}">{% endblock %}
+{% block stylesheets %}{{ encore_entry_link_tags('activite_form') }}{% endblock %}
 
 {% block body %}
     {{ form_row(form.nom) }}
@@ -21,4 +21,4 @@
     {% endif %}
 {% endblock %}
 
-{% block javascripts %}<script src="{{ asset('js/activite_form.js') }}"></script>{% endblock %}
+{% block javascripts %}{{ encore_entry_script_tags('activite_form') }}{% endblock %}

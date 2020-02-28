@@ -1,4 +1,5 @@
 {% extends 'modal.html.twig' %}
+{% block javascripts %}{{ encore_entry_script_tags('demande_remboursement') }}{% endblock %}
 
 {% block title %}Demande de remboursement{% endblock %}
 
@@ -8,6 +9,3 @@
     {{ form_row(form.montant) }}
     {{ form_row(form.tickets) }}
 {% endblock %}
-
-
-{% block javascripts %}<script src="{{ asset('js/demande_remboursement.js') }}"></script>{% endblock %}

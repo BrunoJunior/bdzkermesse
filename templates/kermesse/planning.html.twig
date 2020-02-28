@@ -1,10 +1,8 @@
 {% extends 'base.html.twig' %}
+{% block stylesheets %}{{ encore_entry_link_tags('planning') }}{% endblock %}
+{% block javascripts %}{{ encore_entry_script_tags('planning') }}{% endblock %}
 
 {% block title %}Kermesse - Planning{% endblock %}
-
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/planning.css') }}">
-{% endblock %}
 
 {% block body %}
     <div class="d-flex flex-row justify-content-between mt-3 mb-3">
@@ -150,5 +148,3 @@
         <div id="modal-migration" class="modal" tabindex="-1" role="dialog"></div>
     {% endif %}
 {% endblock %}
-
-{% block javascripts %}<script src="{{ asset('js/planning.js') }}"></script>{% endblock %}

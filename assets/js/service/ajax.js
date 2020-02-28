@@ -20,11 +20,7 @@ function reloadAjaxElement(element, fnDone) {
 export function initAjax(fnDone) {
     $('.ajax-reload').on('ajax:success', function () {document.location.reload();});
     $('.ajax-reload-element').on('ajax:success', function () {reloadAjaxElement($(this).closest('.ajax'), fnDone);});
-    $('.ajax-remove').on('ajax:success', function () {
-        const toRemove = $(this).closest('.ajax');
-        console.log("Try to remove", toRemove);
-        toRemove.remove();
-    });
+    $('.ajax-remove').on('ajax:success', function () {$(this).closest('.ajax').remove();});
 }
 
 export function initSimpleAjax(fnDone) {
