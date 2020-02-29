@@ -22,7 +22,7 @@
         "bootstrap-datepicker": "^1.9.0",
         "chart.js": "^2.9.3",
         "jquery": "^3.4.1",
-        "metismenu": "2.7.9",
+        "metismenu": "^3.0.5",
         "popper.js": "^1.16.0"
     }
 }

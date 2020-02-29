@@ -72,4 +72,12 @@ class BilanDto
             return in_array($ligne->getType(), $typesAutorises);
         });
     }
+
+    /**
+     * @return ILigneBilan
+     */
+    public function getTotal(): ILigneBilan
+    {
+        return $this->total;
+    }
 }

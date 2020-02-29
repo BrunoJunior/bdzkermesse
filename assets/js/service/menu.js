@@ -1,3 +1,4 @@
+require('metismenu/dist/metisMenu.min.css');
 const $ = require('jquery');
 require('metismenu');
 

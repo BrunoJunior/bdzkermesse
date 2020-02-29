@@ -46,12 +46,13 @@
     <div class="d-flex justify-content-center mb-3">{% include "tipee.html.twig" with {'texte': ' Je souhaite soutenir le développement de LA Kermesse'} only %}</div>
 
     <div id="charts" class="row bg-white-t75 rounded-lg" data-labels='[{{ bilan.lignes([0])|map(l => "\"" ~ (l.nom|e) ~ "\"")|join(',') }}]'>
-        <div class="col-md-6">
-            <canvas id="depenses_chart" data-datasets-data="[{{ bilan.lignes([0])|map(l => l.montantDepense / 100)|join(',') }}]"
-            ></canvas>
-        </div>
-        <div class="col-md-6">
-            <canvas id="recettes_chart" data-datasets-data="[{{ bilan.lignes([0])|map(l => l.montantRecette / 100)|join(',') }}]"></canvas>
+        <canvas class="col-md-6" id="depenses_chart" data-datasets-data="[{{ bilan.lignes([0])|map(l => l.montantDepense / 100)|join(',') }}]"></canvas>
+        <canvas class="col-md-6" id="recettes_chart" data-datasets-data="[{{ bilan.lignes([0])|map(l => l.montantRecette / 100)|join(',') }}]"></canvas>
+        <div class="col-md-12">
+            <div class="progress">
+                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ 100 * bilan.total.montantDepense / (bilan.total.montantDepense + bilan.total.montantRecette) }}%" aria-valuenow="{{ 100 * bilan.total.montantDepense / (bilan.total.montantDepense + bilan.total.montantRecette) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar bg-success" role="progressbar" style="width: {{ 100 * bilan.total.montantRecette / (bilan.total.montantDepense + bilan.total.montantRecette) }}%" aria-valuenow="{{ 100 * bilan.total.montantRecette / (bilan.total.montantDepense + bilan.total.montantRecette) }}" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
         </div>
     </div>
 

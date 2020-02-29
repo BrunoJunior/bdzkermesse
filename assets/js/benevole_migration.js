@@ -5,6 +5,7 @@ $(function () {
     checkboxes.on('change', function () {
         const nbSelected = checkboxes.filter(':checked').length;
         const max = parseInt($('#modal-migration-content').data('benevoles-max'));
+        console.log(nbSelected, max);
         if (nbSelected >= max) {
             checkboxes.filter(':not(:checked)').prop('disabled', true);
         } else {

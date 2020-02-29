@@ -60,10 +60,10 @@
                 padding: 10px 15px 10px 45px;
             }
         }
-        a:hover, a:focus, a:active, li.active > a {
+        a:hover, a:focus, a:active, li.mm-active > a {
             color: #f8f9fa;
             text-decoration: none;
-            background: #0b7285;
+            background-color:  rgba(11, 114, 133, 0.8);
         }
     }
 }

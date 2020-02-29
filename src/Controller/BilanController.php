@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\DataTransfer\PlageHoraire;
 use App\Entity\Etablissement;
+use App\Repository\ActiviteRepository;
 use App\Service\BilanGeneratorService;
 use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
