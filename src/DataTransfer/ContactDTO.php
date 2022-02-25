@@ -8,8 +8,8 @@
 
 namespace App\DataTransfer;
 
-
 use App\Entity\Membre;
+use Symfony\Component\Mime\Email;
 
 class ContactDTO
 {
@@ -164,8 +164,8 @@ class ContactDTO
     }
 
     /**
-     * @param \Swift_Message $message
+     * @param Email $message
      */
-    public function completerMessage(\Swift_Message $message) {}
+    public function completerMessage(Email $message) {}
 
 }

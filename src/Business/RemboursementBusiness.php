@@ -20,8 +20,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use SimpleEnum\Exception\UnknownEumException;
-use Swift_Attachment;
-use Swift_Message;
+use Symfony\Component\Mime\Email;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -133,11 +132,14 @@ class RemboursementBusiness
         $retour = $this->sender
             ->setTemplate('remboursement_demande')
             ->setTemplateVars(['demande' => new RemboursementRow($remboursement, $this->bTicket)])
-            ->envoyer($contact, function (Swift_Message $message) use ($remboursement) {
+            ->envoyer($contact, function (Email $message) use ($remboursement) {
                 foreach ($remboursement->getTickets() as $ticket) {
                     if ($ticket->getDuplicata()) {
                         $filepath = $this->bTicket->getDuplicataPath($ticket);
-                        $message->attach(Swift_Attachment::fromPath($filepath)->setFilename($ticket->getNumero() . '.' . pathinfo($filepath,PATHINFO_EXTENSION)));
+                        $message->attachFromPath(
+                            $filepath,
+                            $ticket->getNumero() . '.' . pathinfo($filepath,PATHINFO_EXTENSION)
+                        );
                     }
                 }
             });

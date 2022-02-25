@@ -9,8 +9,10 @@
 namespace App\Service;
 
 use App\DataTransfer\ContactDTO;
-use Swift_Mailer;
-use Swift_Message;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Email;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -19,16 +21,16 @@ use Twig\Error\SyntaxError;
 class EmailSender extends AbstractEmailSender
 {
     /**
-     * @var Swift_Mailer
+     * @var MailerInterface
      */
     protected $mailer;
 
     /**
      * ContactSender constructor.
-     * @param Swift_Mailer $mailer
+     * @param MailerInterface $mailer
      * @param Environment $twig
      */
-    public function __construct(Swift_Mailer $mailer, Environment $twig)
+    public function __construct(MailerInterface $mailer, Environment $twig)
     {
         parent::__construct($twig);
         $this->mailer = $mailer;
@@ -37,21 +39,24 @@ class EmailSender extends AbstractEmailSender
     /**
      * @param ContactDTO $contact
      * @param callable|null $completer
-     * @return int
+     * @return void
      * @throws LoaderError
      * @throws RuntimeError
      * @throws SyntaxError
+     * @throws TransportExceptionInterface
+     * @return integer
      */
-    public function envoyer(ContactDTO $contact, callable $completer = null):int
+    public function envoyer(ContactDTO $contact, callable $completer = null): int
     {
-        $message = (new Swift_Message($contact->getTitre()))
-            ->setFrom('noreply@web-project.fr')
-            ->setTo($contact->getDestinataire())
-            ->setBody($this->render(), 'text/html')
-            ->addPart($this->render('plain'), 'text/plain');
+        $message = (new Email())
+            ->from(new Address('noreply@web-project.fr', 'LA kermesse'))
+            ->to(new Address($contact->getDestinataire(), $contact->getMembre()))
+            ->html($this->render())
+            ->text($this->render('plain'));
         if ($completer !== null) {
             $completer($message);
         }
-        return $this->mailer->send($message);
+        $this->mailer->send($message);
+        return 1;
     }
 }
