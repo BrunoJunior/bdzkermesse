@@ -83,7 +83,8 @@
     },
     "extra": {
         "symfony": {
-            "allow-contrib": false
+            "allow-contrib": true,
+            "require": "4.4.*"
         }
     }
 }
