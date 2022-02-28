@@ -58,6 +58,16 @@ class Etablissement implements UserInterface, Serializable
      */
     private $admin;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\OneToOne(targetEntity=Inscription::class, cascade={"persist", "remove"})
+     */
+    private $originInscription;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
@@ -247,6 +257,30 @@ class Etablissement implements UserInterface, Serializable
                 $membre->setEtablissement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getOriginInscription(): ?Inscription
+    {
+        return $this->originInscription;
+    }
+
+    public function setOriginInscription(?Inscription $originInscription): self
+    {
+        $this->originInscription = $originInscription;
 
         return $this;
     }
