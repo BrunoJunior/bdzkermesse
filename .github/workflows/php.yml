@@ -10,6 +10,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    - name: Copy dot env
+      run: cp .env.test .env
+    
     - name: Cache Composer dependencies
       uses: actions/cache@v2
       with:
