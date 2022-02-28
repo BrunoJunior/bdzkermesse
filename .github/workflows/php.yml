@@ -9,12 +9,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Validate composer.json and composer.lock.old
-      run: composer validate
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+    
+    - name: Cache Composer dependencies
+      uses: actions/cache@v2
+      with:
+        path: /tmp/composer-cache
+        key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+    
+    - uses: php-actions/composer@v6
+      with:
+        dev: no
+        args: --prefer-dist --no-progress --no-suggest
+        php_version: "7.4"
+        version: 2
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
