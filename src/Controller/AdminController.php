@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\InscriptionRow;
 use App\Entity\Etablissement;
+use App\Entity\Inscription;
 use App\Entity\Membre;
 use App\Form\EtablissementType;
+use App\Repository\InscriptionRepository;
+use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,5 +78,43 @@ class AdminController extends MyController
             'form' => $form->createView(),
             'menu' => $this->getMenu(null, static::MENU_ADMIN)
         ]);
+    }
+
+    /**
+     * @Route("/inscriptions", name="inscriptions")
+     * @param InscriptionRepository $rInscr
+     * @return Response
+     * @throws UnknownEumException
+     */
+    public function displayDemandesInscriptions(InscriptionRepository $rInscr): Response
+    {
+        return $this->render('inscription/liste.html.twig', [
+            'inscriptions' => array_map(function (Inscription $inscription) {
+                return new InscriptionRow($inscription);
+            }, $rInscr->findByStatus()),
+            'menu' => $this->getMenu(null, static::MENU_ADMIN)
+        ]);
+    }
+
+    /**
+     * @Route("/inscription/{id<\d+>}/valider", name="accepter_inscription")
+     * @param Inscription $inscription
+     * @return Response
+     */
+    public function validerInscription(Inscription $inscription): Response
+    {
+        // TODO - Valider + ajouter message
+        return $this->json([]);
+    }
+
+    /**
+     * @Route("/inscription/{id<\d+>}/refuser", name="refuser_inscription")
+     * @param Inscription $inscription
+     * @return Response
+     */
+    public function refuserInscription(Inscription $inscription): Response
+    {
+        // TODO - Refuser + ajouter message
+        return $this->json([]);
     }
 }

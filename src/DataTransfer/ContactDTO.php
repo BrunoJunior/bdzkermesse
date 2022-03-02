@@ -16,7 +16,7 @@ class ContactDTO
     /**
      * @var string
      */
-    private $membre;
+    private $membre = '';
 
     /**
      * @var string

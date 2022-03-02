@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Inscription;
+use App\Enum\InscriptionStatutEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -45,22 +46,20 @@ class InscriptionRepository extends ServiceEntityRepository
         }
     }
 
-    // /**
-    //  * @return Inscription[] Returns an array of Inscription objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Inscription[] Returns an array of Inscription objects
+     */
+    public function findByStatus(int $status = InscriptionStatutEnum::EN_ATTENTE, int $nbMax = 30)
     {
         return $this->createQueryBuilder('i')
-            ->andWhere('i.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('i.state = :val')
+            ->setParameter('val', $status)
             ->orderBy('i.id', 'ASC')
-            ->setMaxResults(10)
+            ->setMaxResults($nbMax)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
 
     /*
     public function findOneBySomeField($value): ?Inscription

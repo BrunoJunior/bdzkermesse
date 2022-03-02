@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demandes d'inscription{% endblock %}
+
+{% block body %}
+    <fieldset>
+        <legend>Demandes d'inscriptions à traiter</legend>
+        <div class="row d-none d-lg-block">
+            {% include "inscription/table.html.twig" with {'inscriptions': inscriptions} only %}
+        </div>
+        <div class="row d-lg-none">
+            {% if inscriptions is empty %}
+                <div class="col-sm-6 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Aucune demande en attente</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% for inscription in inscriptions %}
+                <div class="col-sm-6 mb-3">
+                    {% include "inscription/card.html.twig" with {'inscription': inscription} only %}
+                </div>
+            {% endfor %}
+        </div>
+    </fieldset>
+{% endblock %}
