@@ -36,12 +36,14 @@ class AdminController extends MyController
 
     /**
      * @Route("/", name="admin")
+     * @param InscriptionRepository $rInsc
      * @return Response
      */
-    public function index(): Response
+    public function index(InscriptionRepository $rInsc): Response
     {
         return $this->render('admin/index.html.twig', [
-            'menu' => $this->getMenu(null, static::MENU_ADMIN)
+            'menu' => $this->getMenu(null, static::MENU_ADMIN),
+            'en_attente' => count($rInsc->findByStatus())
         ]);
     }
 
