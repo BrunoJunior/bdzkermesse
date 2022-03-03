@@ -6,8 +6,12 @@ use App\DataTransfer\InscriptionRow;
 use App\Entity\Etablissement;
 use App\Entity\Inscription;
 use App\Entity\Membre;
+use App\Enum\InscriptionStatutEnum;
 use App\Form\EtablissementType;
 use App\Repository\InscriptionRepository;
+use App\Service\MailgunSender;
+use App\Service\PasswordGenerator;
+use Exception;
 use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,12 +105,55 @@ class AdminController extends MyController
     /**
      * @Route("/inscription/{id<\d+>}/valider", name="accepter_inscription")
      * @param Inscription $inscription
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @param PasswordGenerator $pwdGenerator
+     * @param MailgunSender $sender
      * @return Response
+     * @throws Exception
      */
-    public function validerInscription(Inscription $inscription): Response
+    public function validerInscription(
+        Inscription $inscription,
+        UserPasswordEncoderInterface $passwordEncoder,
+        PasswordGenerator $pwdGenerator,
+        MailgunSender $sender
+    ): Response
     {
-        // TODO - Valider + ajouter message
-        return $this->json([]);
+        if (!$inscription->getContactEmail() || !filter_var($inscription->getContactEmail(), FILTER_VALIDATE_EMAIL)) {
+            throw new \InvalidArgumentException("E-mail valide obligatoire !");
+        }
+        $etablissement = new Etablissement();
+        $etablissement->setEmail($inscription->getContactEmail());
+        $etablissement->setAdmin(false);
+        $etablissement->setNom($inscription->getContactName());
+        $etablissement->setOriginInscription($inscription);
+        $username = mb_strtolower(mb_substr(implode(
+            '_', array_filter(
+                array_merge(
+                    explode(' ', $inscription->getEtablissementNom()),
+                    explode(' ', $inscription->getEtablissementVille())
+                )
+            )
+        ), 0, 32));
+        $etablissement->setUsername($username);
+        $etablissement->setPassword($passwordEncoder->encodePassword($etablissement, $pwdGenerator->generateSecuredPassword(10)));
+        // Ajout d'un membre par défaut (Membre établissement)
+        $partiesNom = explode(' ', $etablissement->getNom());
+        $dftMembre = new Membre();
+        $dftMembre->setDefaut(true);
+        $dftMembre->setEmail($etablissement->getEmail());
+        $dftMembre->setPrenom(array_shift($partiesNom));
+        $dftMembre->setNom(implode(' ', $partiesNom));
+        $etablissement->addMembre($dftMembre);
+        // On enregistre l'utilisateur dans la base
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($dftMembre);
+        $em->persist($etablissement);
+        $inscription->setState(InscriptionStatutEnum::A_VALIDER);
+        $em->persist($inscription);
+        $em->flush();
+        // TODO - Envoi e-mail
+        $this->addFlash('success', "Compte $username créé !");
+        return $this->redirectToRoute('inscriptions');
     }
 
     /**
@@ -116,7 +163,12 @@ class AdminController extends MyController
      */
     public function refuserInscription(Inscription $inscription): Response
     {
-        // TODO - Refuser + ajouter message
-        return $this->json([]);
+        $inscription->setState(InscriptionStatutEnum::REFUSEE);
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($inscription);
+        $em->flush();
+        $this->addFlash('danger', "Inscription refusée !");
+        // TODO - envoyer e-mail
+        return $this->redirectToRoute('inscriptions');
     }
 }
