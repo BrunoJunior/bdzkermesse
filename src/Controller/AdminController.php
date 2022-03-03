@@ -98,6 +98,9 @@ class AdminController extends MyController
             'inscriptions' => array_map(function (Inscription $inscription) {
                 return new InscriptionRow($inscription);
             }, $rInscr->findByStatus()),
+            'inscriptions_email' => array_map(function (Inscription $inscription) {
+                return new InscriptionRow($inscription);
+            }, $rInscr->findByStatus(InscriptionStatutEnum::A_VALIDER)),
             'menu' => $this->getMenu(null, static::MENU_ADMIN)
         ]);
     }

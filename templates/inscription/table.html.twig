@@ -16,7 +16,9 @@
             <td>{{ inscription.cp }} {{ inscription.ville }}</td>
             <td>{{ inscription.role }} : {{ inscription.contact }} &lt;{{ inscription.email }}&gt; ({{ inscription.numero }})</td>
             <td>
-                <a href="{{ path('accepter_inscription', {'id': inscription.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Valider"><i class="fas fa-check"></i></a>
+                {% if inscription.statut.is(0) %}
+                    <a href="{{ path('accepter_inscription', {'id': inscription.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Valider"><i class="fas fa-check"></i></a>
+                {% endif %}
                 <a href="{{ path('refuser_inscription', {'id': inscription.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Refuser"><i class="fas fa-times"></i></a>
             </td>
         </tr>
