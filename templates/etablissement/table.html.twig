@@ -1,0 +1,24 @@
+<table class="table">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col"><i class="fas fa-school"></i> Établissement</th>
+        <th scope="col"><i class="fas fa-user-tag"></i> Code d'identification</th>
+        <th scope="col"><i class="fab fa-telegram-plane"></i> Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for etablissement in etablissements %}
+        <tr class="table-light">
+            <th scope="row">{{ etablissement.id }}</th>
+            <td>{{ etablissement.nom }}</td>
+            <td>{{ etablissement.username }}</td>
+            <td>
+                <a data-ajax="{{ path('admin_update_etab', {'id': etablissement.id}) }}" data-ajax-destination="#main-modal-form" href="#" aria-expanded="false" class="btn btn-warning" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+            </td>
+        </tr>
+    {% else %}
+        <tr class="table-light"><td colspan="5">Aucun établissement</td></tr>
+    {% endfor %}
+    </tbody>
+</table>

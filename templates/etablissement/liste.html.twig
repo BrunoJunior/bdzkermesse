@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des établissements{% endblock %}
+
+{% block body %}
+    <fieldset>
+        <legend>Établissements</legend>
+        <div class="row d-none d-lg-block">
+            {% include "etablissement/table.html.twig" with {'etablissements': etablissements} only %}
+        </div>
+        <div class="row d-lg-none">
+            {% if etablissements is empty %}
+                <div class="col-sm-6 mb-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Aucun établissement</h5>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% for etablissement in etablissements %}
+                <div class="col-sm-6 mb-3">
+                    {% include "etablissement/card.html.twig" with {'etablissement': etablissement} only %}
+                </div>
+            {% endfor %}
+        </div>
+    </fieldset>
+{% endblock %}

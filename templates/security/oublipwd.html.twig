@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande de réinitialisation du mot de passe{% endblock %}
+
+{% block body %}
+
+    <div class="jumbotron jumbotron-fluid bg-white-t50">
+        <div class="container">
+            <h1 class="display-4">Oubli de mot de passe</h1>
+            <p class="lead">
+                Veuillez saisir votre identifiant de connexion, un e-mail de réinitialisation du mot de passe vous sera envoyé si l'identifiant est connu de notre système.<br />
+                Si vous ne connaissez pas votre identifiant, veuillez suivre le lien suivant : <a href="{{ path('oubli_identifiant') }}">Je ne connais pas mon identifiant</a>
+            </p>
+            {{ form_start(form) }}
+            {{ form_row(form.username) }}
+            <label class="hpfield" for="name"></label>
+            <input class="hpfield" autocomplete="off" type="text" id="name" name="name" placeholder="Your name here">
+            <label class="hpfield" for="phone"></label>
+            <input class="hpfield" autocomplete="off" type="tel" id="phone" name="phone" placeholder="Your phone number here">
+
+            <button class="btn btn-primary" type="submit">Réinitialiser mon mot de passe</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}

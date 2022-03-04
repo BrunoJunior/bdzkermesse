@@ -1,0 +1,15 @@
+<div class="card text-center">
+    <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-school"></i> {{ inscription.etablissement }}</h5>
+        <p class="card-text" data-toggle="tooltip" title="Adresse"><i class="fas fa-map-marked"></i> {{ inscription.cp }} {{ inscription.ville }}</p>
+        <p class="card-text" data-toggle="tooltip" title="Contact"><i class="fas fa-id-card-alt"></i> {{ inscription.role }} : {{ inscription.contact }} &lt;{{ inscription.email }}&gt; ({{ inscription.numero }})</p>
+    </div>
+    <div class="card-footer">
+        <div class="btn-group" role="group" aria-label="Actions">
+            {% if inscription.statut.is(0) %}
+                <a href="{{ path('accepter_inscription', {'id': inscription.id}) }}" class="btn btn-success" data-toggle="tooltip" title="Valider"><i class="fas fa-check"></i></a>
+            {% endif %}
+            <a href="{{ path('refuser_inscription', {'id': inscription.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Refuser"><i class="fas fa-times"></i></a>
+        </div>
+    </div>
+</div>

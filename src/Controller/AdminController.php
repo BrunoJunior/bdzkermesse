@@ -2,14 +2,25 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\InscriptionRow;
 use App\Entity\Etablissement;
+use App\Entity\Inscription;
 use App\Entity\Membre;
+use App\Enum\InscriptionStatutEnum;
 use App\Form\EtablissementType;
+use App\Repository\EtablissementRepository;
+use App\Repository\InscriptionRepository;
+use App\Service\EtablissementUpdater;
+use App\Service\InscriptionManager;
+use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class AdminController
@@ -32,12 +43,14 @@ class AdminController extends MyController
 
     /**
      * @Route("/", name="admin")
+     * @param InscriptionRepository $rInsc
      * @return Response
      */
-    public function index(): Response
+    public function index(InscriptionRepository $rInsc): Response
     {
         return $this->render('admin/index.html.twig', [
-            'menu' => $this->getMenu(null, static::MENU_ADMIN)
+            'menu' => $this->getMenu(null, static::MENU_ADMIN),
+            'en_attente' => count($rInsc->findByStatus())
         ]);
     }
 
@@ -74,5 +87,85 @@ class AdminController extends MyController
             'form' => $form->createView(),
             'menu' => $this->getMenu(null, static::MENU_ADMIN)
         ]);
+    }
+
+    /**
+     * @Route("/inscriptions", name="inscriptions")
+     * @param InscriptionRepository $rInscr
+     * @return Response
+     * @throws UnknownEumException
+     */
+    public function displayDemandesInscriptions(InscriptionRepository $rInscr): Response
+    {
+        return $this->render('inscription/liste.html.twig', [
+            'inscriptions' => array_map(function (Inscription $inscription) {
+                return new InscriptionRow($inscription);
+            }, $rInscr->findByStatus()),
+            'inscriptions_email' => array_map(function (Inscription $inscription) {
+                return new InscriptionRow($inscription);
+            }, $rInscr->findByStatus(InscriptionStatutEnum::A_VALIDER)),
+            'menu' => $this->getMenu(null, static::MENU_ADMIN)
+        ]);
+    }
+
+    /**
+     * @Route("/inscription/{id<\d+>}/valider", name="accepter_inscription")
+     * @param Inscription $inscription
+     * @param InscriptionManager $inscriptionManager
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function validerInscription(Inscription $inscription, InscriptionManager $inscriptionManager): Response
+    {
+        $username = $inscriptionManager->valider($inscription);
+        $this->addFlash('success', "Compte $username créé !");
+        return $this->redirectToRoute('inscriptions');
+    }
+
+    /**
+     * @Route("/inscription/{id<\d+>}/refuser", name="refuser_inscription")
+     * @param Inscription $inscription
+     * @param InscriptionManager $inscriptionManager
+     * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function refuserInscription(Inscription $inscription, InscriptionManager $inscriptionManager): Response
+    {
+        $inscriptionManager->refuser($inscription);
+        $this->addFlash('danger', "Inscription refusée !");
+        return $this->redirectToRoute('inscriptions');
+    }
+
+    /**
+     * @Route("/etablissements", name="admin_lister_etablissements")
+     * @param EtablissementRepository $rEtab
+     * @return Response
+     */
+    public function afficherEtablissements(EtablissementRepository $rEtab): Response
+    {
+        return $this->render('etablissement/liste.html.twig', [
+            'etablissements' => $rEtab->findAll(),
+            'menu' => $this->getMenu(null, static::MENU_ADMIN)
+        ]);
+    }
+
+    /**
+     * @Route("/etablissement/{id<\d+>?}/edit", name="admin_update_etab")
+     * @param Request $request
+     * @param Etablissement $etablissement
+     * @param EtablissementUpdater $updater
+     * @return Response
+     */
+    public function updateEtablissement(Request $request, Etablissement $etablissement, EtablissementUpdater $updater): Response
+    {
+        $form = $updater->traiterDemande($request, $etablissement);
+        return null === $form ? $this->reponseModal() : $this->render(
+            'registration/edition_modal.html.twig',
+            array('form' => $form->createView())
+        );
     }
 }

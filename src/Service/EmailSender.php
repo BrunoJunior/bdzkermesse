@@ -49,6 +49,7 @@ class EmailSender extends AbstractEmailSender
     public function envoyer(ContactDTO $contact, callable $completer = null): int
     {
         $message = (new Email())
+            ->subject($contact->getTitre())
             ->from(new Address('noreply@web-project.fr', 'LA kermesse'))
             ->to(new Address($contact->getDestinataire(), $contact->getMembre()))
             ->html($this->render())
