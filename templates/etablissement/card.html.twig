@@ -1,0 +1,11 @@
+<div class="card text-center">
+    <div class="card-body">
+        <h5 class="card-title"><i class="fas fa-school"></i> {{ etablissement.nom }}</h5>
+        <p class="card-text" data-toggle="tooltip" title="Code"><i class="fas fa-user-tag"></i> {{ etablissement.username }}</p>
+    </div>
+    <div class="card-footer">
+        <div class="btn-group" role="group" aria-label="Actions">
+            <a data-ajax="{{ path('admin_update_etab', {'id': etablissement.id}) }}" data-ajax-destination="#main-modal-form" href="#" aria-expanded="false" class="btn btn-warning" data-toggle="tooltip" title="Éditer"><i class="fas fa-edit"></i></a>
+        </div>
+    </div>
+</div>

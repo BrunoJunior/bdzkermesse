@@ -5,6 +5,7 @@
 {% block body %}
     <div class="list-group">
         <a href="{{ path('inscriptions') }}" class="list-group-item d-flex justify-content-between align-items-center list-group-item-action">Inscriptions en attente<span class="badge badge-primary badge-pill">{{ en_attente }}</span></a>
+        <a href="{{ path('admin_lister_etablissements') }}" class="list-group-item list-group-item-action">Lister établissements</a>
         <a href="{{ path('registration') }}" class="list-group-item list-group-item-action">Création établissement</a>
         <a href="{{ path('infos_php') }}" class="list-group-item list-group-item-action">Infos serveur</a>
     </div>
