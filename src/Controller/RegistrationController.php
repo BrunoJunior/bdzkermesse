@@ -50,7 +50,7 @@ class RegistrationController extends MyController
     }
 
     /**
-     * @Route("/demande-inscription/{id}/validation/{key}", name="validation_email")
+     * @Route("/inscription/{id}/validation/{key}", name="validation_email")
      * @param Request $request
      * @param int $id
      * @param string $key
@@ -71,7 +71,7 @@ class RegistrationController extends MyController
     }
 
     /**
-     * @Route("/etablissement/{id}/reset-password/{key}", name="reset_pwd")
+     * @Route("/inscription/{id}/reset-password/{key}", name="reset_pwd")
      * @param Request $request
      * @param int $id
      * @param string $key
