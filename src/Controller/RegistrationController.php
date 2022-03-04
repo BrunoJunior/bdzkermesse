@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Enum\InscriptionStatutEnum;
 use App\Form\EtablissementType;
 use App\Form\ResetPasswordType;
 use App\Repository\EtablissementRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,6 +71,14 @@ class RegistrationController extends MyController
             $etablissement->setPassword($passwordEncoder->encodePassword($etablissement, $form->get('password')->getData()));
             $etablissement->setResetPwdKey(null);
             $em = $this->getDoctrine()->getManager();
+            $demandeInsc = $etablissement->getOriginInscription();
+            // Lors d'une demande de réinit du mot de passe, si la demande d'inscription est en attente de validation,
+            // on considère qu'elle est désormais validée, car le 1er mot de passe étant généré aléatoirement,
+            // la 1ère réinitialisation vaut comme validation de l'adresse e-mail
+            if (null !== $demandeInsc && $demandeInsc->getState() === InscriptionStatutEnum::A_VALIDER) {
+                $demandeInsc->setState(InscriptionStatutEnum::VALIDEE);
+                $em->persist($demandeInsc);
+            }
             $em->persist($etablissement);
             $em->flush();
             $this->addFlash('success', "Votre mot de passe a été mis à jour !");

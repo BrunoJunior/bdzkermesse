@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\ContactDTO;
 use App\DataTransfer\InscriptionRow;
 use App\Entity\Etablissement;
 use App\Entity\Inscription;
@@ -12,12 +13,16 @@ use App\Repository\InscriptionRepository;
 use App\Service\MailgunSender;
 use App\Service\PasswordGenerator;
 use Exception;
+use InvalidArgumentException;
 use SimpleEnum\Exception\UnknownEumException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 /**
  * Class AdminController
@@ -122,7 +127,7 @@ class AdminController extends MyController
     ): Response
     {
         if (!$inscription->getContactEmail() || !filter_var($inscription->getContactEmail(), FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException("E-mail valide obligatoire !");
+            throw new InvalidArgumentException("E-mail valide obligatoire !");
         }
         $etablissement = new Etablissement();
         $etablissement->setEmail($inscription->getContactEmail());
@@ -155,7 +160,15 @@ class AdminController extends MyController
         $inscription->setState(InscriptionStatutEnum::A_VALIDER);
         $em->persist($inscription);
         $em->flush();
-        // TODO - Envoi e-mail
+        $contact = (new ContactDTO())
+            ->setEmetteur("no-reply@web-project.fr")
+            ->setTitre("Ouverture de compte validée")
+            ->setDestinataire($etablissement->getEmail());
+        $sender
+            ->setTemplate('inscription_validee')
+            //TODO - Générer link pour réinit mdp
+            ->setTemplateVars(['link' => ''])
+            ->envoyer($contact);
         $this->addFlash('success', "Compte $username créé !");
         return $this->redirectToRoute('inscriptions');
     }
@@ -163,16 +176,26 @@ class AdminController extends MyController
     /**
      * @Route("/inscription/{id<\d+>}/refuser", name="refuser_inscription")
      * @param Inscription $inscription
+     * @param MailgunSender $sender
      * @return Response
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
-    public function refuserInscription(Inscription $inscription): Response
+    public function refuserInscription(Inscription $inscription, MailgunSender $sender): Response
     {
         $inscription->setState(InscriptionStatutEnum::REFUSEE);
         $em = $this->getDoctrine()->getManager();
         $em->persist($inscription);
         $em->flush();
         $this->addFlash('danger', "Inscription refusée !");
-        // TODO - envoyer e-mail
+        $contact = (new ContactDTO())
+            ->setEmetteur("no-reply@web-project.fr")
+            ->setTitre("Ouverture de compte refusée")
+            ->setDestinataire($inscription->getContactEmail());
+        $sender
+            ->setTemplate('inscription_refusee')
+            ->envoyer($contact);
         return $this->redirectToRoute('inscriptions');
     }
 }
