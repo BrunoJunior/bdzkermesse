@@ -5,16 +5,24 @@ namespace App\Controller;
 use App\DataTransfer\DemandeInscription;
 use App\Form\DemandeInscriptionType;
 use App\Service\EnvoyerDemandeInscription;
+use App\Service\PasswordResetter;
+use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+/**
+ * Class InscriptionController
+ * @package App\Controller
+ * @author bruno <bdesprez@thalassa.fr>
+ * @Route("/inscription")
+ */
 class InscriptionController extends MyController
 {
 
     /**
-     * @Route("/inscription", name="demande_inscription")
+     * @Route("/", name="demande_inscription")
      * @param Request $request
      * @param EnvoyerDemandeInscription $envoiDemande
      * @return RedirectResponse|Response
@@ -36,5 +44,47 @@ class InscriptionController extends MyController
             }
         }
         return $this->render('inscription/index.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/{id}/validation/{key}", name="validation_email")
+     * @param Request $request
+     * @param int $id
+     * @param string $key
+     * @param PasswordResetter $resetter
+     * @return Response
+     * @throws NonUniqueResultException
+     */
+    public function validerEmail(Request $request, int $id, string $key, PasswordResetter $resetter): Response {
+        $form = $resetter->validerEmail($request, $id, $key);
+        if ($form === null) { // Formulaire null = il a été traité
+            $this->addFlash('success', "Votre compte a bien été validé !");
+            return $this->redirectToRoute('security_login');
+        }
+        return $this->render(
+            'registration/reset_password.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+
+    /**
+     * @Route("/{id}/reset-password/{key}", name="reset_pwd")
+     * @param Request $request
+     * @param int $id
+     * @param string $key
+     * @param PasswordResetter $resetter
+     * @return Response
+     * @throws NonUniqueResultException
+     */
+    public function resetPassword(Request $request, int $id, string $key, PasswordResetter $resetter): Response {
+        $form = $resetter->reset($request, $id, $key);
+        if ($form === null) { // Formulaire null = il a été traité
+            $this->addFlash('success', "Votre mot de passe a été mis à jour !");
+            return $this->redirectToRoute('security_login');
+        }
+        return $this->render(
+            'registration/reset_password.html.twig',
+            array('form' => $form->createView())
+        );
     }
 }

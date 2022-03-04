@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Form\EtablissementType;
-use App\Service\PasswordResetter;
-use Doctrine\ORM\NonUniqueResultException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -45,48 +43,6 @@ class RegistrationController extends MyController
         }
         return $this->render(
             'registration/edition_modal.html.twig',
-            array('form' => $form->createView())
-        );
-    }
-
-    /**
-     * @Route("/inscription/{id}/validation/{key}", name="validation_email")
-     * @param Request $request
-     * @param int $id
-     * @param string $key
-     * @param PasswordResetter $resetter
-     * @return Response
-     * @throws NonUniqueResultException
-     */
-    public function validerEmail(Request $request, int $id, string $key, PasswordResetter $resetter): Response {
-        $form = $resetter->validerEmail($request, $id, $key);
-        if ($form === null) { // Formulaire null = il a été traité
-            $this->addFlash('success', "Votre compte a bien été validé !");
-            return $this->redirectToRoute('security_login');
-        }
-        return $this->render(
-            'registration/reset_password.html.twig',
-            array('form' => $form->createView())
-        );
-    }
-
-    /**
-     * @Route("/inscription/{id}/reset-password/{key}", name="reset_pwd")
-     * @param Request $request
-     * @param int $id
-     * @param string $key
-     * @param PasswordResetter $resetter
-     * @return Response
-     * @throws NonUniqueResultException
-     */
-    public function resetPassword(Request $request, int $id, string $key, PasswordResetter $resetter): Response {
-        $form = $resetter->reset($request, $id, $key);
-        if ($form === null) { // Formulaire null = il a été traité
-            $this->addFlash('success', "Votre mot de passe a été mis à jour !");
-            return $this->redirectToRoute('security_login');
-        }
-        return $this->render(
-            'registration/reset_password.html.twig',
             array('form' => $form->createView())
         );
     }

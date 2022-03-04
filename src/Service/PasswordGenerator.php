@@ -103,12 +103,16 @@ class PasswordGenerator {
 
     /**
      * Génère une clé sécurisé au format <random chaine>-<random chaine>-<random chaine>-<random chaine>
+     * @param int $partialLentgh
      * @return string
      * @throws Exception
      */
-    public function generateRandomKey(): string {
-        return implode('-', array_map(function () {
-            return $this->randomStr(50, self::CHARSET_NUM . self::CHARSET_ALPHA_UP . self::CHARSET_ALPHA_LOW);
+    public function generateRandomKey(int $partialLentgh = 20): string {
+        return implode('-', array_map(function () use ($partialLentgh) {
+            return $this->randomStr(
+                $partialLentgh,
+                self::CHARSET_NUM . self::CHARSET_ALPHA_UP . self::CHARSET_ALPHA_LOW
+            );
         }, ['','','','']));
     }
 }
