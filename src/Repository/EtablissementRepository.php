@@ -38,6 +38,7 @@ class EtablissementRepository extends ServiceEntityRepository
     */
 
     /**
+     * Recherche d'un établissement avec le couple id / key
      * @param int $id
      * @param string $key
      * @return Etablissement|null
@@ -53,5 +54,25 @@ class EtablissementRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult()
         ;
+    }
+
+    /**
+     * Recherche d'un établissement avec le couple id inscription / key
+     * @param int $id
+     * @param string $key
+     * @return Etablissement|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByIdInscriptionAndKey(int $id, string $key): ?Etablissement
+    {
+        return $this->createQueryBuilder('e')
+            ->innerJoin('e.originInscription', 'i')
+            ->andWhere('i.id = :id')
+            ->andWhere('e.resetPwdKey = :key')
+            ->setParameter('id', $id)
+            ->setParameter('key', $key)
+            ->getQuery()
+            ->getOneOrNullResult()
+            ;
     }
 }

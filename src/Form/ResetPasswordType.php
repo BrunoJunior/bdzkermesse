@@ -6,6 +6,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ResetPasswordType extends AbstractType
@@ -19,10 +21,26 @@ class ResetPasswordType extends AbstractType
         ]);
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            // Configure your form options here
-        ]);
+        $resolver->setDefaults(['origine' => null]);
+        $resolver->setRequired(['etablissement']);
+    }
+
+    /**
+     * Add custom options in form vars
+     * @param FormView $view
+     * @param FormInterface $form
+     * @param array $options
+     * @return void
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options) {
+        parent::buildView($view, $form, $options);
+        $view->vars['etablissement'] = $options['etablissement'];
+        $view->vars['origine'] = array_key_exists('origine', $options) ? $options['origine'] : null;
     }
 }
