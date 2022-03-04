@@ -7,7 +7,7 @@ use App\Entity\Membre;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception as DbalException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Doctrine\Persistence\ManagerRegistry;
@@ -66,7 +66,7 @@ class TicketRepository extends ServiceEntityRepository
     /**
      * @param Kermesse $kermesse
      * @return ArrayCollection
-     * @throws DBALException
+     * @throws DbalException
      */
     public function getTotauxParTicketByKermesse(Kermesse $kermesse):ArrayCollection
     {
@@ -81,9 +81,9 @@ class TicketRepository extends ServiceEntityRepository
             ORDER BY t.id
         ';
         $stmt = $connection->prepare($sql);
-        $stmt->execute(array('id' => $kermesse->getId()));
+        $resultat = $stmt->executeQuery(array('id' => $kermesse->getId()));
         $result = new ArrayCollection();
-        foreach ($stmt->fetchAll() as $row) {
+        foreach ($resultat->fetchAllAssociative() as $row) {
             $result->set("".$row['id'], $row);
         }
         return $result;
@@ -92,7 +92,7 @@ class TicketRepository extends ServiceEntityRepository
     /**
      * @param Ticket $ticket
      * @return array
-     * @throws DBALException
+     * @throws DbalException
      */
     public function getTotauxByTicket(Ticket $ticket):array
     {
@@ -105,8 +105,7 @@ class TicketRepository extends ServiceEntityRepository
             WHERE t.id = :id
         ';
         $stmt = $connection->prepare($sql);
-        $stmt->execute(array('id' => $ticket->getId()));
-        $resultat = $stmt->fetchAll();
+        $resultat = $stmt->executeQuery(array('id' => $ticket->getId()))->fetchAllAssociative();
         return empty($resultat) ? ['depense' => 0, 'activites_liees' => ''] : $resultat[0];
     }
 
