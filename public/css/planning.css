@@ -1,3 +1,7 @@
+.activite-ligne-creneaux {
+    flex-wrap: nowrap;
+}
+
 .activite-creneau {
     text-wrap: normal;
     text-align: center;
