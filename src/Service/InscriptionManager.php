@@ -7,9 +7,15 @@ use App\Entity\Etablissement;
 use App\Entity\Inscription;
 use App\Entity\Membre;
 use App\Enum\InscriptionStatutEnum;
+use App\Form\ForgotPasswordType;
+use App\Form\ForgotUsernameType;
+use App\Repository\EtablissementRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use InvalidArgumentException;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -50,25 +56,41 @@ class InscriptionManager {
     private $router;
 
     /**
+     * @var FormFactoryInterface
+     */
+    private $formFactory;
+
+    /**
+     * @var EtablissementRepository
+     */
+    private $rEtab;
+
+    /**
      * Dummy consrtructor
      * @param UserPasswordEncoderInterface $passwordEncoder
      * @param PasswordGenerator $pwdGenerator
      * @param MailgunSender $sender
      * @param EntityManagerInterface $em
      * @param RouterInterface $router
+     * @param FormFactoryInterface $formFactory
+     * @param EtablissementRepository $rEtab
      */
     public function __construct(
         UserPasswordEncoderInterface $passwordEncoder,
         PasswordGenerator $pwdGenerator,
         MailgunSender $sender,
         EntityManagerInterface $em,
-        RouterInterface $router
+        RouterInterface $router,
+        FormFactoryInterface $formFactory,
+        EtablissementRepository $rEtab
     ) {
         $this->passwordEncoder = $passwordEncoder;
         $this->sender = $sender;
         $this->pwdGenerator = $pwdGenerator;
         $this->em = $em;
         $this->router = $router;
+        $this->formFactory = $formFactory;
+        $this->rEtab = $rEtab;
     }
 
     /**
@@ -129,15 +151,15 @@ class InscriptionManager {
 
     /**
      * Génération du contact d'envoi d'e-mail
-     * @param Inscription $inscription
+     * @param string $email
      * @param string $titre
      * @return ContactDTO
      */
-    private function genererContact(Inscription $inscription, string $titre): ContactDTO {
+    private function genererContact(string $email, string $titre): ContactDTO {
         return (new ContactDTO())
             ->setEmetteur("no-reply@web-project.fr")
             ->setTitre($titre)
-            ->setDestinataire($inscription->getContactEmail());
+            ->setDestinataire($email);
     }
 
     /**
@@ -163,7 +185,7 @@ class InscriptionManager {
         );
         $this->sender->setTemplate('inscription_validee')
             ->setTemplateVars(['link' => $validationLink, 'username' => $etablissement->getUsername()])
-            ->envoyer($this->genererContact($inscription, 'Ouverture de compte validée'));
+            ->envoyer($this->genererContact($inscription->getContactEmail(), 'Ouverture de compte validée'));
         return $etablissement->getUsername();
     }
 
@@ -180,7 +202,70 @@ class InscriptionManager {
         $this->em->persist($inscription);
         $this->em->flush();
         $this->sender->setTemplate('inscription_refusee')->envoyer(
-            $this->genererContact($inscription, 'Ouverture de compte refusée')
+            $this->genererContact($inscription->getContactEmail(), 'Ouverture de compte refusée')
         );
+    }
+
+    /**
+     * Envoyer un e-mail pour la réinitialisation du mot de passe
+     * @param Request $request
+     * @return FormInterface|null
+     * @throws Exception
+     */
+    public function sendForgotPasswordMail(Request $request): ?FormInterface {
+        $form = $this->formFactory->create(ForgotPasswordType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Honeypot
+            $isSpam = $request->get('name') || $request->get('phone');
+            // Si c'est du spam, on fait croire que c'est OK, mais on ne fait rien
+            if (!$isSpam) {
+                $etab = $this->rEtab->findOneBy(['username' => $form->get('username')->getData()]);
+                if (null !== $etab && null !== $etab->getEmail()) {
+                    $etab->setResetPwdKey($this->pwdGenerator->generateRandomKey());
+                    $this->em->persist($etab);
+                    $this->em->flush();
+                    $validationLink = $this->router->generate(
+                        'reset_pwd',
+                        ['id' => $etab->getId(), 'key' => $etab->getResetPwdKey()],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    );
+                    $this->sender->setTemplate('reinit_password')
+                        ->setTemplateVars(['link' => $validationLink])
+                        ->envoyer($this->genererContact($etab->getEmail(), 'Réinitialisation de mot de passe'));
+                }
+
+            }
+            return null;
+        }
+        return $form;
+    }
+
+    /**
+     * @param Request $request
+     * @return FormInterface|null
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function sendForgotPasswordIdentifiant(Request $request): ?FormInterface {
+        $form = $this->formFactory->create(ForgotUsernameType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Honeypot
+            $isSpam = $request->get('name') || $request->get('phone');
+            // Si c'est du spam, on fait croire que c'est OK, mais on ne fait rien
+            if (!$isSpam) {
+                $email = $form->get('email')->getData();
+                $etablissements = $this->rEtab->findBy(['email' => $email]);
+                if (count($etablissements) > 0) {
+                    $this->sender->setTemplate('forgot_ident')
+                        ->setTemplateVars(['etablissements' => $etablissements])
+                        ->envoyer($this->genererContact($email, 'Identifiants de connexion'));
+                }
+            }
+            return null;
+        }
+        return $form;
     }
 }

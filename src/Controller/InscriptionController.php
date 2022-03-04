@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\DataTransfer\DemandeInscription;
 use App\Form\DemandeInscriptionType;
 use App\Service\EnvoyerDemandeInscription;
+use App\Service\InscriptionManager;
 use App\Service\PasswordResetter;
 use Doctrine\ORM\NonUniqueResultException;
+use Exception;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +46,39 @@ class InscriptionController extends MyController
             }
         }
         return $this->render('inscription/index.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/oubli-mdp", name="oubli_mdp")
+     * @param Request $request
+     * @param InscriptionManager $manager
+     * @return RedirectResponse|Response
+     * @throws Exception
+     */
+    public function oubliMotDePasse(Request $request, InscriptionManager $manager)
+    {
+        $form = $manager->sendForgotPasswordMail($request);
+        if ($form === null) {
+            $this->addFlash('success', "Si votre identifiant de connexion est connu, vous recevrez un e-mail de réinitialisation de mot de passe !");
+            return $this->redirectToRoute('security_login');
+        }
+        return $this->render('security/oublipwd.html.twig', ['form' => $form->createView()]);
+    }
+
+    /**
+     * @Route("/oubli-identifiant", name="oubli_identifiant")
+     * @param Request $request
+     * @param InscriptionManager $manager
+     * @return RedirectResponse|Response
+     */
+    public function oubliIdentifiant(Request $request, InscriptionManager $manager)
+    {
+        $form = $manager->sendForgotPasswordIdentifiant($request);
+        if ($form === null) {
+            $this->addFlash('success', "Si votre adresse e-mail est connue, vous recevrez un e-mail contenant vos identifiants de connexion !");
+            return $this->redirectToRoute('security_login');
+        }
+        return $this->render('security/oubliusername.html.twig', ['form' => $form->createView()]);
     }
 
     /**
