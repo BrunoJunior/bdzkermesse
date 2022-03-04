@@ -3,9 +3,14 @@
 namespace App\Controller;
 
 use App\Form\EtablissementType;
+use App\Form\ResetPasswordType;
+use App\Repository\EtablissementRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -39,6 +44,40 @@ class RegistrationController extends MyController
         }
         return $this->render(
             'registration/edition_modal.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+
+    /**
+     * @Route("/registration/{id}/reset-password/{key}", name="reset_pwd")
+     * @param Request $request
+     * @param int $id
+     * @param string $key
+     * @param EtablissementRepository $rEtab
+     * @param UserPasswordEncoderInterface $passwordEncoder
+     * @return Response
+     * @throws NonUniqueResultException
+     */
+    public function resetPassword(Request $request, int $id, string $key, EtablissementRepository $rEtab, UserPasswordEncoderInterface $passwordEncoder): Response {
+        $etablissement = $rEtab->findOneByIdAndKey($id, $key);
+        if (null === $etablissement) {
+            throw new NotFoundHttpException();
+        }
+        $form = $this->createForm(ResetPasswordType::class, null, [
+            'action' => $this->generateUrl('reset_pwd', ['id' => $id, 'key' => $key])
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $etablissement->setPassword($passwordEncoder->encodePassword($etablissement, $form->get('password')->getData()));
+            $etablissement->setResetPwdKey(null);
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($etablissement);
+            $em->flush();
+            $this->addFlash('success', "Votre mot de passe a été mis à jour !");
+            return $this->redirectToRoute('security_login');
+        }
+        return $this->render(
+            'registration/reset_password.html.twig',
             array('form' => $form->createView())
         );
     }

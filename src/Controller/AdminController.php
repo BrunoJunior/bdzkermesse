@@ -139,6 +139,7 @@ class AdminController extends MyController
         ), 0, 32));
         $etablissement->setUsername($username);
         $etablissement->setPassword($passwordEncoder->encodePassword($etablissement, $pwdGenerator->generateSecuredPassword(10)));
+        $etablissement->setResetPwdKey($pwdGenerator->generateRandomKey());
         // Ajout d'un membre par défaut (Membre établissement)
         $partiesNom = explode(' ', $etablissement->getNom());
         $dftMembre = new Membre();

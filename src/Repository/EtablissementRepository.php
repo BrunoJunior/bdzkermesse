@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Etablissement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -36,15 +37,21 @@ class EtablissementRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Etablissement
+    /**
+     * @param int $id
+     * @param string $key
+     * @return Etablissement|null
+     * @throws NonUniqueResultException
+     */
+    public function findOneByIdAndKey(int $id, string $key): ?Etablissement
     {
         return $this->createQueryBuilder('e')
-            ->andWhere('e.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('e.id = :id')
+            ->andWhere('e.resetPwdKey = :key')
+            ->setParameter('id', $id)
+            ->setParameter('key', $key)
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
 }

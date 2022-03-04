@@ -100,4 +100,15 @@ class PasswordGenerator {
         $password .= $this->randomStr(1, self::CHARSET_SPE);
         return $this->shuffleStr($password);
     }
+
+    /**
+     * Génère une clé sécurisé au format <random chaine>-<random chaine>-<random chaine>-<random chaine>
+     * @return string
+     * @throws Exception
+     */
+    public function generateRandomKey(): string {
+        return implode('-', array_map(function () {
+            return $this->randomStr(50, self::CHARSET_NUM . self::CHARSET_ALPHA_UP . self::CHARSET_ALPHA_LOW);
+        }, ['','','','']));
+    }
 }

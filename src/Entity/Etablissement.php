@@ -68,6 +68,11 @@ class Etablissement implements UserInterface, Serializable
      */
     private $originInscription;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $resetPwdKey;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
@@ -281,6 +286,18 @@ class Etablissement implements UserInterface, Serializable
     public function setOriginInscription(?Inscription $originInscription): self
     {
         $this->originInscription = $originInscription;
+
+        return $this;
+    }
+
+    public function getResetPwdKey(): ?string
+    {
+        return $this->resetPwdKey;
+    }
+
+    public function setResetPwdKey(?string $resetPwdKey): self
+    {
+        $this->resetPwdKey = $resetPwdKey;
 
         return $this;
     }
