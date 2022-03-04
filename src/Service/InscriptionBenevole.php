@@ -8,8 +8,7 @@ use App\DataTransfer\Inscription;
 use App\Entity\Benevole;
 use App\Repository\BenevoleRepository;
 use App\Repository\InscriptionBenevoleRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
+use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 
 class InscriptionBenevole
@@ -25,7 +24,7 @@ class InscriptionBenevole
     private $rInscBenevole;
 
     /**
-     * @var ObjectManager
+     * @var EntityManagerInterface
      */
     private $em;
 
@@ -33,13 +32,13 @@ class InscriptionBenevole
      * InscriptionBenevole constructor.
      * @param BenevoleRepository $rBenevole
      * @param InscriptionBenevoleRepository $rInscBenevole
-     * @param ManagerRegistry $em
+     * @param EntityManagerInterface $em
      */
-    public function __construct(BenevoleRepository $rBenevole, InscriptionBenevoleRepository $rInscBenevole, ManagerRegistry $em)
+    public function __construct(BenevoleRepository $rBenevole, InscriptionBenevoleRepository $rInscBenevole, EntityManagerInterface $em)
     {
         $this->rBenevole = $rBenevole;
         $this->rInscBenevole = $rInscBenevole;
-        $this->em = $em->getManager();
+        $this->em = $em;
     }
 
     /**
