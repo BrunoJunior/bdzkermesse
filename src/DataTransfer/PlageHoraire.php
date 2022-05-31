@@ -38,9 +38,9 @@ class PlageHoraire
     }
 
     /**
-     * @return DateTimeInterface
+     * @return DateTimeInterface|null
      */
-    public function getDebut(): DateTimeInterface
+    public function getDebut(): ?DateTimeInterface
     {
         return $this->debut;
     }
@@ -59,9 +59,9 @@ class PlageHoraire
     }
 
     /**
-     * @return DateTimeInterface
+     * @return DateTimeInterface|null
      */
-    public function getFin(): DateTimeInterface
+    public function getFin(): ?DateTimeInterface
     {
         return $this->fin;
     }
@@ -97,7 +97,7 @@ class PlageHoraire
      */
     protected function recalculerExtremum(?DateTimeInterface $debut, ?DateTimeInterface $fin, bool $arrondir = false): self
     {
-        if ($this->debut === null || $this->debut > $debut) {
+        if (!!$debut && ($this->debut === null || $this->debut > $debut)) {
             $newDebut = DateTime::createFromFormat(DateTimeInterface::ATOM, $debut->format(DateTimeInterface::ATOM));
             $minutes = (int) $newDebut->format('i');
             if ($arrondir && $minutes > 30) {// Arrondir à la demi-heure inférieure
@@ -108,7 +108,7 @@ class PlageHoraire
                 $this->debut = $debut;
             }
         }
-        if ($this->fin === null || $this->fin < $fin) {
+        if (!!$fin && ($this->fin === null || $this->fin < $fin)) {
             $newFin = DateTime::createFromFormat(DateTimeInterface::ATOM, $fin->format(DateTimeInterface::ATOM));
             $minutes = (int) $newFin->format('i');
             if ($arrondir && $minutes > 0 && $minutes < 30) { // Arrondir à la demi-heure supérieure
