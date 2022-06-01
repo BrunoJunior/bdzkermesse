@@ -8,21 +8,26 @@
 
 {% block body %}
     <div class="d-flex flex-row justify-content-between mt-3 mb-3">
-        <div class="custom-control custom-switch">
+        <div class="custom-control custom-switch d-none d-lg-block">
             <input type="checkbox" class="custom-control-input" id="afficherIncomplets">
             <label class="custom-control-label" for="afficherIncomplets">Masquer les créneaux incomplets</label>
         </div>
         <div>
             Code couleur par taux d'inscription :
             <div class="btn-group" role="group" aria-label="Code couleur">
-                <button type="button" class="btn btn-danger">- de 50% <i class="far fa-sad-cry"></i></button>
-                <button type="button" class="btn btn-warning">Au moins 50% <i class="far fa-frown-open"></i></button>
-                <button type="button" class="btn btn-primary">Au moins 75% <i class="far fa-meh"></i></button>
+                <button type="button" class="btn btn-danger">&lt; 50% <i class="far fa-sad-cry"></i></button>
+                <button type="button" class="btn btn-warning">&ge; 50% <i class="far fa-frown-open"></i></button>
+                <button type="button" class="btn btn-primary">&ge; 75% <i class="far fa-meh"></i></button>
                 <button type="button" class="btn btn-success">100% <i class="far fa-laugh-wink"></i></button>
             </div>
         </div>
     </div>
-    <div id="planning" style="position: relative;">
+    <div>
+        Taux global d'inscription
+        {{ include('kermesse/progress.html.twig', {el: planning}, with_context = false) }}
+    </div>
+
+    <div id="planning" class="d-none d-lg-block" style="position: relative;">
         <div class="row pt-3 pb-3 border-bottom">
             <div class="col-1">Date</div>
             <div class="col">
@@ -127,6 +132,16 @@
             </div>
         {% endfor %}
     </div>
+    <div class="d-lg-none row pt-3 pb-3 border-bottom">
+        {% for ligne in planning.lignes %}
+            {% for activite in ligne.activites %}
+                <div class="col-sm-6 mb-3">
+                    {% include "kermesse/planning_card.html.twig" with {'dateact': ligne.date, 'activite': activite, 'codeEtablissement': codeEtablissement} only %}
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
     {% if is_granted('IS_AUTHENTICATED_FULLY') %}
         <div id="toast" class="toast" style="position: absolute; top: 0; right: 0;" data-delay="10000">
             <div class="toast-header">

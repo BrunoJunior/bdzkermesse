@@ -7,6 +7,8 @@ use App\Entity\Activite;
 class ActivitePlanning extends PlageHoraire
 {
 
+    use ProgressTrait;
+
     /**
      * @var string
      */
@@ -30,7 +32,10 @@ class ActivitePlanning extends PlageHoraire
     {
         $activite = (new self())->setNom($entity->getNom())->setId($entity->getId());
         foreach ($entity->getCreneaux() as $creneau) {
-            $activite->addCreneau(CreneauPlanning::createFromEntity($creneau));
+            $creneauPlanning = CreneauPlanning::createFromEntity($creneau);
+            $activite->addCreneau($creneauPlanning);
+            $activite->valuenow += $creneauPlanning->getNbValides();
+            $activite->valuemax += $creneauPlanning->getNbRequis();
         }
         return $activite;
     }
@@ -79,7 +84,7 @@ class ActivitePlanning extends PlageHoraire
     }
 
     /**
-     * @return array|CreneauPlanning[]
+     * @return array|LigneCreneaux[]
      */
     public function getLignesCreneaux(): array
     {

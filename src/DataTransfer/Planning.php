@@ -11,6 +11,8 @@ use App\Entity\Kermesse;
 class Planning extends PlageHoraire
 {
 
+    use ProgressTrait;
+
     /**
      * @var array|LignePlanning[]
      */
@@ -40,6 +42,8 @@ class Planning extends PlageHoraire
             $actPlanning = ActivitePlanning::createFromEntity($activite);
             $planning->recalculerExtremumAvecAutrePlage($actPlanning, true);
             $planning->lignes[$dateStr]->addActivite($actPlanning);
+            $planning->valuenow += $actPlanning->getValuenow();
+            $planning->valuemax += $actPlanning->getValuemax();
         }
         ksort($planning->lignes);
         return $planning;

@@ -114,6 +114,20 @@ class CreneauPlanning extends PlageHoraire
     }
 
     /**
+     * @return int
+     */
+    public function getNbRequis(): int {
+        return $this->nbRequis;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbValides(): int {
+        return $this->nbValides;
+    }
+
+    /**
      * Proportion sous la forme «1 / 4»
      * @return string
      */
