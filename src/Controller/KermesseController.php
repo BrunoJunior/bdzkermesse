@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Business\KermesseBusiness;
+use App\DataTransfer\ActivitePlanning;
 use App\DataTransfer\Colonne;
 use App\DataTransfer\ContactDTO;
 use App\DataTransfer\Planning;
 use App\DataTransfer\RecapitulatifBenevole;
+use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Exception\BusinessException;
 use App\Exception\ServiceException;
@@ -20,7 +22,6 @@ use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
 use App\Service\RemboursementRowGenerator;
 use App\Service\TicketRowGenerator;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
@@ -31,6 +32,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -193,7 +195,6 @@ class KermesseController extends MyController
      * @param TicketRowGenerator $ticketGenerator
      * @param Request $request
      * @return Response
-     * @throws DBALException
      * @throws UnknownEumException
      */
     public function listeTickets(Kermesse $kermesse, TicketRowGenerator $ticketGenerator, Request $request): Response
@@ -334,12 +335,33 @@ class KermesseController extends MyController
     }
 
     /**
+     * Gestion des bénévoles de toute la kermesse
+     * @Route("/kermesses/{id}/benevoles", name="gestion_benevoles_kermesse")
+     * @Security("kermesse.isProprietaire(user)")
+     * @param Kermesse $kermesse
+     * @param KermesseCardGenerator $cardGenerator
+     * @return Response
+     * @throws NoResultException
+     * @throws NonUniqueResultException
+     */
+    public function gererBenevoles(Kermesse $kermesse, KermesseCardGenerator $cardGenerator): Response {
+        return $this->render('kermesse/benevoles.html.twig', [
+            'kermesse' => $cardGenerator->generate($kermesse),
+            'activites' => $kermesse->getActivites()->map(function (Activite $activite) {
+                return ActivitePlanning::createFromEntity($activite);
+            }),
+            'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
+        ]);
+    }
+
+    /**
      * Validation du planning des bénévoles
      * @Route("/kermesses/{id}/planning/valider", name="planning_valider")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param EmailSender $sender
      * @return Response
+     * @throws TransportExceptionInterface
      */
     public function validerPlanning(Kermesse $kermesse, EmailSender $sender): Response
     {

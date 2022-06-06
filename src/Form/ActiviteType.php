@@ -13,8 +13,10 @@ class ActiviteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('nom')
-            ->add('date', DatePickerType::class);
+        $data = $builder->getData();
+        $disabledIfCaisseCentrale = ['disabled' => $data instanceof Activite ? $data->isCaisseCentrale() : false];
+        $builder->add('nom', null, $disabledIfCaisseCentrale)
+            ->add('date', DatePickerType::class, $disabledIfCaisseCentrale);
         if ($options['withKermesse']) {
             $builder->add('creneaux', CollectionType::class, [
                     'label' => 'Créneaux horaire',

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bénévoles pour {{ kermesse.titre }}{% endblock %}
+
+{% block body %}
+    {% for activite in activites %}
+        <fieldset>
+            <legend>Bénévoles pour {{ activite.nom }}</legend>
+            {% include "activite/benevoles-part.html.twig" with {'activite': activite} only %}
+        </fieldset>
+    {% endfor %}
+{% endblock %}

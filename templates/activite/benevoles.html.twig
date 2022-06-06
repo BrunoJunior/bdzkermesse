@@ -4,44 +4,5 @@
 
 {% block body %}
     <h2>Bénévoles de l'activité «{{ activite.nom }}»</h2>
-    {% for ligneCreneaux in activite.lignesCreneaux %}
-        {% for creneau in ligneCreneaux.creneaux %}
-            <div class="row border-bottom mb-2">
-                <div class="col-2">De {{ creneau.debut|date('H:i') }} à {{ creneau.fin|date('H:i') }}</div>
-                <div class="col"><div class="row">
-                    {% for benevole in creneau.benevoles %}
-                        <div class="col-4">
-                            <div class="card text-white bg-success">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ benevole.identite }}</h5>
-                                    <p class="card-text">
-                                        <i class="fas fa-envelope"></i> {{ benevole.email }}<br />
-                                        <i class="fas fa-mobile"></i> {{ benevole.tel }}
-                                    </p>
-                                    <a href="{{ path('annuler_inscription_benevole', {'id': benevole.idInscription}) }}" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                    {% for benevole in creneau.benevoles(false) %}
-                        <div class="col-4">
-                            <div class="card bg-warning">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ benevole.identite }}</h5>
-                                    <p class="card-text">
-                                        <i class="fas fa-envelope"></i> {{ benevole.email }}<br />
-                                        <i class="fas fa-mobile"></i> {{ benevole.tel }}
-                                    </p>
-                                    <div class="btn-group" role="group" aria-label="Basic example">
-                                        <a href="{{ path('valider_inscription_benevole', {'id': benevole.idInscription}) }}" class="btn btn-success"><i class="fas fa-thumbs-up"></i></a>
-                                        <a href="{{ path('annuler_inscription_benevole', {'id': benevole.idInscription}) }}" class="btn btn-danger"><i class="fas fa-thumbs-down"></i></a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div></div>
-            </div>
-        {% endfor %}
-    {% endfor %}
+    {% include "activite/benevoles-part.html.twig" with {'activite': activite} only %}
 {% endblock %}
