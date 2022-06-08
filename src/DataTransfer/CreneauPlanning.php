@@ -55,7 +55,7 @@ class CreneauPlanning extends PlageHoraire
      */
     public function getTauxBenevoles(): int
     {
-        return round($this->nbValides * 100 / $this->nbRequis);
+        return (int) round($this->nbValides * 100 / $this->nbRequis);
     }
 
     /**

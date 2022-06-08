@@ -13,6 +13,7 @@ use App\Entity\Etablissement;
 use Exception;
 use Mailgun\Mailgun;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment;
@@ -33,12 +34,6 @@ class MailgunSender extends AbstractEmailSender
     private $security;
 
     /**
-     * dev / prod
-     * @var string
-     */
-    private $environment;
-
-    /**
      * @var LoggerInterface
      */
     private $logger;
@@ -49,20 +44,25 @@ class MailgunSender extends AbstractEmailSender
     private $emailSender;
 
     /**
+     * @var ParameterBagInterface
+     */
+    private $params;
+
+    /**
      * EMailSender constructor.
      * @param Mailgun $mailgun
      * @param Environment $twig
-     * @param KernelInterface $kernel
      * @param LoggerInterface $logger
      * @param EmailSender $emailSender
+     * @param ParameterBagInterface $params
      */
-    public function __construct(Mailgun $mailgun, Environment $twig, KernelInterface $kernel, LoggerInterface $logger, EmailSender $emailSender)
+    public function __construct(Mailgun $mailgun, Environment $twig, LoggerInterface $logger, EmailSender $emailSender, ParameterBagInterface $params)
     {
         parent::__construct($twig);
         $this->mailgun = $mailgun;
-        $this->environment = $kernel->getEnvironment();
         $this->logger = $logger;
         $this->emailSender = $emailSender;
+        $this->params = $params;
     }
 
     /**
@@ -105,7 +105,7 @@ class MailgunSender extends AbstractEmailSender
         }
 
         try {
-            $retour = $this->mailgun->messages()->send(getenv('MAILGUN_DOMAIN'), $params);
+            $retour = $this->mailgun->messages()->send($this->params->get('mailgun_domain'), $params);
             return $retour->getId() == '' ? 0 : 1;
         } catch (Exception $exception) {
             $this->logger->critical("Erreur lors de l'envoi du mail via mailgun !", ['exception' => $exception]);

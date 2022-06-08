@@ -7,6 +7,7 @@ parameters:
     locale: 'fr'
     duplicata_dir: '%kernel.project_dir%/data/tickets'
     exports_dir: '%kernel.project_dir%/data/exports'
+    mailgun_domain: '%env(resolve:MAILGUN_DOMAIN)%'
 
 services:
     # default configuration for services in *this* file

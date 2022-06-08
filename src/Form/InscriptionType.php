@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\DataTransfer\Inscription;
 use App\Entity\Creneau;
+use App\Entity\InscriptionBenevole;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -20,7 +21,9 @@ class InscriptionType extends AbstractType
                 'class' => Creneau::class,
                 'label' => 'Choisissez votre créneau',
                 'choices' => $options['activite']->getCreneaux()->filter(function (Creneau $creneau) {
-                    return $creneau->getInscriptionBenevoles()->count() < $creneau->getNbBenevolesRecquis();
+                    return $creneau->getInscriptionBenevoles()->filter(function (InscriptionBenevole $insc) {
+                        return $insc->getValidee();
+                    })->count() < $creneau->getNbBenevolesRecquis();
                 }),
                 'choice_label' => function (Creneau $creneau) {
                     return "De " . $creneau->getDebut()->format('H:i') .

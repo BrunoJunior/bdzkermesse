@@ -73,8 +73,12 @@ class BenevoleController extends MyController
         if ($inscription === null) {
             throw new NotFoundHttpException("Cet email a déjà été validé !");
         }
+        $nbRequis = $inscription->getInscription()->getNbBenevolesRecquis();
+        $nbInscrits = $inscription->getInscription()->getInscriptionBenevoles()->filter(function (\App\Entity\InscriptionBenevole $insc) {
+            return $insc->getValidee();
+        })->count();
         // On valide l'inscription
-        $inscription->setValidee(true);
+        $inscription->setValidee($nbInscrits < $nbRequis);
         $inscription->setToken(null);
         // L'email du bénévole a été validé au moins une fois
         $benevole->setEmailValide(true);

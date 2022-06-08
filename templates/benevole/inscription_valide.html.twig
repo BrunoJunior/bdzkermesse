@@ -1,15 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block headertitle %}Kermesse - Inscription validée{% endblock %}
+{% block headertitle %}Kermesse - Validation d'inscription{% endblock %}
 
 {% block body %}
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1 class="display-4">Merci {{ inscription.benevole.identite }}</h1>
+            <h1 class="display-4">{% if inscription.validee %}Merci {{ inscription.benevole.identite }}{% else %}Désolé ! Le créneau est plein !{% endif %}</h1>
             <p class="lead">
-                Vous avez validé votre inscription à l'activité {{ inscription.inscription.activite.nom }}
-                le {{ inscription.inscription.activite.date|date('d/m/Y') }}
-                de {{ inscription.inscription.debut|date('H:i') }} à {{ inscription.inscription.fin|date('H:i') }}
+                {% if inscription.validee %}
+                    Vous avez validé votre inscription à l'activité {{ inscription.inscription.activite.nom }}
+                    le {{ inscription.inscription.activite.date|date('d/m/Y') }}
+                    de {{ inscription.inscription.debut|date('H:i') }} à {{ inscription.inscription.fin|date('H:i') }}
+                {% else %}
+                    Entre le moment de votre demande et de votre validation, un autre bénévole a validé son inscription et complété le créneau.
+                    Merci pour votre implication !
+                {% endif %}
             </p>
         </div>
     </div>
