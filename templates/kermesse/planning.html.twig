@@ -107,7 +107,9 @@
                                                     {% endif %}
                                                     {% if not loop.last %}, {% endif %}
                                                 {% endfor %}
-                                                ({{ creneau.proportion }})
+                                                {% if creneau.nbRequis != creneau.nbValides %}
+                                                    ({{ creneau.proportion }})
+                                                {% endif %}
                                                 {% if is_granted('IS_AUTHENTICATED_FULLY') and not creneau.complet and (creneau.benevoles(false) or creneau.benevoles) %}
                                                     <span class="drag-grip"><i class="fas fa-grip-horizontal"></i></span>
                                                 {% endif %}
