@@ -25,7 +25,9 @@ yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 /.idea/
 /public/uploads/
+### App data (could be a symlink)
 /data/
+/data
 
 .env.local
 /.env
