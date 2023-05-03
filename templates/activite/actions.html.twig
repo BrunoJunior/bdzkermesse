@@ -27,11 +27,11 @@
             </li>
         </ul>
     </nav>
-    {% if courante %}
+    {#% if courante %#}
         <div class="d-flex flex-row justify-content-center mb-3">
             <a href="#" data-ajax="{{ path('nouvelle_autre_activite') }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle action"><i class="fas fa-plus"></i> Nouvelle action</a>
         </div>
-    {% endif %}
+    {# % endif %#}
     <div class="row">
         {% if activites is empty %}
         <div class="col-sm-6 col-md-4 col-lg-3">
