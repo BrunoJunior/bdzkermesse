@@ -26,7 +26,6 @@ yarn-error.log
 /.idea/
 /public/uploads/
 /data/
-/data/*
 
 .env.local
 /.env
