@@ -165,6 +165,10 @@ class PlageHoraire
      */
     public function getTaillePlage(): int
     {
+        // Pas de date … 0 (évite le plantage)
+        if (!$this->fin || !$this->debut) {
+            return 0;
+        }
         return $this->fin->getTimestamp() - $this->debut->getTimestamp();
     }
 }
