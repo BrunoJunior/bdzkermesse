@@ -12,11 +12,12 @@
             </p>
             <p>
                 {{ form_start(form) }}
-                {{ form_row(form.email) }}
-                {{ form_row(form.creneau) }}
                 {{ form_row(form.nom) }}
                 {{ form_row(form.portable) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.creneau) }}
                 <button class="btn btn-primary" type="submit">Je m'inscris !</button>
+                <button id="annuler-inscription" class="btn btn-info" type="reset">Annuler</button>
                 {{ form_end(form) }}
             </p>
         </div>

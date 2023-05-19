@@ -17,13 +17,26 @@ class InscriptionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('nom', null, [
+                'label' => 'Votre nom et prénom*',
+                'required' => true,
+            ])
+            ->add('portable', TelType::class, [
+                'label' => 'Votre n° de portable*',
+                'required' => true,
+            ])
+            ->add('email', EmailType::class, [
+                'label' => 'Votre adresse email*',
+                'required' => true,
+                'attr' => ['data-onchange' => $options['findAjax']]
+            ])
             ->add('creneau', EntityType::class, [
                 'class' => Creneau::class,
                 'label' => 'Choisissez votre créneau',
                 'choices' => $options['activite']->getCreneaux()->filter(function (Creneau $creneau) {
                     return $creneau->getInscriptionBenevoles()->filter(function (InscriptionBenevole $insc) {
-                        return $insc->getValidee();
-                    })->count() < $creneau->getNbBenevolesRecquis();
+                            return $insc->getValidee();
+                        })->count() < $creneau->getNbBenevolesRecquis();
                 }),
                 'choice_label' => function (Creneau $creneau) {
                     return "De " . $creneau->getDebut()->format('H:i') .
@@ -36,13 +49,6 @@ class InscriptionType extends AbstractType
                 'mapped' => true,
                 'required' => true
             ])
-            ->add('nom', null, ['label' => 'Votre nom'])
-            ->add('email', EmailType::class, [
-                'label' => 'Votre adresse email',
-                'required' => true,
-                'attr' => ['data-onchange' => $options['findAjax']]
-            ])
-            ->add('portable', TelType::class, ['label' => 'Votre n° de portable'])
         ;
     }
 
