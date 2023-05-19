@@ -55,7 +55,10 @@ class CreneauPlanning extends PlageHoraire
      */
     public function getTauxBenevoles(): int
     {
-        return (int) round($this->nbValides * 100 / $this->nbRequis);
+        // Éviter la division par zéro. Si aucun bénévole n’est requis, le taux est de 100% …
+        return !$this->nbRequis
+            ? 100
+            : (int) round($this->nbValides * 100 / $this->nbRequis);
     }
 
     /**
