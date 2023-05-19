@@ -16,5 +16,12 @@ $(function() {
         });
     });
 
+    /**
+     * Annulation = retour à la page précédente
+     */
+    $("#annuler-inscription").on("click", function () {
+        window.history.go(-1);
+        return false;
+    });
 
 });
