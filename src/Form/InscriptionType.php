@@ -39,7 +39,8 @@ class InscriptionType extends AbstractType
                         })->count() < $creneau->getNbBenevolesRecquis();
                 }),
                 'choice_label' => function (Creneau $creneau) {
-                    return "De " . $creneau->getDebut()->format('H:i') .
+                    $activite = $creneau->getActivite();
+                    return "Le ". $activite->getDate()->format("d/m/Y") ." de " . $creneau->getDebut()->format('H:i') .
                         " à " . $creneau->getFin()->format('H:i') .
                         " (" . $creneau->getInscriptionBenevoles()->count() . " / " . $creneau->getNbBenevolesRecquis() . " bénévoles)"
                         ;
