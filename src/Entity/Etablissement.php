@@ -15,7 +15,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="App\Repository\EtablissementRepository")
  * @UniqueEntity(fields="username", message="Code déjà pris")
  */
-class Etablissement implements UserInterface, Serializable
+class Etablissement implements UserInterface
 {
 
     /**
@@ -213,26 +213,32 @@ class Etablissement implements UserInterface, Serializable
     /**
      * String representation of object
      * @link http://php.net/manual/en/serializable.serialize.php
-     * @return string the string representation of the object or null
+     * @return array the string representation of the object or null
      * @since 5.1.0
      */
-    public function serialize()
+    public function __serialize(): array
     {
-        return serialize([$this->id, $this->username, $this->password]);
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'password' => $this->password,
+        ];
     }
 
     /**
      * Constructs the object
      * @link http://php.net/manual/en/serializable.unserialize.php
-     * @param string $serialized <p>
+     * @param array $serialized <p>
      * The string representation of the object.
      * </p>
      * @return void
      * @since 5.1.0
      */
-    public function unserialize($serialized)
+    public function __unserialize(array $serialized): void
     {
-        [$this->id, $this->username, $this->password] = unserialize($serialized, ['allowed_classes' => false]);
+        $this->id = $serialized['id'];
+        $this->username = $serialized['username'];
+        $this->password = $serialized['password'];
     }
 
     /**
@@ -248,19 +254,6 @@ class Etablissement implements UserInterface, Serializable
         if (!$this->membres->contains($membre)) {
             $this->membres[] = $membre;
             $membre->setEtablissement($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMembre(Membre $membre): self
-    {
-        if ($this->membres->contains($membre)) {
-            $this->membres->removeElement($membre);
-            // set the owning side to null (unless already changed)
-            if ($membre->getEtablissement() === $this) {
-                $membre->setEtablissement(null);
-            }
         }
 
         return $this;
