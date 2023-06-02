@@ -361,9 +361,6 @@
     "symfony/css-selector": {
         "version": "v5.0.4"
     },
-    "symfony/debug": {
-        "version": "v4.4.37"
-    },
     "symfony/debug-bundle": {
         "version": "5.0",
         "recipe": {
@@ -445,17 +442,11 @@
             "./src/Kernel.php"
         ]
     },
-    "symfony/http-client-contracts": {
-        "version": "v2.5.0"
-    },
     "symfony/http-foundation": {
         "version": "v5.0.7"
     },
     "symfony/http-kernel": {
         "version": "v4.4.29"
-    },
-    "symfony/inflector": {
-        "version": "v5.0.7"
     },
     "symfony/intl": {
         "version": "v4.4.37"
