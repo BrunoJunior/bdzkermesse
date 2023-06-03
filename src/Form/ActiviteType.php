@@ -6,6 +6,7 @@ use App\Entity\Activite;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -16,7 +17,8 @@ class ActiviteType extends AbstractType
         $data = $builder->getData();
         $disabledIfCaisseCentrale = ['disabled' => $data instanceof Activite ? $data->isCaisseCentrale() : false];
         $builder->add('nom', null, $disabledIfCaisseCentrale)
-            ->add('date', DatePickerType::class, $disabledIfCaisseCentrale);
+            ->add('date', DatePickerType::class, $disabledIfCaisseCentrale)
+            ->add('description', TextareaType::class, $disabledIfCaisseCentrale);
         if ($options['withKermesse']) {
             $builder->add('creneaux', CollectionType::class, [
                     'label' => 'Créneaux horaire',

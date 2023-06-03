@@ -8,7 +8,11 @@
                             border-success
                         {% endif %}">
     <div class="card-header">
-        <h5>{{ activite.nom }} - Le {{ dateact|date('d/m/Y') }}</h5>
+        <h5>{{ activite.nom }} - Le {{ dateact|date('d/m/Y') }}{% if activite.description %}
+                <button type="button" class="btn btn-outline-info activite-desc-btn" data-activite="{{ activite.nom }}" data-description="{{ activite.description }}" data-toggle="modal" data-target="#activite-desc-modal">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+            {% endif %}</h5>
     </div>
     <div class="card-body d-flex flex-column justify-content-between">
         {% for ligneCreneaux in activite.lignesCreneaux %}

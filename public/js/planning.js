@@ -82,4 +82,14 @@ $(function() {
             modale.modal('show');
         });
     } );
+
+    const modalActivity = $('#activite-desc-modal');
+    const modalActivityTitle = modalActivity.find('#activite-desc-modal-title');
+    const modalActivityBody = modalActivity.find('.modal-body');
+
+    $('.activite-desc-listener').on('click', '.activite-desc-btn', function() {
+        const button = $(this);
+        modalActivityTitle.text(button.data('activite'));
+        modalActivityBody.html(button.data('description'));
+    });
 });
