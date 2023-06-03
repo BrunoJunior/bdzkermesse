@@ -19,8 +19,7 @@ class ActiviteType extends AbstractType
         $disabledIfCaisseCentrale = ['disabled' => $data instanceof Activite ? $data->isCaisseCentrale() : false];
         $builder->add('nom', null, $disabledIfCaisseCentrale)
             ->add('date', DatePickerType::class, $disabledIfCaisseCentrale)
-            ->add('description', TextareaType::class, $disabledIfCaisseCentrale)
-            ->add('ordre', NumberType::class, ['disabled' => true]);
+            ->add('description', TextareaType::class, array_merge(['required' => false], $disabledIfCaisseCentrale));
         if ($options['withKermesse']) {
             $builder->add('creneaux', CollectionType::class, [
                     'label' => 'Créneaux horaire',
