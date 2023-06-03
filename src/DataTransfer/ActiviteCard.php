@@ -213,4 +213,12 @@ class ActiviteCard
     {
         return $this->activite;
     }
+
+    /**
+     * Le descriptif de l'activité
+     * @return string|null
+     */
+    public function getDescription(): ?string {
+        return $this->activite->getDescription();
+    }
 }
