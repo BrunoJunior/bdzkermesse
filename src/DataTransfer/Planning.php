@@ -24,14 +24,15 @@ class Planning extends PlageHoraire
     private $idKermesse;
 
     /**
-     * @param Kermesse $kermesse
+     * @param int $idKermesse
+     * @param array $activites
      * @return static
      */
-    public static function createFromKermesse(Kermesse $kermesse): self
+    public static function createFromKermesse(int $idKermesse, array $activites): self
     {
         $planning = new self();
-        $planning->idKermesse = $kermesse->getId();
-        foreach ($kermesse->getActivites() as $activite) {
+        $planning->idKermesse = $idKermesse;
+        foreach ($activites as $activite) {
             if ($activite->getDate() === null) {
                 continue;
             }

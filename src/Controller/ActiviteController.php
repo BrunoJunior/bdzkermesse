@@ -16,10 +16,10 @@ use App\Repository\ActiviteRepository;
 use App\Repository\DepenseRepository;
 use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
+use App\Service\ActiviteMover;
 use App\Service\DepenseRowGenerator;
 use App\Service\RecetteRowGenerator;
 use DateTimeImmutable;
-use Doctrine\DBAL\DBALException;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
 use Exception;
@@ -141,7 +141,6 @@ class ActiviteController extends MyController
      * @param DepenseRowGenerator $dRowGenerator
      * @param Request $request
      * @return Response
-     * @throws DBALException
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
@@ -211,6 +210,20 @@ class ActiviteController extends MyController
             'activite' => ActivitePlanning::createFromEntity($activite),
             'menu' => $this->getMenu($activite->getKermesse(), static::MENU_ACTIVITES)
         ]);
+    }
+
+    /**
+     * Move an activity and return all moved ones (in json format)
+     * @Route("/activites/{id<\d+>}/moveTo/{position}", name="move_activity")
+     * @Security("activite.isProprietaire(user)")
+     * @param Activite $activite
+     * @param int $position
+     * @param ActiviteMover $mover
+     * @return Response
+     */
+    public function move(Activite $activite, int $position, ActiviteMover $mover): Response
+    {
+        return $this->json(['moved' => $mover->moveActivityTo($activite, $position)]);
     }
 
     /**

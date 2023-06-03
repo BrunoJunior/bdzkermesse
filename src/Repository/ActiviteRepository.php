@@ -40,7 +40,8 @@ class ActiviteRepository extends ServiceEntityRepository
             ->addSelect('k')
             ->andWhere('k.id = :kermesseId')
             ->setParameter('kermesseId', $kermesseId)
-            ->orderBy('a.nom', 'ASC')
+            ->orderBy('a.ordre', 'ASC')
+            ->addOrderBy('a.nom', 'ASC')
             ->getQuery()
             ->getResult()
         ;
@@ -218,5 +219,47 @@ class ActiviteRepository extends ServiceEntityRepository
             ->getArrayResult();
         // Regroupement
         return $this->regrouperDepensesRecettes($recettes, $depenses);
+    }
+
+    /**
+     * Les activités d'une kermesse qui n'ont pas d'ordre
+     * @param int $kermesseId
+     * @return Activite[] Returns an array of Activite objects
+     */
+    public function findUnorderedByKermesseId(int $kermesseId):array
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.kermesse', 'k')
+            ->addSelect('k')
+            ->andWhere('k.id = :kermesseId')
+            ->andWhere('a.ordre = :ordre')
+            ->setParameter('kermesseId', $kermesseId)
+            ->setParameter('ordre', 0)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    /**
+     * Get all the activities which will move
+     * @param int $kermesseId
+     * @param int $from
+     * @param int $to
+     * @return Activite[] All the activities which will move
+     */
+    public function findWillMove(int $kermesseId, int $from, int $to): array
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.kermesse', 'k')
+            ->addSelect('k')
+            ->andWhere('k.id = :kermesseId')
+            ->andWhere('a.ordre >= :min')
+            ->andWhere('a.ordre <= :max')
+            ->setParameter('kermesseId', $kermesseId)
+            ->setParameter('min', min($from, $to))
+            ->setParameter('max', max($from, $to))
+            ->getQuery()
+            ->getResult()
+            ;
     }
 }

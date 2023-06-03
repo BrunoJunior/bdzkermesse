@@ -14,6 +14,7 @@ use App\Entity\Creneau;
 use App\Entity\Etablissement;
 use App\Form\InscriptionType;
 use App\Form\MigrationType;
+use App\Repository\ActiviteRepository;
 use App\Repository\BenevoleRepository;
 use App\Repository\InscriptionBenevoleRepository;
 use App\Repository\KermesseRepository;
@@ -200,11 +201,11 @@ class BenevoleController extends MyController
      * @return Response
      * @throws NonUniqueResultException
      */
-    public function showPlanning(string $code, KermesseRepository $rKermesse): Response
+    public function showPlanning(string $code, KermesseRepository $rKermesse, ActiviteRepository $rActivite): Response
     {
         $etablissement = $this->getEtablissementByCode($code);
         $kermesse = $rKermesse->findCouranteByEtablissement($etablissement);
-        $planning = Planning::createFromKermesse($kermesse);
+        $planning = Planning::createFromKermesse($kermesse->getId(), $rActivite->findByKermesseId($kermesse->getId()));
         return $this->render('kermesse/planning.html.twig', [
             'planning' => $planning,
             'codeEtablissement' => $code,

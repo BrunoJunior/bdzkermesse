@@ -165,4 +165,23 @@ class KermesseService
         $this->entityManager->flush();
         return $this;
     }
+
+    /**
+     * Permet d'initialiser l'ordre des activités de la kermesse si au moins une activité n'a pas d'ordre
+     * @param Kermesse $kermesse
+     * @return $this
+     */
+    public function initialiserOrdreActivites(Kermesse $kermesse):self {
+        $unordered = $this->rActivite->findUnorderedByKermesseId($kermesse->getId());
+        if (!empty($unordered)) {
+            $activites = $this->rActivite->findByKermesseId($kermesse->getId());
+            for ($i = 0; $i < count($activites); $i++) {
+                $activite = $activites[$i];
+                $activite->setOrdre($i+1);
+                $this->entityManager->persist($activite);
+            }
+            $this->entityManager->flush();
+        }
+        return $this;
+    }
 }
