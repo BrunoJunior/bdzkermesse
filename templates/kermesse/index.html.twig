@@ -1,17 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}<style>
-    .loader {
-        height: 310px;
-    }
-</style>{% endblock %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/kermesse_index.css') }}" />
+{% endblock %}
 
 {% block title %}Kermesse{% endblock %}
 
 {% block body %}
     <fieldset>
         <legend>Activités <a href="#" data-ajax="{{ path('nouvelle_activite', {'id': kermesse.id}) }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle activité"><i class="fas fa-plus"></i></a></legend>
-        <div class="row">
+        <div id="activity-list" class="row">
             {% if activites is empty %}
             <div class="col-sm-6 col-md-4 col-lg-3">
                 <div class="card text-center">
@@ -20,9 +18,16 @@
             </div>
             {% endif %}
             {% for activite in activites %}
-                <div class="col-sm-6 col-md-4 col-lg-3 mb-3 ajax" data-ajax-url="{{ path('carte_activite', {'id': activite.id}) }}">
+                <div
+                        class="activity-card col-sm-6 col-md-4 col-lg-3 mb-3 ajax"
+                        data-move-url="{{ path('move_activity', {'id': activite.id, 'position': '__position__'}) }}"
+                        data-ajax-url="{{ path('carte_activite', {'id': activite.id}) }}">
                 </div>
             {% endfor %}
         </div>
     </fieldset>
+{% endblock %}
+
+{% block javascripts %}
+    <script src="{{ asset('js/kermesse_index.js') }}"></script>
 {% endblock %}

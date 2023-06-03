@@ -15,6 +15,7 @@ use App\Exception\ServiceException;
 use App\Form\KermesseType;
 use App\Form\MembresKermesseType;
 use App\Helper\HFloat;
+use App\Repository\ActiviteRepository;
 use App\Repository\RecetteRepository;
 use App\Service\EmailSender;
 use App\Service\KermesseCardGenerator;
@@ -146,15 +147,19 @@ class KermesseController extends MyController
      * @Route("/kermesses/{id}", name="kermesse", requirements={"id"="\d+"})
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
+     * @param KermesseService $sKermesse
+     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function index(Kermesse $kermesse): Response
+    public function index(Kermesse $kermesse, KermesseService $sKermesse, ActiviteRepository $rActivite): Response
     {
+        // If one of the activities does not have an order, we compute all of them (for one kermesse)
+        $sKermesse->initialiserOrdreActivites($kermesse);
         return $this->render(
             'kermesse/index.html.twig',
             [
                 'kermesse' => $kermesse,
-                'activites' => $kermesse->getActivites(),
+                'activites' => $rActivite->findByKermesseId($kermesse->getId()),
                 'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
             ]
         );
@@ -321,11 +326,12 @@ class KermesseController extends MyController
      * @Route("/kermesses/{id}/planning", name="planning_benevoles")
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
+     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function showPlanning(Kermesse $kermesse): Response
+    public function showPlanning(Kermesse $kermesse, ActiviteRepository $rActivite): Response
     {
-        $planning = Planning::createFromKermesse($kermesse);
+        $planning = Planning::createFromKermesse($kermesse->getId(), $rActivite->findByKermesseId($kermesse->getId()));
         return $this->render('kermesse/planning.html.twig', [
             'menu' => $this->getMenu($kermesse, static::MENU_PLANNING),
             'planning' => $planning,
@@ -360,10 +366,11 @@ class KermesseController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param EmailSender $sender
+     * @param ActiviteRepository $rActivite
      * @return Response
      * @throws TransportExceptionInterface
      */
-    public function validerPlanning(Kermesse $kermesse, EmailSender $sender): Response
+    public function validerPlanning(Kermesse $kermesse, EmailSender $sender, ActiviteRepository $rActivite): Response
     {
         // Regroupement par adresse email
         $creneauxParEmail = [];
@@ -396,6 +403,6 @@ class KermesseController extends MyController
             }
         }
         $this->addFlash('success', "Les bénévoles des créneaux complets ont été prévenus apr email !");
-        return $this->showPlanning($kermesse);
+        return $this->showPlanning($kermesse, $rActivite);
     }
 }

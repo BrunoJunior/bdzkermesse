@@ -1,0 +1,9 @@
+.loader {
+    height: 310px;
+}
+.activity-card-handle {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    cursor: grab;
+}

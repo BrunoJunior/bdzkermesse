@@ -80,6 +80,11 @@ class Activite extends MyEntity
      */
     private $description;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $ordre = 0;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -296,6 +301,18 @@ class Activite extends MyEntity
     public function setDescription(?string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getOrdre(): ?int
+    {
+        return $this->ordre;
+    }
+
+    public function setOrdre(int $ordre): self
+    {
+        $this->ordre = $ordre;
 
         return $this;
     }
