@@ -18,6 +18,7 @@ use App\Repository\RecetteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\ActiviteMover;
 use App\Service\DepenseRowGenerator;
+use App\Service\KermesseService;
 use App\Service\RecetteRowGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
@@ -35,14 +36,17 @@ class ActiviteController extends MyController
     /**
      * @param Request $request
      * @param string $action
+     * @param ActiviteRepository $rActivite
      * @param Activite|null $activite
      * @param Kermesse|null $kermesse
      * @return Response
      */
-    private function saveActivite(Request $request, string $action, ?Activite $activite = null, ?Kermesse $kermesse = null): Response
+    private function saveActivite(Request $request, string $action, ActiviteRepository $rActivite, ?Activite $activite = null, ?Kermesse $kermesse = null): Response
     {
         $activite = $activite ?: new Activite();
         $kermesse = $activite->getKermesse() ?: $kermesse;
+        // For a new activity we take the next available position
+        $activite->setOrdre($activite->getOrdre() ?: $rActivite->getNextPosition($kermesse));
         $activite->setCaisseCentrale($activite->isCaisseCentrale() ?: false);
         $activite->setKermesse($kermesse);
         $activite->setEtablissement($this->getEtablissement());
@@ -70,13 +74,15 @@ class ActiviteController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
+     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function nouvelleActivite(Kermesse $kermesse, Request $request): Response
+    public function nouvelleActivite(Kermesse $kermesse, Request $request, ActiviteRepository $rActivite): Response
     {
         return $this->saveActivite(
             $request,
             $this->generateUrl('nouvelle_activite', ['id' => $kermesse->getId()]),
+            $rActivite,
             null,
             $kermesse
         );
@@ -85,11 +91,12 @@ class ActiviteController extends MyController
     /**
      * @Route("/activites/new", name="nouvelle_autre_activite")
      * @param Request $request
+     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function nouvelleAutreActivite(Request $request): Response
+    public function nouvelleAutreActivite(Request $request, ActiviteRepository $rActivite): Response
     {
-        return $this->saveActivite($request, $this->generateUrl('nouvelle_autre_activite'));
+        return $this->saveActivite($request, $this->generateUrl('nouvelle_autre_activite'), $rActivite);
     }
 
     /**
@@ -97,11 +104,12 @@ class ActiviteController extends MyController
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param Request $request
+     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function editerActivite(Activite $activite, Request $request): Response
+    public function editerActivite(Activite $activite, Request $request, ActiviteRepository $rActivite): Response
     {
-        return $this->saveActivite($request, $this->generateUrl('editer_activite', ['id' => $activite->getId()]), $activite);
+        return $this->saveActivite($request, $this->generateUrl('editer_activite', ['id' => $activite->getId()]), $rActivite, $activite);
     }
 
     /**
@@ -117,15 +125,28 @@ class ActiviteController extends MyController
      * @Route("/activites/{id<\d+>}/supprimer", name="supprimer_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
+     * @param ActiviteRepository $rActivite
+     * @param KermesseService $sKermesse
      * @return Response
      * @throws ServiceException
      */
-    public function supprimerActivite(Activite $activite): Response
+    public function supprimerActivite(Activite $activite, ActiviteRepository $rActivite, KermesseService $sKermesse): Response
     {
         if ($activite->isCaisseCentrale()) {
             throw new ServiceException("Vous n'êtes pas autorisé à faire cela !");
         }
+        // If one of the activities does not have an order, we compute all of them (for one kermesse)
+        $kermesse = $activite->getKermesse();
+        $sKermesse->initialiserOrdreActivites($kermesse);
         $em = $this->getDoctrine()->getManager();
+        // Before the activity deletion we move upward activities which are after the deleted one
+        $toMove = $rActivite->findWillMove($kermesse->getId(), $activite->getOrdre());
+        foreach ($toMove as $activiteToMove) {
+            if ($activiteToMove->getId() !== $activite->getId()) {
+                $activiteToMove->setOrdre($activiteToMove->getOrdre() - 1);
+                $em->persist($activiteToMove);
+            }
+        }
         $em->remove($activite);
         $em->flush();
         return $this->reponseModal("Activité " . $activite->getNom() . ' supprimée !');

@@ -244,22 +244,25 @@ class ActiviteRepository extends ServiceEntityRepository
      * Get all the activities which will move
      * @param int $kermesseId
      * @param int $from
-     * @param int $to
+     * @param int|null $to
      * @return Activite[] All the activities which will move
      */
-    public function findWillMove(int $kermesseId, int $from, int $to): array
+    public function findWillMove(int $kermesseId, int $from, ?int $to = null): array
     {
-        return $this->createQueryBuilder('a')
+        $min = $to === null ? $from : min($from, $to);
+        $max = $to === null? null : max($from, $to);
+        $qb = $this->createQueryBuilder('a')
             ->innerJoin('a.kermesse', 'k')
             ->addSelect('k')
             ->andWhere('k.id = :kermesseId')
             ->andWhere('a.ordre >= :min')
-            ->andWhere('a.ordre <= :max')
             ->setParameter('kermesseId', $kermesseId)
-            ->setParameter('min', min($from, $to))
-            ->setParameter('max', max($from, $to))
-            ->getQuery()
-            ->getResult()
-            ;
+            ->setParameter('min', $min);
+
+        if ($max !== null) {
+            $qb->andWhere('a.ordre <= :max')->setParameter('max', $max);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }
