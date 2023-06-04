@@ -15,7 +15,8 @@ class CreneauType extends AbstractType
     {
         $builder
             ->add('nbBenevolesRecquis', IntegerType::class, [
-                'label' => 'Nombre de bénévoles requis'
+                'label' => 'Nombre de bénévoles requis',
+                'row_attr' => ['class' => 'creneau-nb-benevoles-requis'],
             ])
             ->add('debut', TimeType::class, [
                 'label' => 'De',
@@ -35,7 +36,8 @@ class CreneauType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Creneau::class
+            'data_class' => Creneau::class,
+            'attr' => ['class' => 'activite-creneau']
         ]);
     }
 }

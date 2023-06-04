@@ -42,7 +42,9 @@
         <div class="btn-group mb-3" role="group" aria-label="Actions">
             <a href="#" data-ajax="{{ path('nouvelle_recette_activite', {'id': card.id}) }}" class="btn btn-success ajax-reload-element" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-donate"></i></a>
             <a href="{{ path('nouveau_ticket_action', {'id': card.id}) }}" class="btn btn-danger" data-toggle="tooltip" title="Nouvelle dépense"><i class="fas fa-receipt"></i></a>
-            <a href="{{ path('gerer_benevoles', {'id': card.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Gérer les bénévoles"><i class="fas fa-users-cog"></i></a>
+            {% if card.nombreBenevolesRequis > 0 %}
+                <a href="{{ path('gerer_benevoles', {'id': card.id}) }}" class="btn btn-warning" data-toggle="tooltip" title="Gérer les bénévoles"><i class="fas fa-users-cog"></i></a>
+            {% endif %}
         </div>
     </div>
 </div>

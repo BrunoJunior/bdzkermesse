@@ -9,6 +9,8 @@
     {{ form_row(form.date) }}
     {{ form_row(form.description) }}
     {% if kermesse is not null %}
+        <!-- TODO : Do some JS to hide accepteTicket if only for planning and hide nombre de bénévoles -->
+        {{ form_row(form.onlyForPlanning) }}
         {{ form_row(form.accepteTickets) }}
         <div class="well">
             <fieldset>

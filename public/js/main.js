@@ -158,7 +158,8 @@ $(function() {
         });
     });
     body.on('click', '.modal .dismiss', function () {
-        $(this).closest('.modal').modal('hide');
+        const modal = $(this).closest('.modal')
+        modal.modal('hide')
     });
     body.on('click', '[data-ajax]', function () {
         $('head .ajax-stylesheet').remove();

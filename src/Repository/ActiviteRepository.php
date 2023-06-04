@@ -10,6 +10,7 @@ use DateTimeInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Exception;
@@ -264,5 +265,24 @@ class ActiviteRepository extends ServiceEntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * Getting the next available position
+     * @param Kermesse $kermesse
+     * @return int
+     */
+    public function getNextPosition(Kermesse $kermesse): int {
+        try {
+            $result = $this->createQueryBuilder('a')
+                ->andWhere('a.kermesse = :kermesse')
+                ->setParameter('kermesse', $kermesse)
+                ->select('COALESCE(MAX(a.ordre),0) as ordre')
+                ->getQuery()
+                ->getSingleScalarResult();
+        } catch (Exception $exc) {
+            return 0;
+        }
+        return ($result ?? 0) + 1;
     }
 }

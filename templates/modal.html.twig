@@ -4,7 +4,7 @@
         {{ form_start(form) }}
         <div class="modal-header">
             <h5 class="modal-title" id="main-modal-form-title">{% block title %}Formulaire{% endblock %}</h5>
-            <button type="button" class="close dismiss" aria-label="Fermer">
+            <button type="button" class="close dismiss" aria-label="Fermer" data-dismiss="modal">
                 <span aria-hidden="true">&times;</span>
             </button>
         </div>
@@ -13,7 +13,7 @@
         </div>
         {% block buttons %}
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary dismiss">Annuler</button>
+                <button type="button" class="btn btn-secondary dismiss" data-dismiss="modal">Annuler</button>
                 {% block sendbutton %}<button class="btn btn-primary" type="submit">Enregistrer</button>{% endblock %}
             </div>
         {% endblock %}
