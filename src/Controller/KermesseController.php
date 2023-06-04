@@ -346,15 +346,19 @@ class KermesseController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param KermesseCardGenerator $cardGenerator
+     * @param ActiviteRepository $rActivite
      * @return Response
      * @throws NoResultException
      * @throws NonUniqueResultException
      */
-    public function gererBenevoles(Kermesse $kermesse, KermesseCardGenerator $cardGenerator): Response {
+    public function gererBenevoles(Kermesse $kermesse, KermesseCardGenerator $cardGenerator, ActiviteRepository $rActivite): Response {
         return $this->render('kermesse/benevoles.html.twig', [
             'kermesse' => $cardGenerator->generate($kermesse),
-            'activites' => $kermesse->getActivites()->map(function (Activite $activite) {
-                return ActivitePlanning::createFromEntity($activite);
+            'activites' => array_filter(array_map(
+                [ActivitePlanning::class, 'createFromEntity'],
+                $rActivite->findByKermesseId($kermesse->getId())
+            ), function (ActivitePlanning $activitePlanning) {
+                return !$activitePlanning->isOnlyForPlanning();
             }),
             'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
         ]);

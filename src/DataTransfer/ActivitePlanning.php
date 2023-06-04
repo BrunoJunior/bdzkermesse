@@ -30,6 +30,11 @@ class ActivitePlanning extends PlageHoraire
     private $description;
 
     /**
+     * @var bool|null
+     */
+    private $onlyForPlanning;
+
+    /**
      * @param Activite $entity
      * @return static
      */
@@ -38,7 +43,8 @@ class ActivitePlanning extends PlageHoraire
         $activite = (new self())
             ->setNom($entity->getNom())
             ->setId($entity->getId())
-            ->setDescription($entity->getDescription());
+            ->setDescription($entity->getDescription())
+            ->setOnlyForPlanning($entity->isOnlyForPlanning());
         foreach ($entity->getCreneaux() as $creneau) {
             $creneauPlanning = CreneauPlanning::createFromEntity($creneau);
             $activite->addCreneau($creneauPlanning);
@@ -132,6 +138,24 @@ class ActivitePlanning extends PlageHoraire
     public function setDescription(?string $description): ActivitePlanning
     {
         $this->description = $description;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOnlyForPlanning(): bool
+    {
+        return $this->onlyForPlanning;
+    }
+
+    /**
+     * @param bool $onlyForPlanning
+     * @return ActivitePlanning
+     */
+    public function setOnlyForPlanning(bool $onlyForPlanning): ActivitePlanning
+    {
+        $this->onlyForPlanning = $onlyForPlanning;
         return $this;
     }
 

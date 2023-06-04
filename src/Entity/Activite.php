@@ -85,6 +85,11 @@ class Activite extends MyEntity
      */
     private $ordre = 0;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $onlyForPlanning = false;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -313,6 +318,18 @@ class Activite extends MyEntity
     public function setOrdre(int $ordre): self
     {
         $this->ordre = $ordre;
+
+        return $this;
+    }
+
+    public function isOnlyForPlanning(): ?bool
+    {
+        return $this->onlyForPlanning;
+    }
+
+    public function setOnlyForPlanning(bool $onlyForPlanning): self
+    {
+        $this->onlyForPlanning = $onlyForPlanning;
 
         return $this;
     }
