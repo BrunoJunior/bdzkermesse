@@ -95,6 +95,11 @@ class Activite extends MyEntity
      */
     private $type;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $regle;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -347,6 +352,18 @@ class Activite extends MyEntity
     public function setType(?TypeActivite $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getRegle(): ?string
+    {
+        return $this->regle;
+    }
+
+    public function setRegle(?string $regle): self
+    {
+        $this->regle = $regle;
 
         return $this;
     }

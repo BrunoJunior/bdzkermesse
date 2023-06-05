@@ -17,6 +17,10 @@
                         <dt>Description</dt>
                         <dd>{{ contentModal.description|nl2br }}</dd>
                     {% endif %}
+                    {% if contentModal.regle %}
+                        <dt>Règles du jeu</dt>
+                        <dd>{{ contentModal.regle|nl2br }}</dd>
+                    {% endif %}
                 </dl>
             </div>
         </div>
