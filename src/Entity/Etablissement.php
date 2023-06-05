@@ -73,11 +73,17 @@ class Etablissement implements UserInterface
      */
     private $resetPwdKey;
 
+    /**
+     * @ORM\OneToMany(targetEntity=TypeActivite::class, mappedBy="etablissement")
+     */
+    private $typeActivites;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
         $this->membres = new ArrayCollection();
         $this->admin = false;
+        $this->typeActivites = new ArrayCollection();
     }
 
     public function getId()
@@ -291,6 +297,36 @@ class Etablissement implements UserInterface
     public function setResetPwdKey(?string $resetPwdKey): self
     {
         $this->resetPwdKey = $resetPwdKey;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, TypeActivite>
+     */
+    public function getTypeActivites(): Collection
+    {
+        return $this->typeActivites;
+    }
+
+    public function addTypeActivite(TypeActivite $typeActivite): self
+    {
+        if (!$this->typeActivites->contains($typeActivite)) {
+            $this->typeActivites[] = $typeActivite;
+            $typeActivite->setEtablissement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTypeActivite(TypeActivite $typeActivite): self
+    {
+        if ($this->typeActivites->removeElement($typeActivite)) {
+            // set the owning side to null (unless already changed)
+            if ($typeActivite->getEtablissement() === $this) {
+                $typeActivite->setEtablissement(null);
+            }
+        }
 
         return $this;
     }

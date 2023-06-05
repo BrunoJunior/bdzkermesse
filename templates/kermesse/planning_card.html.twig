@@ -1,4 +1,5 @@
-<div class="card text-center {% if (activite.progress < 50) %}
+<div class="card text-center {% if (activite.progress < 50use Doctrine\ORM\NonUniqueResultException;
+) %}
                             border-danger
                             {% elseif (activite.progress >= 50 and activite.progress < 75) %}
                             border-warning
@@ -8,8 +9,8 @@
                             border-success
                         {% endif %}">
     <div class="card-header">
-        <h5>{{ activite.nom }} - Le {{ dateact|date('d/m/Y') }}{% if activite.description %}
-                <button type="button" class="btn btn-outline-info activite-desc-btn" data-activite="{{ activite.nom }}" data-description="{{ activite.description }}" data-toggle="modal" data-target="#activite-desc-modal">
+        <h5>{{ activite.nom }} - Le {{ dateact|date('d/m/Y') }}{% if activite.description and not activite.description.empty %}
+                <button type="button" class="btn btn-outline-info activite-desc-btn" data-toggle="modal" data-target="#activite{{ activite.id }}-desc-modal">
                     <i class="fas fa-question-circle"></i>
                 </button>
             {% endif %}</h5>

@@ -25,7 +25,7 @@ class ActivitePlanning extends PlageHoraire
     private $lignesCreneaux = [];
 
     /**
-     * @var string|null
+     * @var ActiviteDescriptionModal
      */
     private $description;
 
@@ -43,7 +43,7 @@ class ActivitePlanning extends PlageHoraire
         $activite = (new self())
             ->setNom($entity->getNom())
             ->setId($entity->getId())
-            ->setDescription($entity->getDescription())
+            ->setDescription(new ActiviteDescriptionModal($entity))
             ->setOnlyForPlanning($entity->isOnlyForPlanning());
         foreach ($entity->getCreneaux() as $creneau) {
             $creneauPlanning = CreneauPlanning::createFromEntity($creneau);
@@ -124,20 +124,20 @@ class ActivitePlanning extends PlageHoraire
     }
 
     /**
-     * @return string|null
+     * @return ActiviteDescriptionModal|null
      */
-    public function getDescription(): ?string
+    public function getDescription(): ?ActiviteDescriptionModal
     {
         return $this->description;
     }
 
     /**
-     * @param string|null $description
+     * @param ActiviteDescriptionModal|null $descriptionModale
      * @return ActivitePlanning
      */
-    public function setDescription(?string $description): ActivitePlanning
+    public function setDescription(?ActiviteDescriptionModal $descriptionModale): ActivitePlanning
     {
-        $this->description = $description;
+        $this->description = $descriptionModale;
         return $this;
     }
 

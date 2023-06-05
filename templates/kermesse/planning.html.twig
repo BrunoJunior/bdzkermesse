@@ -56,8 +56,8 @@
                 <div class="col ligne-activites">
                     {% for activite in ligne.activites %}
                         <div class="row ligne-activite mb-1">
-                            <div class="col-2 activite-nom">{{ activite.nom }}{% if activite.description %}
-                                    <button type="button" class="btn btn-link activite-desc-btn" data-activite="{{ activite.nom }}" data-description="{{ activite.description }}" data-toggle="modal" data-target="#activite-desc-modal" style="padding: 0; border: 0;">
+                            <div class="col-2 activite-nom">{{ activite.nom }}{% if activite.description and not activite.description.empty %}
+                                    <button type="button" class="btn btn-link activite-desc-btn" data-toggle="modal" data-target="#activite{{ activite.id }}-desc-modal" style="padding: 0; border: 0;">
                                         <i class="fas fa-question-circle"></i>
                                     </button>
                                 {% endif %}</div>
@@ -168,22 +168,15 @@
             >Copier le lien à fournir aux bénévoles</button>
             <a href="{{ path('planning_valider', {'id': planning.idKermesse}) }}" class="btn btn-primary" role="button"><i class="far fa-calendar-check"></i> Valider le planning</a>
         </div>
+        <!-- Modals -->
         <div id="modal-migration" class="modal" tabindex="-1" role="dialog"></div>
-        <!-- Modal -->
-        <div class="modal fade" id="activite-desc-modal" tabindex="-1" aria-labelledby="activite-desc-modal-label" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="activite-desc-modal-label"><span id="activite-desc-modal-title"></span> - Description</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body" style="white-space: pre-line">
-                    </div>
-                </div>
-            </div>
-        </div>
+        {% for ligne in planning.lignes %}
+            {% for activite in ligne.activites %}
+                {% if activite.description and not activite.description.empty %}
+                    {% include "activite/description-modal.html.twig" with {'id': activite.id, 'titre': activite.nom, 'contentModal': activite.description} only %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
     {% endif %}
 {% endblock %}
 
