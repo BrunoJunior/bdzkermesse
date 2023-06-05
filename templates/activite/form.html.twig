@@ -10,8 +10,8 @@
     {{ form_row(form.type) }}
     {{ form_row(form.new_type_activite) }}
     {{ form_row(form.description) }}
+    {{ form_row(form.regle) }}
     {% if kermesse is not null %}
-        <!-- TODO : Do some JS to hide accepteTicket if only for planning and hide nombre de bénévoles -->
         {{ form_row(form.onlyForPlanning) }}
         {{ form_row(form.accepteTickets) }}
         <div class="well">

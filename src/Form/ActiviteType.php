@@ -39,6 +39,10 @@ class ActiviteType extends AbstractType
             ->add('description', TextareaType::class, array_merge([
                 'required'      => false,
             ], $disabledIfCaisseCentrale))
+            ->add('regle', TextareaType::class, array_merge([
+                'required'      => false,
+                'label'         => 'Règle du jeu',
+            ], $disabledIfCaisseCentrale))
             ->add('onlyForPlanning', CheckboxType::class, array_merge([
                 'required'      => false,
                 'label'         => 'Uniquement pour le planning',

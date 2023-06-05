@@ -14,6 +14,10 @@ class ActiviteDescriptionModal
      * @var string|null
      */
     private $description;
+    /**
+     * @var string|null
+     */
+    private $regle;
 
     /**
      * @param Activite $activite
@@ -23,6 +27,7 @@ class ActiviteDescriptionModal
         $type = $activite->getType();
         $this->type = $type ? $type->getNom() : null;
         $this->description = $activite->getDescription();
+        $this->regle = $activite->getRegle();
     }
 
     /**
@@ -42,9 +47,17 @@ class ActiviteDescriptionModal
     }
 
     /**
+     * @return string|null
+     */
+    public function getRegle(): ?string
+    {
+        return $this->regle;
+    }
+
+    /**
      * @return bool
      */
     public function isEmpty(): bool {
-        return !$this->description && !$this->type;
+        return !$this->description && !$this->type && !$this->regle;
     }
 }
