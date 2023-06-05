@@ -215,10 +215,10 @@ class ActiviteCard
     }
 
     /**
-     * Le descriptif de l'activité
-     * @return string|null
+     * Le descriptif de l'activité (avec son type)
+     * @return ActiviteDescriptionModal
      */
-    public function getDescription(): ?string {
-        return $this->activite->getDescription();
+    public function getDescription(): ActiviteDescriptionModal {
+        return new ActiviteDescriptionModal($this->activite);
     }
 }

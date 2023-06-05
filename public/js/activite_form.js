@@ -7,10 +7,18 @@ $(function() {
     form.on('collection-widget-added', changeVisibilityBlocs)
     form.on('collection-widget-removed', affichageAucunCreneau)
     form.on('change', '#activite_onlyForPlanning', changeVisibilityNbBenevoles)
+    form.on("change", "#activite_type", affichageNewType)
 
     function changeVisibilityBlocs() {
         affichageAucunCreneau()
         changeVisibilityNbBenevoles()
+        affichageNewType()
+    }
+
+    function affichageNewType() {
+        const selectedType = parseInt($("#activite_type").val())
+        console.log(selectedType)
+        $("#activite_new_type_activite").closest(".form-group").toggle(selectedType === -1)
     }
 
     function affichageAucunCreneau() {

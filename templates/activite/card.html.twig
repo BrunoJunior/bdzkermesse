@@ -1,7 +1,7 @@
 <div class="card text-center">
     <div class="card-header">
         <i class="fas fa-grip-vertical activity-card-handle"></i>
-        <h5>{{ card.titre }}{% if card.description %}
+        <h5>{{ card.titre }}{% if not card.description.empty %}
             <button type="button" class="btn btn-link" data-toggle="modal" data-target="#activite{{ card.id }}-desc-modal" style="padding: 0; border: 0;">
                 <i class="fas fa-question-circle"></i>
             </button>
@@ -49,19 +49,7 @@
     </div>
 </div>
 
-<!-- Modal -->
-<div class="modal fade" id="activite{{ card.id }}-desc-modal" tabindex="-1" aria-labelledby="activite{{ card.id }}-desc-modal-label" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="activite{{ card.id }}-desc-modal-label">{{ card.titre }} - Description</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                {{ card.description|nl2br }}
-            </div>
-        </div>
-    </div>
-</div>
+{% if not card.description.empty %}
+    <!-- Modal -->
+    {% include "activite/description-modal.html.twig" with {'id': card.id, 'titre': card.titre, 'contentModal': card.description} only %}
+{% endif %}

@@ -8,6 +8,7 @@ use App\DataTransfer\PlageHoraire;
 use App\Entity\Activite;
 use App\Entity\Etablissement;
 use App\Entity\Kermesse;
+use App\Entity\TypeActivite;
 use App\Exception\ServiceException;
 use App\Form\ActiviteType;
 use App\Helper\Breadcrumb;
@@ -15,6 +16,7 @@ use App\Helper\HFloat;
 use App\Repository\ActiviteRepository;
 use App\Repository\DepenseRepository;
 use App\Repository\RecetteRepository;
+use App\Repository\TypeActiviteRepository;
 use App\Service\ActiviteCardGenerator;
 use App\Service\ActiviteMover;
 use App\Service\DepenseRowGenerator;
@@ -23,7 +25,9 @@ use App\Service\RecetteRowGenerator;
 use DateTimeImmutable;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\NoResultException;
+use Doctrine\Persistence\ManagerRegistry;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -32,21 +36,48 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ActiviteController extends MyController
 {
+    /**
+     * @var ActiviteRepository
+     */
+    private $rActivite;
+
+    /**
+     * @var TypeActiviteRepository
+     */
+    private $rTypeActivite;
+
+    /**
+     * @var ManagerRegistry
+     */
+    private $em;
+
+    /**
+     * @param LoggerInterface $logger
+     * @param ActiviteRepository $rActivite
+     * @param TypeActiviteRepository $rTypeActivite
+     * @param ManagerRegistry $em
+     */
+    public function __construct(LoggerInterface $logger, ActiviteRepository $rActivite, TypeActiviteRepository $rTypeActivite, ManagerRegistry $em)
+    {
+        parent::__construct($logger);
+        $this->rActivite = $rActivite;
+        $this->rTypeActivite = $rTypeActivite;
+        $this->em = $em;
+    }
 
     /**
      * @param Request $request
      * @param string $action
-     * @param ActiviteRepository $rActivite
      * @param Activite|null $activite
      * @param Kermesse|null $kermesse
      * @return Response
      */
-    private function saveActivite(Request $request, string $action, ActiviteRepository $rActivite, ?Activite $activite = null, ?Kermesse $kermesse = null): Response
+    private function saveActivite(Request $request, string $action, ?Activite $activite = null, ?Kermesse $kermesse = null): Response
     {
         $activite = $activite ?: new Activite();
         $kermesse = $activite->getKermesse() ?: $kermesse;
         // For a new activity we take the next available position
-        $activite->setOrdre($activite->getOrdre() ?: $rActivite->getNextPosition($kermesse));
+        $activite->setOrdre($activite->getOrdre() ?: $this->rActivite->getNextPosition($kermesse));
         $activite->setCaisseCentrale($activite->isCaisseCentrale() ?: false);
         $activite->setKermesse($kermesse);
         $activite->setEtablissement($this->getEtablissement());
@@ -55,10 +86,35 @@ class ActiviteController extends MyController
         } else {
             $activite->setAccepteSeulementMonnaie();
         }
-        $form = $this->createForm(ActiviteType::class, $activite, ['withKermesse' => $kermesse !== null, 'action' => $action]);
+        $availableTypes = $this->rTypeActivite->findByEtablissement($this->getEtablissement());
+        $form = $this->createForm(ActiviteType::class, $activite, [
+            'withKermesse' => $kermesse !== null,
+            'action' => $action,
+            'availableTypes' => $availableTypes,
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            $typeActivite = $activite->getType();
+            // -1 => Create a new type
+            if ($typeActivite !== null && $typeActivite->getId() === -1) {
+                $newTypeName = $form->get("new_type_activite")->getData();
+                $newType = null;
+                // New type name not defined => no type
+                if ($newTypeName) {
+                    // Check if another type with the same name exists
+                    $newType = $this->rTypeActivite->findOneByNom($this->getEtablissement(), $newTypeName);
+                    // Insert a new type for my etablissement
+                    if (!$newType) {
+                        $newType = (new TypeActivite())
+                            ->setEtablissement($this->getEtablissement())
+                            ->setNom($newTypeName);
+                        $this->em->getManager()->persist($newType);
+                    }
+                }
+                $activite->setType($newType);
+            }
+
+            $em = $this->em->getManager();
             $em->persist($activite);
             $em->flush();
             return $this->reponseModal();
@@ -74,15 +130,13 @@ class ActiviteController extends MyController
      * @Security("kermesse.isProprietaire(user)")
      * @param Kermesse $kermesse
      * @param Request $request
-     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function nouvelleActivite(Kermesse $kermesse, Request $request, ActiviteRepository $rActivite): Response
+    public function nouvelleActivite(Kermesse $kermesse, Request $request): Response
     {
         return $this->saveActivite(
             $request,
             $this->generateUrl('nouvelle_activite', ['id' => $kermesse->getId()]),
-            $rActivite,
             null,
             $kermesse
         );
@@ -91,12 +145,11 @@ class ActiviteController extends MyController
     /**
      * @Route("/activites/new", name="nouvelle_autre_activite")
      * @param Request $request
-     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function nouvelleAutreActivite(Request $request, ActiviteRepository $rActivite): Response
+    public function nouvelleAutreActivite(Request $request): Response
     {
-        return $this->saveActivite($request, $this->generateUrl('nouvelle_autre_activite'), $rActivite);
+        return $this->saveActivite($request, $this->generateUrl('nouvelle_autre_activite'));
     }
 
     /**
@@ -104,12 +157,11 @@ class ActiviteController extends MyController
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
      * @param Request $request
-     * @param ActiviteRepository $rActivite
      * @return Response
      */
-    public function editerActivite(Activite $activite, Request $request, ActiviteRepository $rActivite): Response
+    public function editerActivite(Activite $activite, Request $request): Response
     {
-        return $this->saveActivite($request, $this->generateUrl('editer_activite', ['id' => $activite->getId()]), $rActivite, $activite);
+        return $this->saveActivite($request, $this->generateUrl('editer_activite', ['id' => $activite->getId()]), $activite);
     }
 
     /**
@@ -125,12 +177,11 @@ class ActiviteController extends MyController
      * @Route("/activites/{id<\d+>}/supprimer", name="supprimer_activite")
      * @Security("activite.isProprietaire(user)")
      * @param Activite $activite
-     * @param ActiviteRepository $rActivite
      * @param KermesseService $sKermesse
      * @return Response
      * @throws ServiceException
      */
-    public function supprimerActivite(Activite $activite, ActiviteRepository $rActivite, KermesseService $sKermesse): Response
+    public function supprimerActivite(Activite $activite, KermesseService $sKermesse): Response
     {
         if ($activite->isCaisseCentrale()) {
             throw new ServiceException("Vous n'êtes pas autorisé à faire cela !");
@@ -138,9 +189,9 @@ class ActiviteController extends MyController
         // If one of the activities does not have an order, we compute all of them (for one kermesse)
         $kermesse = $activite->getKermesse();
         $sKermesse->initialiserOrdreActivites($kermesse);
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->em->getManager();
         // Before the activity deletion we move upward activities which are after the deleted one
-        $toMove = $rActivite->findWillMove($kermesse->getId(), $activite->getOrdre());
+        $toMove = $this->rActivite->findWillMove($kermesse->getId(), $activite->getOrdre());
         foreach ($toMove as $activiteToMove) {
             if ($activiteToMove->getId() !== $activite->getId()) {
                 $activiteToMove->setOrdre($activiteToMove->getOrdre() - 1);
@@ -250,11 +301,10 @@ class ActiviteController extends MyController
     /**
      * @Route("/actions/{annee<\d+>?}", name="lister_actions")
      * @param int|null $annee
-     * @param ActiviteRepository $rActivite
      * @return Response
      * @throws Exception
      */
-    public function actions(?int $annee, ActiviteRepository $rActivite): Response
+    public function actions(?int $annee): Response
     {
         $etablissement = $this->getUser();
         if (!$etablissement instanceof Etablissement) {
@@ -269,7 +319,7 @@ class ActiviteController extends MyController
         return $this->render(
             'activite/actions.html.twig',
             [
-                'activites' => $rActivite->getListeAutres($etablissement, $date),
+                'activites' => $this->rActivite->getListeAutres($etablissement, $date),
                 'periode' => $periode,
                 'annee' => (int) $date->format('Y'),
                 'courante' => $now >= $periode->getDebut() && $now < $periode->getFin(),

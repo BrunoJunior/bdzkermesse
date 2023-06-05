@@ -90,6 +90,11 @@ class Activite extends MyEntity
      */
     private $onlyForPlanning = false;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=TypeActivite::class)
+     */
+    private $type;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -330,6 +335,18 @@ class Activite extends MyEntity
     public function setOnlyForPlanning(bool $onlyForPlanning): self
     {
         $this->onlyForPlanning = $onlyForPlanning;
+
+        return $this;
+    }
+
+    public function getType(): ?TypeActivite
+    {
+        return $this->type;
+    }
+
+    public function setType(?TypeActivite $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }
