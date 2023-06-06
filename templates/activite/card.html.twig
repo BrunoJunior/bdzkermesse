@@ -1,6 +1,8 @@
 <div class="card text-center">
     <div class="card-header">
-        <i class="fas fa-grip-vertical activity-card-handle"></i>
+        {% if card.sortable %}
+            <i class="fas fa-grip-vertical activity-card-handle"></i>
+        {% endif %}
         <h5>{{ card.titre }}{% if not card.description.empty %}
             <button type="button" class="btn btn-link" data-toggle="modal" data-target="#activite{{ card.id }}-desc-modal" style="padding: 0; border: 0;">
                 <i class="fas fa-question-circle"></i>

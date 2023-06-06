@@ -221,4 +221,12 @@ class ActiviteCard
     public function getDescription(): ActiviteDescriptionModal {
         return new ActiviteDescriptionModal($this->activite);
     }
+
+    /**
+     * Is the card sortable ?
+     * @return bool
+     */
+    public function isSortable(): bool {
+        return $this->activite->getKermesse() !== null;
+    }
 }
