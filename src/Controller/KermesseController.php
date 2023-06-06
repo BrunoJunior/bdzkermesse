@@ -8,7 +8,6 @@ use App\DataTransfer\Colonne;
 use App\DataTransfer\ContactDTO;
 use App\DataTransfer\Planning;
 use App\DataTransfer\RecapitulatifBenevole;
-use App\Entity\Activite;
 use App\Entity\Kermesse;
 use App\Exception\BusinessException;
 use App\Exception\ServiceException;
@@ -134,7 +133,7 @@ class KermesseController extends MyController
                 $entityManager->flush();
                 $sKermesse->setKermesse($nouvelleKermesse)->dupliquerInfos($kermesse);
                 $entityManager->commit();
-                return $this->reponseModal("Kermesse " . $nouvelleKermesse->getAnnee() . ' créée à partir de la kermesse ' . $kermesse->getAnnee());
+                return $this->reponseModal("Kermesse " . $nouvelleKermesse->getAnnee() . ' créée à partir de la kermesse du ' . $kermesse->getAnnee());
             } catch (Exception $exc) {
                 $entityManager->rollback();
                 throw $exc;
@@ -331,7 +330,7 @@ class KermesseController extends MyController
      */
     public function showPlanning(Kermesse $kermesse, ActiviteRepository $rActivite): Response
     {
-        $planning = Planning::createFromKermesse($kermesse->getId(), $rActivite->findByKermesseId($kermesse->getId()));
+        $planning = Planning::createFromKermesse($kermesse, $rActivite->findByKermesseId($kermesse->getId()));
         return $this->render('kermesse/planning.html.twig', [
             'menu' => $this->getMenu($kermesse, static::MENU_PLANNING),
             'planning' => $planning,

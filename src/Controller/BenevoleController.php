@@ -205,7 +205,7 @@ class BenevoleController extends MyController
     {
         $etablissement = $this->getEtablissementByCode($code);
         $kermesse = $rKermesse->findCouranteByEtablissement($etablissement);
-        $planning = Planning::createFromKermesse($kermesse->getId(), $rActivite->findByKermesseId($kermesse->getId()));
+        $planning = Planning::createFromKermesse($kermesse, $rActivite->findByKermesseId($kermesse->getId()));
         return $this->render('kermesse/planning.html.twig', [
             'planning' => $planning,
             'codeEtablissement' => $code,

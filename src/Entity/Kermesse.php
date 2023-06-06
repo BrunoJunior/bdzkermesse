@@ -69,6 +69,11 @@ class Kermesse extends MyEntity
      */
     private $dureeCreneau;
 
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    private $date;
+
     public function __construct()
     {
         $this->activites = new ArrayCollection();
@@ -81,11 +86,20 @@ class Kermesse extends MyEntity
         return $this->id;
     }
 
+    /**
+     * @return int|null
+     */
     public function getAnnee(): ?int
     {
-        return $this->annee;
+        // Avoid using the real column
+        return (int)$this->getDate()->format("Y");
     }
 
+    /**
+     * @deprecated Use setDate instead
+     * @param int $annee
+     * @return $this
+     */
     public function setAnnee(int $annee): self
     {
         $this->annee = $annee;
@@ -244,6 +258,20 @@ class Kermesse extends MyEntity
     {
         $this->dureeCreneau = $dureeCreneau;
 
+        return $this;
+    }
+
+    public function getDate(): \DateTimeInterface
+    {
+        return $this->date ?? \DateTime::createFromFormat("Y","$this->annee");
+    }
+
+    public function setDate(?\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+        if ($date) {
+            $this->annee = (int) $date->format("Y");
+        }
         return $this;
     }
 }
