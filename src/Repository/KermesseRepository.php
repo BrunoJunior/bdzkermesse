@@ -84,7 +84,7 @@ class KermesseRepository extends ServiceEntityRepository
         }
         return $this->createQueryBuilder('k')
             ->andWhere('k.etablissement = :etablissement')
-            ->andWhere('k.annee = :annee')
+            ->andWhere('YEAR(k.date) = :annee')
             ->setParameter('etablissement', $etablissement)
             ->setParameter('annee', $annee)
             ->getQuery()

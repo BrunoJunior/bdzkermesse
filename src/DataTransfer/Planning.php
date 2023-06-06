@@ -3,6 +3,7 @@
 namespace App\DataTransfer;
 
 use App\Entity\Activite;
+use App\Entity\Kermesse;
 
 /**
  * Class Planning
@@ -24,18 +25,22 @@ class Planning extends PlageHoraire
     private $idKermesse;
 
     /**
-     * @param int $idKermesse
+     * @param Kermesse $kermesse
      * @param Activite[] $activites
      * @return static
      */
-    public static function createFromKermesse(int $idKermesse, array $activites): self
+    public static function createFromKermesse(Kermesse $kermesse, array $activites): self
     {
         $planning = new self();
-        $planning->idKermesse = $idKermesse;
+        $planning->idKermesse = $kermesse->getId();
         foreach ($activites as $activite) {
             // If no planning for this activity, next
-            if ($activite->getDate() === null || $activite->getCreneaux()->isEmpty()) {
+            if ($activite->getCreneaux()->isEmpty()) {
                 continue;
+            }
+            // If there is no date, take the event’s one
+            if (!$activite->getDate()) {
+                $activite->setDate($kermesse->getDate());
             }
             $dateStr = $activite->getDate()->format('Ymd');
             if (!array_key_exists($dateStr, $planning->lignes)) {
