@@ -18,31 +18,35 @@
         {% for ligneCreneaux in activite.lignesCreneaux %}
             {% for creneau in ligneCreneaux.creneaux %}
             <p class="card-text" data-toggle="tooltip" title="De {{ creneau.debut|date('H:i') }} à {{ creneau.fin|date('H:i') }}">{{ creneau.debut|date('H:i') }} - {{ creneau.fin|date('H:i') }}
-                <a
-                        href="{% if creneau.complet %}#{% else %}{{ path('inscription_benevole', {'id': activite.id, 'code': codeEtablissement, 'idCreneau': creneau.id}) }}{% endif %}"
-                        type="button"
-                        class="btn btn-block
-                                                    {% if creneau.complet %}
-                                                        btn-success
-                                                    {% elseif creneau.tauxBenevoles >= 75 %}
-                                                        btn-primary
-                                                    {% elseif creneau.tauxBenevoles >= 50 %}
-                                                        btn-warning
-                                                    {% else %}
-                                                        btn-danger
-                                                    {% endif %}">
+                {% if creneau.nbRequis > 0 %}
+                    <a
+                            href="{% if creneau.complet %}#{% else %}{{ path('inscription_benevole', {'id': activite.id, 'code': codeEtablissement, 'idCreneau': creneau.id}) }}{% endif %}"
+                            type="button"
+                            class="btn btn-block
+                                                        {% if creneau.complet %}
+                                                            btn-success
+                                                        {% elseif creneau.tauxBenevoles >= 75 %}
+                                                            btn-primary
+                                                        {% elseif creneau.tauxBenevoles >= 50 %}
+                                                            btn-warning
+                                                        {% else %}
+                                                            btn-danger
+                                                        {% endif %}">
 
-                    {% for benevole in creneau.benevoles %}
-                        {{ benevole.identite }}
-                        {% if not loop.last %}, {% endif %}
-                    {% endfor %}
-                    ({{ creneau.proportion }})
-                </a>
+                        {% for benevole in creneau.benevoles %}
+                            {{ benevole.identite }}
+                            {% if not loop.last %}, {% endif %}
+                        {% endfor %}
+                        ({{ creneau.proportion }})
+                    </a>
+                {% endif %}
             </p>
             {% endfor %}
         {% endfor %}
     </div>
-    <div class="card-footer">
-        {{ include('kermesse/progress.html.twig', {el: activite}, with_context = false) }}
-    </div>
+    {% if activite.nbRequisTotal > 0 %}
+        <div class="card-footer">
+            {{ include('kermesse/progress.html.twig', {el: activite}, with_context = false) }}
+        </div>
+    {% endif %}
 </div>
