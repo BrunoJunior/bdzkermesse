@@ -35,4 +35,17 @@ class LigneCreneaux extends PlageHoraire
         });
         return $this->creneaux;
     }
+
+    /**
+     * Tous les créneaux sont vides
+     * @return bool
+     */
+    public function isEmpty(): bool {
+        foreach ($this->creneaux as $creneau) {
+            if (!$creneau->isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
