@@ -159,4 +159,17 @@ class ActivitePlanning extends PlageHoraire
         return $this;
     }
 
+    /**
+     * Tous les créneaux sont vides
+     * @return bool
+     */
+    public function isCreneauxVides(): bool {
+        foreach ($this->lignesCreneaux as $ligneCreneau) {
+            if (!$ligneCreneau->isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 }

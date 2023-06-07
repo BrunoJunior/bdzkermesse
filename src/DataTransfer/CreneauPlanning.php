@@ -62,6 +62,14 @@ class CreneauPlanning extends PlageHoraire
     }
 
     /**
+     * Aucun bénévole
+     * @return bool
+     */
+    public function isEmpty(): bool {
+        return !$this->benevoles && !$this->benevolesEnAttente;
+    }
+
+    /**
      * @return bool
      */
     public function isComplet(): bool

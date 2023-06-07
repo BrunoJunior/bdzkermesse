@@ -229,4 +229,12 @@ class ActiviteCard
     public function isSortable(): bool {
         return $this->activite->getKermesse() !== null;
     }
+
+    /**
+     * No benevoles ?
+     * @return bool
+     */
+    public function isWithoutBenevole(): bool {
+        return $this->getNombreBenevolesEnAttente() + $this->getNombreBenevolesInscrits() === 0;
+    }
 }

@@ -357,7 +357,7 @@ class KermesseController extends MyController
                 [ActivitePlanning::class, 'createFromEntity'],
                 $rActivite->findByKermesseId($kermesse->getId())
             ), function (ActivitePlanning $activitePlanning) {
-                return !$activitePlanning->isOnlyForPlanning();
+                return !$activitePlanning->isOnlyForPlanning() && !$activitePlanning->isCreneauxVides();
             }),
             'menu' => $this->getMenu($kermesse, static::MENU_ACTIVITES)
         ]);
