@@ -48,4 +48,13 @@ class LigneCreneaux extends PlageHoraire
         }
         return true;
     }
+
+    /**
+     * @return int
+     */
+    public function getNbBenevolesRequis(): int {
+        return array_reduce($this->creneaux,function (int $sum, CreneauPlanning $creneau) {
+            return $sum + $creneau->getNbRequis();
+        },0);
+    }
 }

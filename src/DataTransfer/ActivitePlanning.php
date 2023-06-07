@@ -172,4 +172,13 @@ class ActivitePlanning extends PlageHoraire
         return true;
     }
 
+    /**
+     * @return int
+     */
+    public function getNbRequisTotal(): int {
+        return array_reduce($this->lignesCreneaux, function (int $sum, LigneCreneaux $ligneCreneau) {
+            return $sum + $ligneCreneau->getNbBenevolesRequis();
+        }, 0);
+    }
+
 }
