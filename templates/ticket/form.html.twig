@@ -28,6 +28,9 @@
                         <img src="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': id}) }}" class="img-fluid" alt="Duplicata" />
                     {% else %}
                         <legend class="d-none d-xl-block">Duplicata et activités</legend>
+                        {% if duplicata is defined and duplicata is not empty %}
+                            <a href="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': id}) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i> Télécharger le duplicata</a>
+                        {% endif %}
                     {% endif %}
                     {{ form_row(form.duplicata) }}
                     {% if not activite %}

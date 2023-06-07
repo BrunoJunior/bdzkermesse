@@ -93,4 +93,12 @@ class DepenseRow
     {
         return $this->depense->getTicket()->getKermesse() instanceof Kermesse;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasDuplicata(): bool {
+        $ticket = $this->depense->getTicket();
+        return $ticket && $ticket->getDuplicata() !== null;
+    }
 }

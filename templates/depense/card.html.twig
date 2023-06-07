@@ -12,6 +12,9 @@
             {% if not depense.forKermesse %}
                 <a href="#" data-ajax="{{ path('supprimer_ticket', {'id': depense.idTicket}) }}" class="btn btn-danger ajax-remove" data-toggle="tooltip" title="Supprimer" data-ajax-validation="true"><i class="fas fa-trash-alt"></i></a>
             {% endif %}
+            {% if depense.duplicata %}
+                <a href="{{ app.request.getSchemeAndHttpHost() ~ path('ticket_duplicata', {'id': depense.idTicket}) }}" target="_blank" class="btn btn-secondary" data-toggle="tooltip" title="Duplicata"><i class="fas fa-file-image"></i></a>
+            {% endif %}
         </div>
     </div>
 </div>
