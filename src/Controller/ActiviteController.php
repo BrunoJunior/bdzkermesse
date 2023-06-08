@@ -219,14 +219,19 @@ class ActiviteController extends MyController
     public function index(Activite $activite, RecetteRepository $rRecette, DepenseRepository $rDepense, RecetteRowGenerator $rowGenerator, DepenseRowGenerator $dRowGenerator, Request $request): Response
     {
         $order = $request->get('order', 'date');
+        $forKermesse = $activite->getKermesse() !== null;
         $colonnes = [
-            new Colonne('id', '#'),
-            new Colonne('date', 'Date', 'fas fa-calendar'),
-            new Colonne('libelle', 'Libellé', 'fas fa-tag'),
-            new Colonne('nombre_ticket', 'Nombre de tickets', 'fas ticket-alt'),
-            new Colonne('montant', 'Montant', 'fas fa-euro-sign'),
-            new Colonne('actions', 'Actions', 'fab fa-telegram-plane')
+            "id" => new Colonne('id', '#'),
+            "date" => new Colonne('date', 'Date', 'fas fa-calendar'),
+            "libelle" => new Colonne('libelle', 'Libellé', 'fas fa-tag'),
+            "nombre_ticket" => new Colonne('nombre_ticket', 'Nombre de tickets', 'fas ticket-alt'),
+            "montant" => new Colonne('montant', 'Montant', 'fas fa-euro-sign'),
+            "actions" => new Colonne('actions', 'Actions', 'fab fa-telegram-plane')
         ];
+        // Le nombre de ticket n'est utile que pour une activité de kermesse
+        if (!$forKermesse) {
+            unset($colonnes['nombre_ticket']);
+        }
         $totaux = $rRecette->getTotauxPourActivite($activite);
         $depense = $rDepense->getTotalPourActivite($activite);
         $totaux['montant'] = HFloat::getInstance($totaux['montant'] / 100.0)->getMontantFormatFrancais();
@@ -240,7 +245,8 @@ class ActiviteController extends MyController
                 'total_depenses' => HFloat::getInstance($depense / 100.0)->getMontantFormatFrancais(),
                 'menu' => $this->getMenuKermesseOuAutre($activite->getKermesse()),
                 'colonnes' => $colonnes,
-                'order' => $order
+                'order' => $order,
+                'for_kermesse' => $forKermesse,
             ]
         );
     }

@@ -11,7 +11,7 @@
     <fieldset>
         <legend>Recettes <a href="#" data-ajax="{{ path('nouvelle_recette_activite', {'id': activite.id}) }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
-            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite, 'colonnes': colonnes, 'order': order, 'search': false} only %}
+            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total_recettes, 'activite': activite, 'colonnes': colonnes, 'order': order, 'search': false, 'for_kermesse': for_kermesse} only %}
         </div>
         <div class="row d-lg-none">
             {% if recettes is empty %}
@@ -25,7 +25,7 @@
             {% endif %}
             {% for recette in recettes %}
                 <div class="col-sm-6 mb-3">
-                    {% include "recette/card.html.twig" with {'recette': recette} only %}
+                    {% include "recette/card.html.twig" with {'recette': recette, 'for_kermesse': for_kermesse} only %}
                 </div>
             {% endfor %}
         </div>

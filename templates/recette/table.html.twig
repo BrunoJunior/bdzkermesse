@@ -7,7 +7,7 @@
             <td>{{ recette.date }}</td>
             {% if activite is not defined %}<td>{{ recette.activite }}</td>{% endif %}
             <td>{{ recette.libelle }}</td>
-            <td>{{ recette.nombreTickets }}</td>
+            {% if for_kermesse %}<td>{{ recette.nombreTickets }}</td>{% endif %}
             <td>{{ recette.montant }}</td>
             <td>
                 <a href="#" data-ajax="{{ path('editer_recette', {'id': recette.id}) }}" class="btn btn-primary ajax-reload"><i class="fas fa-edit"></i> Éditer</a>
@@ -15,14 +15,14 @@
             </td>
         </tr>
     {% else %}
-        <tr class="table-light"><td colspan="{% if activite is not defined %}7{% else %}6{% endif %}">Aucune recette</td></tr>
+        <tr class="table-light"><td colspan="{{ colonnes|length + 1 }}">Aucune recette</td></tr>
     {% endfor %}
     </tbody>
     {% if recettes is not empty %}
         <tfoot>
             <tr class="table-dark">
-                <th scope="row" colspan="{% if activite is not defined %}4{% else %}3{% endif %}">Total</th>
-                <td>{{ total.nombre_ticket }}</td>
+                <th scope="row" colspan="{{ colonnes|length - 3 }}">Total</th>
+                <td>{% if for_kermesse %}{{ total.nombre_ticket }}{% endif %}</td>
                 <td>{{ total.montant }}</td>
                 <td></td>
             </tr>
