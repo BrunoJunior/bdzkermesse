@@ -3,7 +3,7 @@
         <h5 class="card-title"><i class="fas fa-tag"></i> {{ recette.libelle }}</h5>
         {% if activite is not defined %}<p class="card-text" data-toggle="tooltip" title="Activité"><i class="fas fa-cubes"></i> {{ recette.activite }}</p>{% endif %}
         <p class="card-text" data-toggle="tooltip" title="Date"><i class="fas fa-calendar"></i> {{ recette.date }}</p>
-        <p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ recette.nombreTickets }}</p>
+        {% if for_kermesse %}<p class="card-text" data-toggle="tooltip" title="Nombre de tickets"><i class="fas fa-ticket-alt"></i> {{ recette.nombreTickets }}</p>{% endif %}
         <p class="card-text" data-toggle="tooltip" title="Montant"><i class="fas fa-euro-sign"></i> {{ recette.montant }}</p>
     </div>
     <div class="card-footer">

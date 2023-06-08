@@ -6,7 +6,7 @@
     <fieldset>
         <legend>Recettes <span class="d-lg-none">(Total : {{ total.montant }} / {{ total.nombre_ticket }} tickets) </span><a href="#" data-ajax="{{ path('nouvelle_recette', {'id': kermesse.id}) }}" class="btn btn-primary ajax-reload" data-toggle="tooltip" title="Nouvelle recette"><i class="fas fa-plus"></i></a></legend>
         <div class="row d-none d-lg-block">
-            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total, 'colonnes': colonnes, 'order': order, 'search': true} only %}
+            {% include "recette/table.html.twig" with {'recettes': recettes, 'total': total, 'colonnes': colonnes, 'order': order, 'search': true, 'for_kermesse': true} only %}
         </div>
         <div class="row d-lg-none">
             {% if recettes is empty %}
@@ -20,7 +20,7 @@
             {% endif %}
             {% for recette in recettes %}
                 <div class="col-sm-6 mb-3">
-                    {% include "recette/card.html.twig" with {'recette': recette} only %}
+                    {% include "recette/card.html.twig" with {'recette': recette, 'for_kermesse': true} only %}
                 </div>
             {% endfor %}
         </div>

@@ -260,7 +260,7 @@ class KermesseController extends MyController
                 'total' => $totaux,
                 'menu' => $this->getMenu($kermesse, static::MENU_RECETTES),
                 'colonnes' => $colonnes,
-                'order' => $order
+                'order' => $order,
             ]
         );
     }
