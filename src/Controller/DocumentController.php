@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\DataTransfer\MembreRow;
+use App\Entity\Membre;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -18,6 +20,8 @@ class DocumentController extends MyController
      * @return Response
      */
     public function index(): Response {
-        return $this->json(["Test" => "Test"]);
+        return $this->render('document/index.html.twig', [
+            'menu' => $this->getMenu(null, static::MENU_DOCUMENTS)
+        ]);
     }
 }

@@ -62,7 +62,7 @@ class Remboursement extends MyEntity
     private $etat = RemboursementEtatEnum::EN_ATTENTE;
 
     /**
-     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="rembourseÃment")
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="remboursement")
      */
     private $documents;
 
@@ -205,7 +205,7 @@ class Remboursement extends MyEntity
     {
         if (!$this->documents->contains($document)) {
             $this->documents[] = $document;
-            $document->setRembourseÃment($this);
+            $document->setRemboursement($this);
         }
 
         return $this;
@@ -215,8 +215,8 @@ class Remboursement extends MyEntity
     {
         if ($this->documents->removeElement($document)) {
             // set the owning side to null (unless already changed)
-            if ($document->getRembourseÃment() === $this) {
-                $document->setRembourseÃment(null);
+            if ($document->getRemboursement() === $this) {
+                $document->setRemboursement(null);
             }
         }
 
