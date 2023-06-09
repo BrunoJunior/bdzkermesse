@@ -30,6 +30,7 @@ abstract class MyController extends AbstractController
     const MENU_ACTIVITES_AUTRES = 'Actions';
     const MENU_BILAN = 'Bilan';
     const MENU_ADMIN = 'Administration';
+    const MENU_DOCUMENTS = 'Espace documentaire';
 
     /**
      * @var LoggerInterface
@@ -106,6 +107,8 @@ abstract class MyController extends AbstractController
         if ($this->getEtablissement() && $this->getEtablissement()->isAdmin()) {
             $menu->addLink(MenuLink::getInstance(static::MENU_ADMIN, 'tools', $this->generateUrl('admin'))->setActive($activeLink === static::MENU_ADMIN));
         }
+
+        $menu->addLink(MenuLink::getInstance(static::MENU_DOCUMENTS, 'folder', $this->generateUrl('espace_documentaire'))->setActive($activeLink === static::MENU_DOCUMENTS));
 
         return $menu;
     }
