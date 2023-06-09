@@ -88,10 +88,16 @@ class Ticket extends MyEntity
      */
     private $etat = TicketEtatEnum::A_REMBOURSER;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="ticket")
+     */
+    private $documents;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
         $this->date = new \DateTime();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId()
@@ -259,6 +265,36 @@ class Ticket extends MyEntity
     public function setCommentaire(?string $commentaire): self
     {
         $this->commentaire = $commentaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getTicket() === $this) {
+                $document->setTicket(null);
+            }
+        }
 
         return $this;
     }

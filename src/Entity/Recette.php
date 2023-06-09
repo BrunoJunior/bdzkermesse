@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Helper\HFloat;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -57,11 +59,17 @@ class Recette extends MyEntity
     private $report_stock;
 
     /**
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="recette")
+     */
+    private $documents;
+
+    /**
      * Recette constructor.
      */
     public function __construct()
     {
         $this->date = new \DateTime();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId()
@@ -152,6 +160,36 @@ class Recette extends MyEntity
         if ($report_stock) {
             $this->setLibelle("");
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setRecette($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getRecette() === $this) {
+                $document->setRecette(null);
+            }
+        }
+
         return $this;
     }
 }

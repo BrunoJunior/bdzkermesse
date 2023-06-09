@@ -78,12 +78,18 @@ class Etablissement implements UserInterface
      */
     private $typeActivites;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="etablissement")
+     */
+    private $documents;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
         $this->membres = new ArrayCollection();
         $this->admin = false;
         $this->typeActivites = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId()
@@ -325,6 +331,36 @@ class Etablissement implements UserInterface
             // set the owning side to null (unless already changed)
             if ($typeActivite->getEtablissement() === $this) {
                 $typeActivite->setEtablissement(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setEtablissement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getEtablissement() === $this) {
+                $document->setEtablissement(null);
             }
         }
 

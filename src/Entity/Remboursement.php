@@ -62,12 +62,18 @@ class Remboursement extends MyEntity
     private $etat = RemboursementEtatEnum::EN_ATTENTE;
 
     /**
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="rembourseÃment")
+     */
+    private $documents;
+
+    /**
      * Remboursement constructor.
      */
     public function __construct()
     {
         $this->tickets = new ArrayCollection();
         $this->date = new \DateTime();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId()
@@ -183,6 +189,36 @@ class Remboursement extends MyEntity
     public function setEtat(int $etat): self
     {
         $this->etat = $etat;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setRembourseÃment($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getRembourseÃment() === $this) {
+                $document->setRembourseÃment(null);
+            }
+        }
 
         return $this;
     }

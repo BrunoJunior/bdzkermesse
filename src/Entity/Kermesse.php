@@ -74,11 +74,17 @@ class Kermesse extends MyEntity
      */
     private $date;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Document::class, mappedBy="kermesse")
+     */
+    private $documents;
+
     public function __construct()
     {
         $this->activites = new ArrayCollection();
         $this->membres = new ArrayCollection();
         $this->tickets = new ArrayCollection();
+        $this->documents = new ArrayCollection();
     }
 
     public function getId()
@@ -275,6 +281,36 @@ class Kermesse extends MyEntity
         if ($date) {
             $this->annee = (int) $date->format("Y");
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Document>
+     */
+    public function getDocuments(): Collection
+    {
+        return $this->documents;
+    }
+
+    public function addDocument(Document $document): self
+    {
+        if (!$this->documents->contains($document)) {
+            $this->documents[] = $document;
+            $document->setKermesse($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDocument(Document $document): self
+    {
+        if ($this->documents->removeElement($document)) {
+            // set the owning side to null (unless already changed)
+            if ($document->getKermesse() === $this) {
+                $document->setKermesse(null);
+            }
+        }
+
         return $this;
     }
 }
