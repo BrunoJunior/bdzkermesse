@@ -395,7 +395,7 @@ class KermesseController extends MyController
                 $this->logger->error("Erreur lors de l'envoi de l'email à $email", $exception->getTrace());
             }
         }
-        $this->addFlash('success', "Les bénévoles des créneaux complets ont été prévenus apr email !");
+        $this->addFlash('success', "Les bénévoles des créneaux complets ont été prévenus par email !");
         return $this->showPlanning($kermesse);
     }
 }
