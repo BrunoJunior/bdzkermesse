@@ -162,7 +162,7 @@
                     class="btn btn-success"
                     data-link="{{ app.request.getSchemeAndHttpHost() ~ path('benevoles_planning', {'code': app.user.username}) }}"
             >Copier le lien à fournir aux bénévoles</button>
-            <a href="{{ path('planning_valider', {'id': planning.idKermesse}) }}" class="btn btn-primary" role="button"><i class="far fa-calendar-check"></i> Valider le planning</a>
+            <a href="{{ path('planning_valider', {'id': planning.idKermesse}) }}" class="btn btn-primary" role="button"><i class="fas fa-mail-bulk"></i> Informer les bénévoles des créneaux complets par e-mail</a>
         </div>
         <div id="modal-migration" class="modal" tabindex="-1" role="dialog"></div>
     {% endif %}
