@@ -68,19 +68,17 @@ class ActiviteController extends MyController
     /**
      * @param Request $request
      * @param string $action
-     * @param Activite|null $activite
-     * @param Kermesse|null $kermesse
+     * @param Activite|null $actualActivite
+     * @param Kermesse|null $actualKermesse
      * @return Response
      */
-    private function saveActivite(Request $request, string $action, ?Activite $activite = null, ?Kermesse $kermesse = null): Response
+    private function saveActivite(Request $request, string $action, ?Activite $actualActivite = null, ?Kermesse $actualKermesse = null): Response
     {
-        $activite = $activite ?: new Activite();
-        $kermesse = $activite->getKermesse() ?: $kermesse;
+        $activite = $actualActivite ?: new Activite();
+        $kermesse = $activite->getKermesse() ?: $actualKermesse;
         // For a new activity we take the next available position
-        if (null !== $kermesse) {
-            $activite->setOrdre($activite->getOrdre() ?: $this->rActivite->getNextPosition($kermesse));
-        } else {
-            $activite->setOrdre(1);
+        if ($activite->getOrdre() === null) {
+            $activite->setOrdre($kermesse === null ? 1 : $this->rActivite->getNextPosition($kermesse));
         }
         $activite->setCaisseCentrale($activite->isCaisseCentrale() ?: false);
         $activite->setKermesse($kermesse);
