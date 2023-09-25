@@ -77,7 +77,11 @@ class ActiviteController extends MyController
         $activite = $activite ?: new Activite();
         $kermesse = $activite->getKermesse() ?: $kermesse;
         // For a new activity we take the next available position
-        $activite->setOrdre($activite->getOrdre() ?: $this->rActivite->getNextPosition($kermesse));
+        if (null !== $kermesse) {
+            $activite->setOrdre($activite->getOrdre() ?: $this->rActivite->getNextPosition($kermesse));
+        } else {
+            $activite->setOrdre(1);
+        }
         $activite->setCaisseCentrale($activite->isCaisseCentrale() ?: false);
         $activite->setKermesse($kermesse);
         $activite->setEtablissement($this->getEtablissement());
