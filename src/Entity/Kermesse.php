@@ -263,7 +263,13 @@ class Kermesse extends MyEntity
 
     public function getDate(): \DateTimeInterface
     {
-        return $this->date ?? \DateTime::createFromFormat("Y","$this->annee");
+        if (!$this->date && !$this->annee) {
+            return new \DateTime();
+        }
+        if (!$this->date) {
+            return \DateTime::createFromFormat("Y", "$this->annee");
+        }
+        return $this->date;
     }
 
     public function setDate(?\DateTimeInterface $date): self
