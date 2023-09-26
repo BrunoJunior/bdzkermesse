@@ -95,7 +95,7 @@ class Kermesse extends MyEntity
         if ($date) {
             return (int)$date->format("Y");
         }
-        return $this->date;
+        return $this->annee;
     }
 
     /**
