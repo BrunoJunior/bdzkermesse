@@ -91,9 +91,11 @@ class Kermesse extends MyEntity
      */
     public function getAnnee(): ?int
     {
-        // Avoid using the real column
-        $date = $this->getDate() ?? new \DateTime();
-        return (int)$date->format("Y");
+        $date = $this->getDate();
+        if ($date) {
+            return (int)$date->format("Y");
+        }
+        return $this->date;
     }
 
     /**
