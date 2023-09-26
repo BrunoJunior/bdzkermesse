@@ -100,7 +100,10 @@ class KermesseCard
      */
     public function getTitre(): string
     {
-        return $this->kermesse->getDate()->format("d/m/Y") . ' - ' . $this->kermesse->getTheme();
+        $date = $this->kermesse->getDate();
+        $format = $date ? $date->format("d/m/Y") : $this->kermesse->getAnnee();
+        $theme = $this->kermesse->getTheme();
+        return "$format - $theme";
     }
 
     /**

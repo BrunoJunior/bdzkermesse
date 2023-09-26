@@ -92,7 +92,8 @@ class Kermesse extends MyEntity
     public function getAnnee(): ?int
     {
         // Avoid using the real column
-        return (int)$this->getDate()->format("Y");
+        $date = $this->getDate() ?? new \DateTime();
+        return (int)$date->format("Y");
     }
 
     /**
@@ -261,14 +262,8 @@ class Kermesse extends MyEntity
         return $this;
     }
 
-    public function getDate(): \DateTimeInterface
+    public function getDate(): ?\DateTimeInterface
     {
-        if (!$this->date && !$this->annee) {
-            return new \DateTime();
-        }
-        if (!$this->date) {
-            return \DateTime::createFromFormat("Y", "$this->annee");
-        }
         return $this->date;
     }
 

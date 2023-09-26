@@ -40,7 +40,7 @@ class Planning extends PlageHoraire
             }
             // If there is no date, take the event’s one
             if (!$activite->getDate()) {
-                $activite->setDate($kermesse->getDate());
+                $activite->setDate($kermesse->getDate() ?: new \DateTime());
             }
             $dateStr = $activite->getDate()->format('Ymd');
             if (!array_key_exists($dateStr, $planning->lignes)) {
