@@ -100,6 +100,11 @@ class Activite extends MyEntity
      */
     private $regle;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $nbTickets;
+
     public function __construct()
     {
         $this->depenses = new ArrayCollection();
@@ -364,6 +369,18 @@ class Activite extends MyEntity
     public function setRegle(?string $regle): self
     {
         $this->regle = $regle;
+
+        return $this;
+    }
+
+    public function getNbTickets(): ?int
+    {
+        return $this->nbTickets;
+    }
+
+    public function setNbTickets(?int $nbTickets): self
+    {
+        $this->nbTickets = $nbTickets;
 
         return $this;
     }

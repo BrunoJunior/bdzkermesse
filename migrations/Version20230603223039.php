@@ -20,7 +20,7 @@ final class Version20230603223039 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP TABLE migration_versions');
+        $this->addSql('DROP TABLE IF EXISTS migration_versions');
         $this->addSql('ALTER TABLE activite ADD only_for_planning TINYINT(1) NOT NULL DEFAULT 0, CHANGE ordre ordre INT NOT NULL');
     }
 
