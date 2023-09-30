@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -60,6 +61,10 @@ class ActiviteType extends AbstractType
         if ($options['tickets'] && $options['withKermesse']) {
             $builder->add('accepteTickets', CheckboxType::class, [
                 'label'         => 'Accepte les tickets ?',
+                'required'      => false,
+            ]);
+            $builder->add('nbTickets', NumberType::class, [
+                'label'         => 'Nombre de tickets ?',
                 'required'      => false,
             ]);
         }

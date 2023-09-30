@@ -5,25 +5,32 @@
 {% block stylesheets %}<link rel="stylesheet" href="{{ asset('css/activite_form.css') }}">{% endblock %}
 
 {% block body %}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.date) }}
-    {{ form_row(form.type) }}
-    {{ form_row(form.new_type_activite) }}
-    {{ form_row(form.description) }}
-    {{ form_row(form.regle) }}
+<div class="row align-items-start">
+    <div class="col-sm-12 col-lg-6">
+        {{ form_row(form.nom) }}
+        {{ form_row(form.date) }}
+        {{ form_row(form.type) }}
+        {{ form_row(form.new_type_activite) }}
+        {{ form_row(form.description) }}
+        {{ form_row(form.regle) }}
+    </div>
     {% if kermesse is not null %}
-        {{ form_row(form.onlyForPlanning) }}
-        {{ form_row(form.accepteTickets) }}
-        <div class="well">
-            <fieldset>
-                <legend class="d-none d-xl-block">Créneaux horaire</legend>
-                {{ form_row(form.creneaux) }}
-                <button type="button"
-                        class="add-another-collection-widget btn btn-secondary"
-                        data-list="#activite_creneaux">Ajouter un créneau horaire</button>
-            </fieldset>
+        <div class="col-sm-12 col-lg-6">
+            {{ form_row(form.onlyForPlanning) }}
+            {{ form_row(form.accepteTickets) }}
+            {{ form_row(form.nbTickets) }}
+            <div class="well">
+                <fieldset>
+                    <legend class="d-none d-xl-block">Créneaux horaire</legend>
+                    {{ form_row(form.creneaux) }}
+                    <button type="button"
+                            class="add-another-collection-widget btn btn-secondary"
+                            data-list="#activite_creneaux">Ajouter un créneau horaire</button>
+                </fieldset>
+            </div>
         </div>
     {% endif %}
+</div>
 {% endblock %}
 
 {% block javascripts %}<script src="{{ asset('js/activite_form.js') }}"></script>{% endblock %}

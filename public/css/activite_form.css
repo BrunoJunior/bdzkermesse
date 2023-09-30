@@ -25,3 +25,7 @@
     display: inline-block;
     width: 50%;
 }
+
+.modal-dialog {
+    max-width: 800px;
+}

@@ -18,6 +18,10 @@ class ActiviteDescriptionModal
      * @var string|null
      */
     private $regle;
+    /**
+     * @var int
+     */
+    private $nbTickets;
 
     /**
      * @param Activite $activite
@@ -28,6 +32,7 @@ class ActiviteDescriptionModal
         $this->type = $type ? $type->getNom() : null;
         $this->description = $activite->getDescription();
         $this->regle = $activite->getRegle();
+        $this->nbTickets = $activite->getNbTickets() ?: 0;
     }
 
     /**
@@ -52,6 +57,14 @@ class ActiviteDescriptionModal
     public function getRegle(): ?string
     {
         return $this->regle;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNbTickets(): int
+    {
+        return $this->nbTickets;
     }
 
     /**
