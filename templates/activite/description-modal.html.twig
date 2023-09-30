@@ -21,6 +21,10 @@
                         <dt>Règles du jeu</dt>
                         <dd>{{ contentModal.regle|nl2br }}</dd>
                     {% endif %}
+                    {% if contentModal.nbTickets %}
+                        <dt>Nombre de tickets</dt>
+                        <dd>{{ contentModal.nbTickets }}</dd>
+                    {% endif %}
                 </dl>
             </div>
         </div>

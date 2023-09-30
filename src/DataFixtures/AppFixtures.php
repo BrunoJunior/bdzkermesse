@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Etablissement;
+use App\Entity\TypeActivite;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -40,6 +41,14 @@ class AppFixtures extends Fixture
             $this->addReference($code, $user);
         }
 
+        foreach ($this->getTypeData() as [$id, $lib]) {
+            $type = new TypeActivite();
+            $type->setNom($lib);
+
+            $manager->persist($type);
+            $this->addReference($lib, $type);
+        }
+
         $manager->flush();
     }
 
@@ -52,6 +61,18 @@ class AppFixtures extends Fixture
             // $userData = [$nom, $code, $motdepasse];
             ['Ecole Notre-Dame', 'nd_st_emilien', 'kitten', true],
             ['Lycée Bernard Palissy', 'bernard_palissy_saintes', 'kitten', false],
+        ];
+    }
+
+    private function getTypeData(): array {
+        return [
+            [-1, 'Autre (précisez)'],
+            [null, 'Jeu à lot immédiat'],
+            [null, 'Jeu à meilleur score'],
+            [null, 'Tirage au sort'],
+            [null, 'Vente directe'],
+            [null, 'Animation'],
+            [null, 'Surveillance'],
         ];
     }
 }
