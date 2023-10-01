@@ -65,11 +65,17 @@ class Membre extends MyEntity
      */
     private $gestionnaire = false;
 
+    /**
+     * @ORM\OneToMany(targetEntity=MembreBureau::class, mappedBy="membre", orphanRemoval=true)
+     */
+    private $bureaux;
+
     public function __construct()
     {
         $this->kermesses = new ArrayCollection();
         $this->remboursements = new ArrayCollection();
         $this->tickets = new ArrayCollection();
+        $this->bureaux = new ArrayCollection();
     }
 
     public function getId()
@@ -239,6 +245,36 @@ class Membre extends MyEntity
     public function setGestionnaire(bool $gestionnaire): self
     {
         $this->gestionnaire = $gestionnaire;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MembreBureau>
+     */
+    public function getBureaux(): Collection
+    {
+        return $this->bureaux;
+    }
+
+    public function addBureau(MembreBureau $membreBureau): self
+    {
+        if (!$this->bureaux->contains($membreBureau)) {
+            $this->bureaux[] = $membreBureau;
+            $membreBureau->setMembre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBureau(MembreBureau $membreBureau): self
+    {
+        if ($this->bureaux->removeElement($membreBureau)) {
+            // set the owning side to null (unless already changed)
+            if ($membreBureau->getMembre() === $this) {
+                $membreBureau->setMembre(null);
+            }
+        }
 
         return $this;
     }
