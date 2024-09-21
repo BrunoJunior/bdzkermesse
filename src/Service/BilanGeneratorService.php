@@ -10,6 +10,7 @@ use App\Entity\Etablissement;
 use App\Entity\Kermesse;
 use App\Repository\ActiviteRepository;
 use App\Repository\KermesseRepository;
+use DateTime;
 use DateTimeInterface;
 use DateInterval;
 use DateTimeImmutable;
@@ -103,7 +104,8 @@ class BilanGeneratorService
         // On voudra cependant la kermesse de l’année 2024 (fin de l’année scolaire)
         $dateKermesse = null;
         if (null !== $date) {
-            $dateKermesse = new DateTimeImmutable::createFromInterface($date)->add(new DateInterval("P1Y"));
+            $dateKermesse = $date instanceof DateTime ? DateTimeImmutable::createFromMutable($date) : $date;
+            $dateKermesse =  $dateKermesse->add(new DateInterval("P1Y"));
         }
         $kermesse = $this->rKermesse->findOneByDate($etablissement, $dateKermesse);
         $bilan = new BilanDto();
