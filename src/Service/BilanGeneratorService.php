@@ -11,6 +11,8 @@ use App\Entity\Kermesse;
 use App\Repository\ActiviteRepository;
 use App\Repository\KermesseRepository;
 use DateTimeInterface;
+use DateInterval;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\NonUniqueResultException;
 use Exception;
@@ -87,7 +89,7 @@ class BilanGeneratorService
     }
 
     /**
-     * Génération du bilan pour une année spécifiaque
+     * Génération du bilan pour une année spécifique
      * @param Etablissement $etablissement
      * @param DateTimeInterface|null $date
      * @return BilanDto
@@ -96,7 +98,14 @@ class BilanGeneratorService
      */
     public function generer(Etablissement $etablissement, ?DateTimeInterface $date = null): BilanDto
     {
-        $kermesse = $this->rKermesse->findOneByDate($etablissement, $date);
+        // La kermesse est en fin d’année scolaire
+        // Si on veut le bilan de l’année 2023 - 2024, la date sera en 2023 (début année scolaire)
+        // On voudra cependant la kermesse de l’année 2024 (fin de l’année scolaire)
+        $dateKermesse = null;
+        if (null !== $date) {
+            $dateKermesse = new DateTimeImmutable::createFromInterface($date)->add(new DateInterval("P1Y"));
+        }
+        $kermesse = $this->rKermesse->findOneByDate($etablissement, $dateKermesse);
         $bilan = new BilanDto();
         if ($kermesse instanceof Kermesse) {
             $this->completerBilan(
